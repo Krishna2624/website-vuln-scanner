@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Vulnerability Scanner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827);
+    color: white;
+    padding: 30px;
+    }
+
+    .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 24px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    margin-bottom: 40px;
+    }
+
+    .navbar h1 {
+    font-size: 28px;
+    font-weight: 700;
+    }
+
+    .nav-links a {
+    text-decoration: none;
+    color: white;
+    margin-left: 18px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 12px;
+    transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+    background: rgba(255,255,255,0.08);
+    color: #93c5fd;
+    }
+
+    .hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    }
+
+    .scanner-box {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 30px;
+    padding: 50px;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+    text-align: center;
+    }
+
+    .scanner-box h2 {
+    font-size: 40px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    }
+
+    .scanner-box p {
+    color: #cbd5e1;
+    margin-bottom: 35px;
+    font-size: 16px;
+    line-height: 1.8;
+    }
+
+    .input-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 25px;
+    }
+
+    .input-group input {
+    flex: 1;
+    min-width: 300px;
+    padding: 18px 20px;
+    border: none;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: white;
+    font-size: 15px;
+    outline: none;
+    backdrop-filter: blur(14px);
+    }
+
+    .input-group input::placeholder {
+    color: #cbd5e1;
+    }
+
+    .scan-btn {
+    padding: 18px 30px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 10px 25px rgba(37,99,235,0.25);
+    }
+
+    .scan-btn:hover {
+    transform: translateY(-3px);
+    }
+
+    #fullScanOutput {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 18px;
+      border-radius: 16px;
+      text-align: left;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+      min-height: 70px;
+      backdrop-filter: blur(12px);
+    }
+
+    #output {
+    margin-top: 25px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 18px;
+    border-radius: 16px;
+    text-align: left;
+    white-space: pre-wrap;
+    color: #e2e8f0;
+    min-height: 70px;
+    backdrop-filter: blur(12px);
+    }
+
+    #dnsOutput {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 18px;
+      border-radius: 16px;
+      text-align: left;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+      min-height: 70px;
+      backdrop-filter: blur(12px);
+    }
+
+    #portStatus {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 18px;
+      border-radius: 16px;
+      text-align: left;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+      min-height: 70px;
+      backdrop-filter: blur(12px);
+    }
+
+    #whoisOutput {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 18px;
+      border-radius: 16px;
+      text-align: left;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+      min-height: 120px;
+      backdrop-filter: blur(12px);
+    }
+
+    #subdomainOutput {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 18px;
+      border-radius: 16px;
+      text-align: left;
+      white-space: pre-wrap;
+      color: #e2e8f0;
+      min-height: 120px;
+      backdrop-filter: blur(12px);
+    }
+
+    .table-box {
+      margin-top: 35px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      padding: 22px;
+      overflow-x: auto;
+    }
+
+    .table-box h3 {
+      margin-bottom: 16px;
+    }
+
+    .table-box table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table-box th,
+    .table-box td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      text-align: left;
+      color: #e2e8f0;
+    }
+
+    .table-box th {
+      color: #93c5fd;
+    }
+
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin-top: 35px;
+      }
+
+    .feature-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      backdrop-filter: blur(14px);
+      transition: 0.3s;
+      }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      }
+
+    .feature-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      }
+
+    .feature-card p {
+      font-size: 13px;
+      margin: 0;
+      color: #cbd5e1;
+      }
+
+    .module-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .module-tab {
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .module-tab.active {
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+    }
+
+    .module-section {
+      display: none;
+    }
+
+    .module-section.active {
+      display: block;
+    }
+
+    .coming-soon-box {
+      margin-top: 25px;
+      padding: 22px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #cbd5e1;
+}
+
+
+    @media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    .scanner-box {
+        padding: 30px 20px;
+    }
+
+    .scanner-box h2 {
+        font-size: 30px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h1>Security Scanner</h1>
+    <div class="nav-links">
+    <a href="index.html">Scanner</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="report.html">Reports</a>
+    <a href="risk-intelligence.html">Risk Intelligence</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+  </div>
+  <div class="hero">
+  <div class="scanner-box">
+
+    <div class="module-tabs">
+      <button class="module-tab" onclick="showModule('fullScanModule', this)">Full Security Scan</button>
+      <button class="module-tab active" onclick="showModule('vulnModule', this)">Website Vulnerability Scanner</button>
+      <button class="module-tab" onclick="showModule('dnsModule', this)">DNS Lookup</button>
+      <button class="module-tab" onclick="showModule('portModule', this)">Port Scanner</button>
+      <button class="module-tab" onclick="showModule('whoisModule', this)">WHOIS Lookup</button>
+      <button class="module-tab" onclick="showModule('subdomainModule', this)">Subdomain Discovery</button>
+      
+    </div>
+
+    <div id="vulnModule" class="module-section active">
+      <h2>Website Vulnerability Scanner</h2>
+      <p>
+        Scan websites for security headers, SSL certificate issues, cookie risks,
+        technology disclosure, and common vulnerability indicators with a professional report.
+      </p>
+
+      <div class="input-group">
+        <input id="url" type="text" placeholder="Enter website URL (example: https://example.com)">
+        <button class="scan-btn" onclick="scanWebsite()">Start Scan</button>
+      </div>
+
+      <div id="output">Ready to scan...</div>
+
+      <div class="features">
+        <div class="feature-card">
+          <h3>SSL Check</h3>
+          <p>Certificate validation and HTTPS verification</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Header Audit</h3>
+          <p>Security headers and misconfiguration detection</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Cookie Review</h3>
+          <p>Secure, HttpOnly and SameSite checks</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Risk Report</h3>
+          <p>Severity-based vulnerability findings</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="dnsModule" class="module-section">
+      <h2>DNS Lookup Module</h2>
+      <p>
+        Check DNS records including A, AAAA, MX, NS, and TXT records for a domain.
+      </p>
+
+      <div class="input-group">
+        <input id="dnsInput" type="text" placeholder="Enter domain (example: google.com)">
+        <button class="scan-btn" onclick="runDnsLookup()">Run DNS Lookup</button>
+      </div>
+
+      <div id="dnsOutput">Ready for DNS lookup...</div>
+
+      <div class="features">
+        <div class="feature-card">
+          <h3>DNS A Record</h3>
+          <p>Finds the IPv4 address connected to the domain.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DNS AAAA Record</h3>
+          <p>Finds the IPv6 address used by the domain.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DNS MX Record</h3>
+          <p>Shows mail servers responsible for receiving emails.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DNS NS Record</h3>
+          <p>Shows authoritative name servers for the domain.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DNS TXT Record</h3>
+          <p>Displays verification, SPF, DKIM, and security-related text records.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="portModule" class="module-section">
+
+      <h2>Port Scanner</h2>
+
+      <p>
+        Scan common network ports on a target IP address or domain to identify exposed services,
+        open ports, and possible risk levels.
+      </p>
+
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="portTarget" 
+          placeholder="Enter IP or domain (example: 127.0.0.1)"
+        >
+
+        <button class="scan-btn" onclick="startPortScan()">Start Port Scan</button>
+      </div>
+
+      <div id="portStatus">Ready for port scan...</div>
+
+     <div class="features">
+
+      <div class="feature-card">
+        <h3>Port</h3>
+        <p>Shows the network port number such as 22, 80, 443, or 3306.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Service</h3>
+        <p>Identifies the common service running on the port like SSH, HTTP, HTTPS, or MySQL.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Status</h3>
+        <p>Displays whether the port is Open or Closed during the scan.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Risk</h3>
+        <p>Shows the security risk level based on the exposed service.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>CVE ID</h3>
+        <p>Maps detected services to known Common Vulnerabilities and Exposures references.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>CVE Severity</h3>
+        <p>Shows whether the mapped vulnerability is Low, High, or Critical risk.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>CVSS Score</h3>
+        <p>Displays the vulnerability severity score used for risk prioritization.</p>
+      </div>
+
+      
+
+    </div>
+    </div>
+
+    <div id="whoisModule" class="module-section">
+
+  <h2>WHOIS Lookup</h2>
+
+  <p>
+    WHOIS Lookup helps identify domain registration details such as registrar,
+    creation date, expiry date, name servers, and ownership-related information.
+  </p>
+
+  <div class="input-group">
+    <input
+      type="text"
+      id="whoisDomain"
+      placeholder="Enter domain (example: google.com)"
+    >
+
+    <button class="scan-btn" onclick="startWhoisLookup()">
+      Start WHOIS Lookup
+    </button>
+  </div>
+
+  <div id="whoisOutput">
+    Ready for WHOIS lookup...
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <h3>Registrar</h3>
+      <p>Shows the company where the domain was registered.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Creation Date</h3>
+      <p>Displays when the domain was originally created.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Expiry Date</h3>
+      <p>Shows when the domain registration will expire.</p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Name Servers</h3>
+      <p>Identifies DNS servers responsible for the domain.</p>
+    </div>
+  </div>
+
+    </div>
+
+    <div id="subdomainModule" class="module-section">
+
+      <h2>Subdomain Discovery</h2>
+
+      <p>
+        Discover public subdomains connected to a domain using Certificate Transparency logs.
+        This helps identify exposed assets and expand attack surface visibility.
+      </p>
+
+      <div class="input-group">
+        <input
+          type="text"
+          id="subdomainInput"
+          placeholder="Enter domain (example: google.com)"
+        >
+
+        <button class="scan-btn" onclick="startSubdomainDiscovery()">
+          Start Discovery
+        </button>
+      </div>
+
+      <div id="subdomainOutput">
+        Ready for subdomain discovery...
+      </div>
+
+      <div class="features">
+        <div class="feature-card">
+          <h3>Subdomains</h3>
+          <p>Finds public subdomains linked to the main domain.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Attack Surface</h3>
+          <p>Helps identify exposed web assets and services.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>CT Logs</h3>
+          <p>Uses certificate transparency logs for discovery.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Asset Visibility</h3>
+          <p>Improves security monitoring and reconnaissance.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="fullScanModule" class="module-section">
+
+      <h2>Full Security Scan</h2>
+
+      <p>
+        Perform a complete security assessment using all available modules:
+        Website Vulnerability Scan, DNS Intelligence, Port + CVE Mapping,
+        WHOIS Lookup, and Subdomain Discovery — all in one unified scan.
+      </p>
+
+      <div class="input-group">
+        <input
+          id="fullScanInput"
+          type="text"
+          placeholder="Enter website URL (example: https://example.com)"
+        >
+
+        <button class="scan-btn" onclick="runFullScan()">
+          Start Full Security Scan
+        </button>
+      </div>
+
+      <div id="fullScanOutput">
+        Ready for full security scan...
+      </div>
+
+      <div class="features">
+
+        <div class="feature-card">
+          <h3>Website Scan</h3>
+          <p>Checks SSL, headers, cookies, and vulnerability indicators.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>DNS Intelligence</h3>
+          <p>Collects A, AAAA, MX, NS, and TXT records.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Port + CVE</h3>
+          <p>Scans open ports and maps CVE references.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>WHOIS</h3>
+          <p>Domain registrar, ownership, and lifecycle analysis.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Subdomains</h3>
+          <p>Discovers exposed public-facing subdomains.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>Unified Report</h3>
+          <p>Single client-ready report with all findings.</p>
+        </div>
+
+      </div>
+
+    </div>
+    
+
+    </div>
+    </div>
+  <script>
+
+    function protectPage() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "auth.html";
+      }
+    }
+    function logout() {
+      localStorage.clear();
+      window.location.href = "auth.html";
+    }
+    protectPage();
+
+    function showModule(moduleId, button) {
+      document.querySelectorAll(".module-section").forEach(section => {
+        section.classList.remove("active");
+      });
+
+      document.querySelectorAll(".module-tab").forEach(tab => {
+        tab.classList.remove("active");
+      });
+
+      document.getElementById(moduleId).classList.add("active");
+      button.classList.add("active");
+
+      localStorage.setItem("activeScannerModule", moduleId);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedModule = localStorage.getItem("activeScannerModule");
+
+      if (savedModule) {
+        const section = document.getElementById(savedModule);
+        const button = document.querySelector(
+          `.module-tab[onclick*="${savedModule}"]`
+        );
+
+        if (section && button) {
+          document.querySelectorAll(".module-section").forEach(sec => {
+            sec.classList.remove("active");
+          });
+
+          document.querySelectorAll(".module-tab").forEach(tab => {
+            tab.classList.remove("active");
+          });
+
+          section.classList.add("active");
+          button.classList.add("active");
+        }
+      }
+    });
+
+   async function scanWebsite() {
+    
+  const url = document.getElementById("url").value.trim();
+  const output = document.getElementById("output");
+
+  if (!url) {
+    output.innerText = "Please enter a website URL";
+    return;
+  }
+
+  output.innerText = "Scanning website... please wait";
+
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login first");
+      window.location.href = "auth.html";
+      return;
+    }
+
+    const res = await fetch("http://localhost:5000/scan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ url })
+    });
+    
+
+
+
+    const data = await res.json();
+
+    console.log("STATUS:", res.status);
+    console.log("SCAN RESPONSE:", data);
+
+    if (res.status === 401) {
+      alert("Session expired. Please login again.");
+      localStorage.removeItem("token");
+      window.location.href = "auth.html";
+      return;
+    }
+
+    if (!res.ok) {
+      output.innerText = data.message || data.error || "Scan failed";
+      return;
+    }
+
+    localStorage.removeItem("latestDnsReport");
+    localStorage.removeItem("latestPortReport");
+    localStorage.removeItem("latestWhoisReport");
+    localStorage.removeItem("latestSubdomainReport");
+    localStorage.removeItem("latestFullReport");
+
+    localStorage.setItem("latestReport", JSON.stringify(data));
+
+    
+    window.location.assign("report.html");
+
+  } catch (err) {
+    console.error("FRONTEND ERROR:", err);
+    output.innerText = "Frontend error: " + err.message;
+  }
+}
+    
+    async function runDnsLookup() {
+    const input = document.getElementById("dnsInput").value.trim();
+    const output = document.getElementById("dnsOutput");
+
+    if (!input) {
+      output.innerText = "Please enter a domain";
+      return;
+    }
+
+    const url = input.startsWith("http") ? input : "https://" + input;
+
+    output.innerText = "Checking DNS records...";
+
+    try {
+      const res = await fetch("http://localhost:5000/dns-lookup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": localStorage.getItem("token")
+        },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await res.json();
+
+      localStorage.removeItem("latestReport");
+      localStorage.setItem("latestDnsReport", JSON.stringify(data));
+      window.location.href = "report.html";
+        } catch (err) {
+          output.innerText = "DNS Lookup failed: " + err.message;
+        }
+  }
+  
+    async function startPortScan() {
+    const target = document.getElementById("portTarget").value.trim();
+    const statusBox = document.getElementById("portStatus");
+
+    if (!target) {
+      alert("Please enter a target IP or domain");
+      return;
+    }
+
+    statusBox.innerHTML = "Scanning ports...";
+
+    try {
+      const res = await fetch("http://localhost:5000/port-scan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": localStorage.getItem("token")
+        },
+        body: JSON.stringify({ target })
+      });
+
+      const data = await res.json();
+
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+
+      localStorage.setItem("latestPortReport", JSON.stringify(data));
+
+      window.location.href = "report.html";
+    } catch (error) {
+      console.error(error);
+      statusBox.innerHTML = "Port scan failed";
+    }
+  }
+
+    async function startWhoisLookup() {
+      const domain = document.getElementById("whoisDomain").value.trim();
+      const output = document.getElementById("whoisOutput");
+
+      if (!domain) {
+        alert("Please enter a domain");
+        return;
+      }
+
+      output.innerHTML = "Running WHOIS lookup...";
+
+      try {
+        const res = await fetch("http://localhost:5000/whois-lookup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("token")
+          },
+          body: JSON.stringify({ domain })
+        });
+
+        const data = await res.json();
+
+        localStorage.removeItem("latestReport");
+        localStorage.removeItem("latestDnsReport");
+        localStorage.removeItem("latestPortReport");
+        localStorage.setItem("latestWhoisReport", JSON.stringify(data));
+
+        window.location.href = "report.html";
+
+      } catch (error) {
+        console.error(error);
+        output.innerHTML = "WHOIS lookup failed.";
+      }
+    }
+    
+    async function startSubdomainDiscovery() {
+      const domain = document.getElementById("subdomainInput").value.trim();
+      const output = document.getElementById("subdomainOutput");
+
+      if (!domain) {
+        alert("Please enter a domain");
+        return;
+      }
+
+      output.innerHTML = "Discovering subdomains...";
+
+      try {
+        const res = await fetch("http://localhost:5000/subdomain-discovery", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("token")
+          },
+          body: JSON.stringify({ domain })
+        });
+
+        const data = await res.json();
+
+        localStorage.removeItem("latestReport");
+        localStorage.removeItem("latestDnsReport");
+        localStorage.removeItem("latestPortReport");
+        localStorage.removeItem("latestWhoisReport");
+
+        localStorage.setItem("latestSubdomainReport", JSON.stringify(data));
+
+        window.location.href = "report.html";
+
+      } catch (error) {
+        console.error(error);
+        output.innerHTML = "Subdomain discovery failed.";
+      }
+    }
+    
+  async function runFullScan() {
+    const url = document.getElementById("fullScanInput").value.trim();
+    const output = document.getElementById("fullScanOutput");
+
+    if (!url) {
+      output.innerText = "Please enter a website URL";
+      return;
+    }
+
+    output.innerText = "Running full security scan. Please wait...";
+
+    try {
+      const res = await fetch("http://localhost:5000/full-scan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": localStorage.getItem("token")
+        },
+        body: JSON.stringify({ url })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        output.innerText = data.message || data.error || "Full scan failed";
+        return;
+      }
+
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+
+      localStorage.setItem("latestFullReport", JSON.stringify(data));
+
+      window.location.href = "risk-intelligence.html";
+
+    } catch (error) {
+      output.innerText = "Frontend error: " + error.message;
+    }
+  }
+  </script>
+
+</body>
+</html>

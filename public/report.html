@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827);
+      color: white;
+      padding: 30px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 30px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    }
+
+    .navbar h1 {
+      font-size: 28px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 12px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.08);
+      color: #93c5fd;
+    }
+
+    .report-header,
+    .section,
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+    }
+
+    .report-header {
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .report-header h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .report-header p {
+      color: #cbd5e1;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      padding: 25px;
+    }
+
+    .card h3 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: #cbd5e1;
+    }
+
+    .section {
+      padding: 28px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+    }
+
+    .section h2 {
+      margin-bottom: 18px;
+      color: #93c5fd;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+
+    th {
+      color: #93c5fd;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .critical {
+      background: rgba(127,29,29,0.8);
+    }
+
+    .high {
+      background: rgba(239,68,68,0.35);
+    }
+
+    .medium {
+      background: rgba(234,179,8,0.35);
+    }
+
+    .low {
+      background: rgba(34,197,94,0.30);
+    }
+
+    button {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      color: white;
+      margin-top: 10px;
+    }
+
+    .danger-text {
+      color: #f87171;
+    }
+
+    .success-text {
+      color: #4ade80;
+    }
+
+    .warning-text {
+      color: #facc15;
+    }
+
+    /* Dashboard-style glass effect upgrade for Report page */
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827) !important;
+      color: white;
+    }
+
+    /* Navbar glass effect */
+    .navbar {
+      background: rgba(255,255,255,0.08) !important;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow:
+        0 20px 45px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    /* Main report sections */
+    .report-header,
+    .section,
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08) !important;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 22px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: 0.3s;
+    }
+
+    /* Hover effect */
+    .report-header:hover,
+    .section:hover,
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(96,165,250,0.45);
+    }
+
+    /* Shine effect */
+    .report-header::before,
+    .section::before,
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -40%;
+      left: -40%;
+      width: 180%;
+      height: 180%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.14),
+        transparent
+      );
+      transform: rotate(25deg);
+      opacity: 0;
+      transition: 0.6s;
+      pointer-events: none;
+    }
+
+    .report-header:hover::before,
+    .section:hover::before,
+    .card:hover::before {
+      opacity: 1;
+      left: 100%;
+    }
+
+    /* Table styling */
+    table {
+      background: transparent;
+      color: white;
+    }
+
+    th {
+      background: rgba(255,255,255,0.08) !important;
+      color: #93c5fd;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    td {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e2e8f0;
+    }
+
+    /* Buttons */
+    button {
+      background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-weight: 600;
+      padding: 12px 22px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(59,130,246,0.25);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(59,130,246,0.35);
+    }
+
+    /* Cards spacing */
+    .cards {
+      gap: 18px;
+    }
+
+    .card h3 {
+      color: #93c5fd;
+    }
+
+
+
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>Security Report</h1>
+    <div class="nav-links">
+      <a href="index.html">Scanner</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="report.html">Reports</a>
+      <a href="risk-intelligence.html">Risk Intelligence</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+
+  <div id="reportContent"></div>
+
+  <script>
+    const vulnerabilityReport = JSON.parse(localStorage.getItem("latestReport"));
+    const dnsReport = JSON.parse(localStorage.getItem("latestDnsReport"));
+    const portReport = JSON.parse(localStorage.getItem("latestPortReport"));
+    const whoisReport = JSON.parse(localStorage.getItem("latestWhoisReport"));
+    const subdomainReport = JSON.parse(localStorage.getItem("latestSubdomainReport"));
+    const fullReport = JSON.parse(localStorage.getItem("latestFullReport"));
+
+
+    const reportContent = document.getElementById("reportContent");
+
+function protectPage() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    window.location.href = "auth.html";
+  }
+}
+function logout() {
+  localStorage.clear();
+  window.location.href = "auth.html";
+}
+protectPage();
+
+    function severityBadge(level) {
+      if (!level) return `<span class="badge low">Info</span>`;
+      const value = level.toLowerCase();
+
+      if (value.includes("critical")) return `<span class="badge critical">Critical</span>`;
+      if (value.includes("high")) return `<span class="badge high">High</span>`;
+      if (value.includes("medium")) return `<span class="badge medium">Medium</span>`;
+      if (value.includes("low")) return `<span class="badge low">Low</span>`;
+
+      return `<span class="badge low">${level}</span>`;
+    }
+
+    function renderVulnerabilityReport(scan) {
+      const totalFindings = scan.summary?.totalFindings || 0;
+      const critical = scan.summary?.critical || 0;
+      const high = scan.summary?.high || 0;
+      const medium = scan.summary?.medium || 0;
+      const low = scan.summary?.low || 0;
+
+      const riskLevel =
+        critical > 0 ? "Critical" :
+        high > 0 ? "High" :
+        medium > 0 ? "Medium" :
+        totalFindings > 0 ? "Low" : "Secure";
+
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>Website Vulnerability Assessment Report</h2>
+          <p><strong>Target:</strong> ${scan.target || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</p>
+          <p><strong>Overall Risk:</strong> ${severityBadge(riskLevel)}</p>
+          <button onclick="window.open('http://localhost:5000/export-pdf', '_blank')">Download Vulnerability PDF</button>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${totalFindings}</h3><p>Total Findings</p></div>
+          <div class="card"><h3>${critical}</h3><p>Critical Issues</p></div>
+          <div class="card"><h3>${high}</h3><p>High Severity</p></div>
+          <div class="card"><h3>${medium}</h3><p>Medium Severity</p></div>
+          <div class="card"><h3>${low}</h3><p>Low Severity</p></div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            This report summarizes the security posture of the scanned website.
+            The assessment includes HTTP status analysis, security headers, SSL/TLS checks,
+            cookie review, DNS intelligence, and overall risk observations.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Target Information</h2>
+          <table>
+            <tr><th>Target URL</th><td>${scan.target || "Not Available"}</td></tr>
+            <tr><th>Status Code</th><td>${scan.statusCode || "N/A"}</td></tr>
+            <tr><th>Page Title</th><td>${scan.pageTitle || "Not Available"}</td></tr>
+            <tr><th>Scan Time</th><td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td></tr>
+
+            <tr><th>SSL Enabled</th><td>${scan.ssl?.enabled ? "Yes" : "No"}</td></tr>
+            <tr><th>SSL Valid</th><td>${scan.ssl?.valid ? "Yes" : "No"}</td></tr>
+            <tr><th>SSL Days Remaining</th><td>${scan.ssl?.daysRemaining ?? "N/A"}</td></tr>
+            <tr><th>SSL Issuer</th><td>${scan.ssl?.issuer || "Not Available"}</td></tr>
+
+            <tr><th>Server</th><td>${scan.technologies?.server || "Hidden / Not detected"}</td></tr>
+            <tr><th>Powered By</th><td>${scan.technologies?.poweredBy || "Hidden / Not detected"}</td></tr>
+            <tr><th>Framework Hints</th><td>${scan.technologies?.frameworkHints?.length ? scan.technologies.frameworkHints.join(", ") : "Not detected"}</td></tr>
+
+            <tr><th>Total Links Collected</th><td>${scan.links?.length || 0}</td></tr>
+            <tr><th>DNS Status</th><td>${scan.dnsLookup || scan.dnsRecords ? "Completed" : "Not Available"}</td></tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Vulnerability Findings</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Finding</th>
+                <th>Severity</th>
+                <th>Risk</th>
+                <th>Solution</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                scan.findings?.length
+                  ? scan.findings.map((finding, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${finding.title || "Not Available"}</td>
+                      <td>${severityBadge(finding.severity)}</td>
+                      <td>${finding.risk || "Not Available"}</td>
+                      <td>${finding.solution || "Not Available"}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No vulnerability findings available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Security Headers Analysis</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Header / Finding</th>
+                <th>Severity</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                scan.headerFindings?.length
+                  ? scan.headerFindings.map(item => `
+                    <tr>
+                      <td>${item.header || item.name || item.issue || "Security Header Issue"}</td>
+                      <td>${severityBadge(item.severity || "Medium")}</td>
+                      <td>${item.recommendation || item.description || "Review and apply recommended security header configuration."}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="3">No security header findings available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Cookie Security Review</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Cookie Name</th>
+                <th>Secure</th>
+                <th>HttpOnly</th>
+                <th>SameSite</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+      scan.cookieFindings?.length
+        ? scan.cookieFindings.map(cookie => `
+          <tr>
+            <td>${cookie.cookie || "N/A"}</td>
+            <td>${cookie.secure ? '<span class="success-text">Yes</span>' : '<span class="danger-text">No</span>'}</td>
+            <td>${cookie.httpOnly ? '<span class="success-text">Yes</span>' : '<span class="warning-text">No</span>'}</td>
+            <td>${cookie.sameSite ? '<span class="success-text">Yes</span>' : '<span class="warning-text">No</span>'}</td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="4">No cookie data available.</td></tr>`
+}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Final Recommendation</h2>
+          <p>
+            Review all missing or weak security headers, enforce secure cookie attributes,
+            verify SSL/TLS configuration, and continuously monitor the application for new risks.
+            High and critical findings should be prioritized immediately.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderDnsReport(dns) {
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>DNS Intelligence Report</h2>
+          <p><strong>Domain:</strong> ${dns.domain || "Not Available"}</p>
+          <p><strong>Looked Up At:</strong> ${dns.lookedUpAt ? new Date(dns.lookedUpAt).toLocaleString() : "N/A"}</p>
+          <button onclick="window.open('http://localhost:5000/export-dns-pdf', '_blank')">Download DNS PDF</button>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${dns.A?.length || 0}</h3><p>A Records</p></div>
+          <div class="card"><h3>${dns.MX?.length || 0}</h3><p>MX Records</p></div>
+          <div class="card"><h3>${dns.NS?.length || 0}</h3><p>NS Records</p></div>
+          <div class="card"><h3>${dns.TXT?.length || 0}</h3><p>TXT Records</p></div>
+        </div>
+
+        <div class="section">
+          <h2>DNS Records</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Record Type</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A Records</td>
+                <td>${dns.A?.length ? dns.A.join("<br>") : "Not Found"}</td>
+              </tr>
+              <tr>
+                <td>MX Records</td>
+                <td>${dns.MX?.length ? dns.MX.map(mx => mx.exchange).join("<br>") : "Not Found"}</td>
+              </tr>
+              <tr>
+                <td>NS Records</td>
+                <td>${dns.NS?.length ? dns.NS.join("<br>") : "Not Found"}</td>
+              </tr>
+              <tr>
+                <td>TXT Records</td>
+                <td>${dns.TXT?.length ? dns.TXT.join("<br>") : "Not Found"}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>DNS Security Recommendation</h2>
+          <p>
+            Verify that DNS records are configured correctly. Check SPF, DKIM, and DMARC records
+            for email security. Ensure unused records are removed and nameservers are trusted.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderPortReport(portData) {
+  reportContent.innerHTML = `
+    <div class="report-header">
+      <h2>Port Scan + CVE Intelligence Report</h2>
+
+      <p><strong>Target:</strong> ${portData.target || "Not Available"}</p>
+      <p><strong>Scanned At:</strong> ${
+        portData.scannedAt
+          ? new Date(portData.scannedAt).toLocaleString()
+          : "N/A"
+      }</p>
+
+      <button onclick="window.open('http://localhost:5000/export-port-pdf', '_blank')">
+        Download Port + CVE PDF
+      </button>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>${portData.results?.length || 0}</h3>
+        <p>Total Ports Checked</p>
+      </div>
+
+      <div class="card">
+        <h3>${
+          portData.results?.filter(r => r.status === "Open").length || 0
+        }</h3>
+        <p>Open Ports</p>
+      </div>
+
+      <div class="card">
+        <h3>${
+          portData.results?.filter(r => r.cveSeverity === "Critical").length || 0
+        }</h3>
+        <p>Critical CVEs</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Executive Summary</h2>
+      <p>
+        Port scanning identifies exposed services and maps them to known
+        Common Vulnerabilities and Exposures (CVEs). This helps prioritize
+        remediation based on risk severity and business impact.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Port + CVE Analysis</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Port</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Risk</th>
+            <th>CVE ID</th>
+            <th>Severity</th>
+            <th>CVSS</th>
+            <th>Recommendation</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${
+            portData.results?.map(item => `
+              <tr>
+                <td>${item.port}</td>
+                <td>${item.service}</td>
+                <td>${item.status}</td>
+                <td>${item.risk}</td>
+                <td>${item.cveId || "N/A"}</td>
+                <td>${item.cveSeverity || "None"}</td>
+                <td>${item.cvssScore || "N/A"}</td>
+                <td>${item.cveRecommendation || item.recommendation || "N/A"}</td>
+              </tr>
+            `).join("") || ""
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Security Recommendation</h2>
+
+      <p>
+        Prioritize Critical and High severity vulnerabilities first.
+        Restrict unnecessary exposed ports, patch vulnerable services,
+        enforce network segmentation, and continuously monitor threat exposure.
+      </p>
+    </div>
+  `;
+}
+    
+    function renderWhoisReport(whois) {
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>WHOIS Intelligence Report</h2>
+
+          <p><strong>Domain:</strong> ${whois.domain || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${
+            whois.scannedAt
+              ? new Date(whois.scannedAt).toLocaleString()
+              : "N/A"
+          }</p>
+
+          <button onclick="window.open('http://localhost:5000/export-whois-pdf', '_blank')">
+            Download WHOIS PDF
+          </button>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>${whois.domain ? 1 : 0}</h3>
+            <p>Domain Analyzed</p>
+          </div>
+
+          <div class="card">
+            <h3>${whois.nameServers?.length || 0}</h3>
+            <p>Name Servers</p>
+          </div>
+
+          <div class="card">
+            <h3>${whois.registrar ? 1 : 0}</h3>
+            <p>Registrar Found</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            WHOIS lookup provides ownership and registration intelligence for a domain.
+            This helps identify domain lifecycle, registrar trust, DNS authority,
+            and potential risk related to expiration or misconfiguration.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>WHOIS Details</h2>
+
+          <table>
+            <tr>
+              <th>Domain</th>
+              <td>${whois.domain || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Resolved IP Address</th>
+              <td>
+                ${
+                  whois.resolvedIPs?.length
+                    ? whois.resolvedIPs.join("<br>")
+                    : "Not Available"
+                }
+              </td>
+            </tr>
+
+            <tr>
+              <th>Registrar</th>
+              <td>${whois.registrar || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Creation Date</th>
+              <td>${whois.creationDate || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Expiration Date</th>
+              <td>${whois.expirationDate || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Updated Date</th>
+              <td>${whois.updatedDate || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Status</th>
+              <td>${whois.status || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Country</th>
+              <td>${whois.country || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Name Servers</th>
+              <td>
+                ${
+                  whois.nameServers?.length
+                    ? whois.nameServers.join("<br>")
+                    : "Not Available"
+                }
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Security Recommendation</h2>
+
+          <p>
+            Monitor domain expiration to avoid service disruption.
+            Verify trusted registrar ownership, ensure secure name server
+            configuration, and regularly review domain status changes
+            to prevent hijacking risks.
+          </p>
+        </div>
+      `;
+    }
+    
+    function renderSubdomainReport(scan) {
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>Subdomain Discovery Report</h2>
+          <p><strong>Domain:</strong> ${scan.domain || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</p>
+          <p><strong>Total Subdomains Found:</strong> ${scan.totalFound || 0}</p>
+
+          <button onclick="window.open('http://localhost:5000/export-subdomain-pdf', '_blank')">
+            Download Subdomain PDF
+          </button>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>${scan.totalFound || 0}</h3>
+            <p>Total Subdomains</p>
+          </div>
+
+          <div class="card">
+            <h3>${scan.source ? 1 : 0}</h3>
+            <p>Discovery Source</p>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            Subdomain discovery helps identify public-facing assets connected to a domain.
+            These assets increase attack surface and should be monitored regularly.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Discovery Details</h2>
+          <table>
+            <tr>
+              <th>Domain</th>
+              <td>${scan.domain || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Source</th>
+              <td>${scan.source || "Not Available"}</td>
+            </tr>
+
+            <tr>
+              <th>Total Found</th>
+              <td>${scan.totalFound || 0}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Discovered Subdomains</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Subdomain</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                scan.subdomains?.length
+                  ? scan.subdomains.map((sub, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${sub}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No subdomains found.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Security Recommendation</h2>
+          <p>
+            Review all discovered subdomains, remove unused assets, enforce HTTPS,
+            monitor exposed services, and include active subdomains in regular vulnerability assessments.
+          </p>
+        </div>
+      `;
+    }
+  
+    function renderFullReport(data) {
+      const website = data.website || {};
+      const dns = data.dns || {};
+      const ports = data.ports || {};
+      const whois = data.whois || {};
+      const subdomains = data.subdomains || {};
+
+      const findings = website.findings || [];
+      const headerFindings = website.headerFindings || [];
+      const cookieFindings = website.cookieFindings || [];
+      const portResults = ports.results || [];
+
+      const totalFindings = website.summary?.totalFindings || 0;
+      const critical = website.summary?.critical || 0;
+      const high = website.summary?.high || 0;
+      const medium = website.summary?.medium || 0;
+      const low = website.summary?.low || 0;
+
+      const riskLevel =
+        critical > 0 ? "Critical" :
+        high > 0 ? "High" :
+        medium > 0 ? "Medium" :
+        totalFindings > 0 ? "Low" : "Secure";
+
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>Full Security Assessment Report</h2>
+          <p><strong>Target:</strong> ${data.target || "Not Available"}</p>
+          <p><strong>Domain:</strong> ${data.domain || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${data.scannedAt ? new Date(data.scannedAt).toLocaleString() : "N/A"}</p>
+          <p><strong>Overall Risk:</strong> ${severityBadge(riskLevel)}</p>
+
+          <button onclick="window.open('http://localhost:5000/export-full-scan-pdf', '_blank')">
+            Download Full Scan PDF
+          </button>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${totalFindings}</h3><p>Total Website Findings</p></div>
+          <div class="card"><h3>${critical}</h3><p>Critical Issues</p></div>
+          <div class="card"><h3>${high}</h3><p>High Severity</p></div>
+          <div class="card"><h3>${ports.openPorts || 0}</h3><p>Open Ports</p></div>
+          <div class="card"><h3>${subdomains.totalFound || 0}</h3><p>Subdomains Found</p></div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            This full security assessment includes website vulnerability scanning,
+            SSL inspection, security header analysis, cookie review, DNS intelligence,
+            port scanning with CVE mapping, WHOIS lookup, and subdomain discovery.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Target Information</h2>
+          <table>
+            <tr><th>Target URL</th><td>${data.target || "N/A"}</td></tr>
+            <tr><th>Domain</th><td>${data.domain || "N/A"}</td></tr>
+            <tr><th>Status Code</th><td>${website.statusCode || "N/A"}</td></tr>
+            <tr><th>Page Title</th><td>${website.pageTitle || "N/A"}</td></tr>
+            <tr><th>Scan Time</th><td>${data.scannedAt ? new Date(data.scannedAt).toLocaleString() : "N/A"}</td></tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>SSL / TLS Information</h2>
+          <table>
+            <tr><th>SSL Enabled</th><td>${website.ssl?.enabled ? "Yes" : "No"}</td></tr>
+            <tr><th>SSL Valid</th><td>${website.ssl?.valid ? "Yes" : "No"}</td></tr>
+            <tr><th>Days Remaining</th><td>${website.ssl?.daysRemaining ?? "N/A"}</td></tr>
+            <tr><th>Valid From</th><td>${website.ssl?.validFrom || "N/A"}</td></tr>
+            <tr><th>Valid To</th><td>${website.ssl?.validTo || "N/A"}</td></tr>
+            <tr><th>Issuer</th><td>${website.ssl?.issuer || "N/A"}</td></tr>
+            <tr><th>Message</th><td>${website.ssl?.message || "N/A"}</td></tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Technology Detection</h2>
+          <table>
+            <tr><th>Server</th><td>${website.technologies?.server || "Hidden / Not detected"}</td></tr>
+            <tr><th>Powered By</th><td>${website.technologies?.poweredBy || "Hidden / Not detected"}</td></tr>
+            <tr>
+              <th>Framework Hints</th>
+              <td>
+                ${website.technologies?.frameworkHints?.length
+                  ? website.technologies.frameworkHints.join(", ")
+                  : "Not detected"}
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Website Vulnerability Findings</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Finding</th>
+                <th>Severity</th>
+                <th>Risk</th>
+                <th>Solution</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                findings.length
+                  ? findings.map(f => `
+                    <tr>
+                      <td>${f.title || "N/A"}</td>
+                      <td>${severityBadge(f.severity || "Info")}</td>
+                      <td>${f.risk || "N/A"}</td>
+                      <td>${f.solution || "N/A"}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="4">No vulnerability findings available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Security Headers Analysis</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Status</th>
+                <th>Severity</th>
+                <th>Value / Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                headerFindings.length
+                  ? headerFindings.map(h => `
+                    <tr>
+                      <td>${h.name || "N/A"}</td>
+                      <td>${h.status || "N/A"}</td>
+                      <td>${severityBadge(h.severity || "Info")}</td>
+                      <td>${h.status === "Missing" ? "Configure this security header." : h.value}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="4">No header findings available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Cookie Security Review</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Cookie</th>
+                <th>Secure</th>
+                <th>HttpOnly</th>
+                <th>SameSite</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                cookieFindings.length
+                  ? cookieFindings.map(c => `
+                    <tr>
+                      <td>${c.cookie || "N/A"}</td>
+                      <td>${c.secure ? "Yes" : "No"}</td>
+                      <td>${c.httpOnly ? "Yes" : "No"}</td>
+                      <td>${c.sameSite ? "Yes" : "No"}</td>
+                      <td>${severityBadge(c.risk || "Info")}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No cookie data available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>DNS Intelligence</h2>
+          <table>
+            <tr><th>Domain</th><td>${dns.domain || data.domain || "N/A"}</td></tr>
+            <tr><th>A Records</th><td>${dns.A?.length ? dns.A.join("<br>") : "Not Found"}</td></tr>
+            <tr><th>AAAA Records</th><td>${dns.AAAA?.length ? dns.AAAA.join("<br>") : "Not Found"}</td></tr>
+            <tr><th>MX Records</th><td>${dns.MX?.length ? dns.MX.map(mx => `${mx.exchange} Priority: ${mx.priority}`).join("<br>") : "Not Found"}</td></tr>
+            <tr><th>NS Records</th><td>${dns.NS?.length ? dns.NS.join("<br>") : "Not Found"}</td></tr>
+            <tr><th>TXT Records</th><td>${dns.TXT?.length ? dns.TXT.map(txt => txt.join(" ")).join("<br>") : "Not Found"}</td></tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Port Scan + CVE Mapping</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Port</th>
+                <th>Service</th>
+                <th>Status</th>
+                <th>Risk</th>
+                <th>CVE ID</th>
+                <th>CVE Severity</th>
+                <th>CVSS Score</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                portResults.length
+                  ? portResults.map(p => `
+                    <tr>
+                      <td>${p.port}</td>
+                      <td>${p.service}</td>
+                      <td>${p.status}</td>
+                      <td>${severityBadge(p.risk || "None")}</td>
+                      <td>${p.cveId || "N/A"}</td>
+                      <td>${severityBadge(p.cveSeverity || "None")}</td>
+                      <td>${p.cvssScore || "N/A"}</td>
+                      <td>${p.cveRecommendation || p.recommendation || "N/A"}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="8">No port scan data available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>WHOIS Lookup Details</h2>
+          <table>
+            <tr><th>Domain</th><td>${whois.domain || data.domain || "N/A"}</td></tr>
+            <tr><th>Registrar</th><td>${whois.registrar || "N/A"}</td></tr>
+            <tr><th>Creation Date</th><td>${whois.creationDate || "N/A"}</td></tr>
+            <tr><th>Expiration Date</th><td>${whois.expirationDate || "N/A"}</td></tr>
+            <tr><th>Updated Date</th><td>${whois.updatedDate || "N/A"}</td></tr>
+            <tr><th>Name Servers</th><td>${whois.nameServers?.length ? whois.nameServers.join("<br>") : "N/A"}</td></tr>
+            <tr><th>Status</th><td>${whois.status || "N/A"}</td></tr>
+            <tr><th>Country</th><td>${whois.country || "N/A"}</td></tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Subdomain Discovery</h2>
+          <table>
+            <tr><th>Domain</th><td>${subdomains.domain || data.domain || "N/A"}</td></tr>
+            <tr><th>Total Found</th><td>${subdomains.totalFound || 0}</td></tr>
+            <tr><th>Source</th><td>${subdomains.source || "N/A"}</td></tr>
+          </table>
+
+          <br>
+
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Subdomain</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                subdomains.subdomains?.length
+                  ? subdomains.subdomains.map((sub, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${sub}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No subdomains found.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Collected Links</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>URL / Path</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                website.links?.length
+                  ? website.links.map((link, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${link}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No links collected.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Final Recommendation</h2>
+          <p>
+            Prioritize Critical and High findings first. Configure missing security headers,
+            enforce secure cookie attributes, patch exposed services, close unnecessary open ports,
+            review WHOIS and DNS exposure, and continuously monitor public subdomains.
+          </p>
+        </div>
+      `;
+    }
+
+    if (vulnerabilityReport) {
+      renderVulnerabilityReport(vulnerabilityReport);
+    }else if (dnsReport) {
+      renderDnsReport(dnsReport);
+    }else if (portReport) {
+      renderPortReport(portReport);
+    }else if (whoisReport) {
+      renderWhoisReport(whoisReport);
+    }else if (subdomainReport) {
+      renderSubdomainReport(subdomainReport);
+    } else if (fullReport) {
+      renderFullReport(fullReport);
+    } else {
+      reportContent.innerHTML = `
+        <div class="section">
+          <h2>No Report Data Found</h2>
+          <p>Please open a report from the dashboard first.</p>
+          <button onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>

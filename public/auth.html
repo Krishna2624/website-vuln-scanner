@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login | Security Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 28px;
+      padding: 35px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #cbd5e1;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .switch {
+      margin-top: 20px;
+      text-align: center;
+      color: #93c5fd;
+      cursor: pointer;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      color: #fca5a5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="auth-box">
+    <h1 id="formTitle">Login</h1>
+    <p>Access your Security Platform workspace</p>
+
+    <form id="authForm">
+        <input id="name" type="text" placeholder="Full Name" style="display:none;">
+        <input id="email" type="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+
+        <button type="button" onclick="submitAuth()">Login</button>
+    </form>
+
+    <div class="switch" onclick="toggleMode()">
+      Don't have an account? Register
+    </div>
+    <div class="switch" onclick="toggleAdminMode()">
+      Create Organization Admin
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+
+<script>
+let isRegister = false;
+
+function toggleMode() {
+  isRegister = !isRegister;
+
+  document.getElementById("formTitle").innerText = isRegister ? "Register" : "Login";
+  document.getElementById("name").style.display = isRegister ? "block" : "none";
+  document.querySelector("button").innerText = isRegister ? "Register" : "Login";
+  document.querySelector(".switch").innerText = isRegister
+    ? "Already have an account? Login"
+    : "Don't have an account? Register";
+
+  document.getElementById("message").innerText = "";
+}
+
+let isAdminRegister = false;
+function toggleAdminMode() {
+  isRegister = true;
+  isAdminRegister = true;
+
+  document.getElementById("formTitle").innerText = "Create Organization Admin";
+  document.getElementById("name").style.display = "block";
+  document.querySelector("button").innerText = "Create Admin";
+  document.querySelector(".switch").innerText = "Already have an account? Login";
+  document.getElementById("message").innerText = "";
+}
+
+
+async function submitAuth() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const message = document.getElementById("message");
+
+  const endpoint = isAdminRegister
+  ? "/register-admin"
+  : isRegister
+    ? "/register"
+    : "/login";
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(
+        isRegister
+          ? { name, email, password }
+          : { email, password }
+      )
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      message.style.color = "#fca5a5";
+      message.innerText = data.message || "Something went wrong";
+      return;
+    }
+
+    if (isRegister) {
+      message.style.color = "#86efac";
+      message.innerText = "Registered successfully. Please login.";
+      toggleMode();
+    } else {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("userId", data.userId);
+      window.location.href = "dashboard.html";
+      
+    }
+
+  } catch (error) {
+    message.style.color = "#fca5a5";
+    message.innerText = "Server not reachable";
+  }
+}
+
+document.getElementById("authForm").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    submitAuth();
+  }
+});
+
+
+</script>
+</body>
+</html>
