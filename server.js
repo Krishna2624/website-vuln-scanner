@@ -479,9 +479,12 @@ app.post("/scan", authMiddleware, async (req, res) => {
     // console.log("DNS Lookup Module:", dnsLookup);
 
     const response = await axios.get(targetUrl, {
-      timeout: 7000,
+      timeout: 20000,
       maxRedirects: 5,
-      validateStatus: () => true
+      validateStatus: () => true,
+      headers: {
+    "User-Agent": "Mozilla/5.0 SecurityPlatformScanner/1.0"
+  }
     });
 
     console.log("AXIOS RESPONSE RECEIVED");

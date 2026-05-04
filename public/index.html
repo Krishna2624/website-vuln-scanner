@@ -748,7 +748,7 @@
       return;
     }
 
-    const res = await fetch("http://localhost:5000/scan", {
+    const res = await fetch("/scan", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -808,7 +808,7 @@
     output.innerText = "Checking DNS records...";
 
     try {
-      const res = await fetch("http://localhost:5000/dns-lookup", {
+      const res = await fetch("/dns-lookup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -839,7 +839,7 @@
     statusBox.innerHTML = "Scanning ports...";
 
     try {
-      const res = await fetch("http://localhost:5000/port-scan", {
+      const res = await fetch("/port-scan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -876,7 +876,7 @@
       output.innerHTML = "Running WHOIS lookup...";
 
       try {
-        const res = await fetch("http://localhost:5000/whois-lookup", {
+        const res = await fetch("/whois-lookup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -912,7 +912,7 @@
       output.innerHTML = "Discovering subdomains...";
 
       try {
-        const res = await fetch("http://localhost:5000/subdomain-discovery", {
+        const res = await fetch("/subdomain-discovery", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -950,7 +950,7 @@
     output.innerText = "Running full security scan. Please wait...";
 
     try {
-      const res = await fetch("http://localhost:5000/full-scan", {
+      const res = await fetch("/full-scan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
