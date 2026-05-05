@@ -1,3 +1,4 @@
+cat > Dockerfile <<'EOF'
 FROM node:20-bullseye
 
 RUN apt-get update && apt-get install -y nmap && rm -rf /var/lib/apt/lists/*
@@ -12,3 +13,4 @@ COPY . .
 EXPOSE 5000
 
 CMD ["npm", "start"]
+EOF
