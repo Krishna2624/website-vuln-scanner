@@ -786,7 +786,6 @@
       }
     }
     function logout() {
-      localStorage.clear();
       window.location.href = "auth.html";
     }
     protectPage();
@@ -896,10 +895,10 @@
     localStorage.removeItem("latestWhoisReport");
     localStorage.removeItem("latestSubdomainReport");
     localStorage.removeItem("latestFullReport");
-
+clearAllReports();
     localStorage.setItem("latestReport", JSON.stringify(data));
 
-    clearAllReports();
+    
     window.location.assign("report.html");
 
   } catch (err) {
@@ -934,53 +933,15 @@
       const data = await res.json();
 
       localStorage.removeItem("latestReport");
+       clearAllReports();
       localStorage.setItem("latestDnsReport", JSON.stringify(data));
-      clearAllReports();
+     
       window.location.href = "report.html";
         } catch (err) {
           output.innerText = "DNS Lookup failed: " + err.message;
         }
   }
-  
-    async function startPortScan() {
-      const target = document.getElementById("portTarget").value.trim();
-      const statusBox = document.getElementById("portStatus");
-      const mode = document.getElementById("portScanMode").value;
-
-        if (!target) {
-          alert("Please enter a target IP or domain");
-          return;
-        }
-
-      
-      document.getElementById("portStatus").innerText = "Scanning ports...";
-
-        try {
-          const res = await fetch("/port-scan", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": localStorage.getItem("token")
-            },
-            body: JSON.stringify({ target, mode })
-          });
-
-          const data = await res.json();
-
-          localStorage.removeItem("latestReport");
-          localStorage.removeItem("latestDnsReport");
-          localStorage.removeItem("latestWhoisReport");
-          localStorage.removeItem("latestSubdomainReport");
-
-          localStorage.setItem("latestPortReport", JSON.stringify(data));
-clearAllReports();
-          window.location.href = "report.html";
-    
-
-        } catch (error) {
-          console.error(error);
-          statusBox.innerHTML = "Port scan failed";
-     async function startPortScan() {
+  async function startPortScan() {
   const target = document.getElementById("portTarget").value.trim();
   const statusBox = document.getElementById("portStatus");
   const mode = document.getElementById("portScanMode").value;
@@ -991,8 +952,8 @@ clearAllReports();
   }
 
   statusBox.innerText = mode === "full"
-    ? "Running full Nmap port scan... please wait"
-    : "Running quick port scan...";
+    ? "Running full Nmap scan..."
+    : "Running quick scan...";
 
   try {
     const res = await fetch("/port-scan", {
@@ -1007,27 +968,21 @@ clearAllReports();
     const data = await res.json();
 
     if (!res.ok) {
-      console.error("PORT SCAN ERROR:", data);
-      statusBox.innerText = data.error || data.message || "Port scan failed";
+      statusBox.innerText = data.error || "Scan failed";
       return;
     }
 
-    localStorage.removeItem("latestReport");
-    localStorage.removeItem("latestDnsReport");
-    localStorage.removeItem("latestWhoisReport");
-    localStorage.removeItem("latestSubdomainReport");
-    localStorage.removeItem("latestFullReport");
-
+    clearAllReports();
     localStorage.setItem("latestPortReport", JSON.stringify(data));
 
     window.location.href = "report.html";
 
   } catch (error) {
     console.error(error);
-    statusBox.innerText = "Port scan failed: " + error.message;
+    statusBox.innerText = "Port scan failed";
   }
-}   }
-      }
+}
+    
 
     async function startWhoisLookup() {
       const domain = document.getElementById("whoisDomain").value.trim();
@@ -1055,8 +1010,9 @@ clearAllReports();
         localStorage.removeItem("latestReport");
         localStorage.removeItem("latestDnsReport");
         localStorage.removeItem("latestPortReport");
+        clearAllReports();
         localStorage.setItem("latestWhoisReport", JSON.stringify(data));
-clearAllReports();
+
         window.location.href = "report.html";
 
       } catch (error) {
@@ -1092,9 +1048,10 @@ clearAllReports();
         localStorage.removeItem("latestDnsReport");
         localStorage.removeItem("latestPortReport");
         localStorage.removeItem("latestWhoisReport");
+clearAllReports();
 
         localStorage.setItem("latestSubdomainReport", JSON.stringify(data));
-clearAllReports();
+
         window.location.href = "report.html";
 
       } catch (error) {
@@ -1136,9 +1093,9 @@ clearAllReports();
       localStorage.removeItem("latestPortReport");
       localStorage.removeItem("latestWhoisReport");
       localStorage.removeItem("latestSubdomainReport");
-
-      localStorage.setItem("latestFullReport", JSON.stringify(data));
 clearAllReports();
+      localStorage.setItem("latestFullReport", JSON.stringify(data));
+
       window.location.href = "risk-intelligence.html";
 
     } catch (error) {
