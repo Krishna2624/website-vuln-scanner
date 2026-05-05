@@ -370,7 +370,7 @@ protectPage();
           <p><strong>Target:</strong> ${scan.target || "Not Available"}</p>
           <p><strong>Scanned At:</strong> ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</p>
           <p><strong>Overall Risk:</strong> ${severityBadge(riskLevel)}</p>
-          <button onclick="window.open('http://localhost:5000/export-pdf', '_blank')">Download Vulnerability PDF</button>
+          <button onclick="window.open('/export-pdf', '_blank')">Download Vulnerability PDF</button>
         </div>
 
         <div class="cards">
@@ -513,7 +513,7 @@ protectPage();
           <h2>DNS Intelligence Report</h2>
           <p><strong>Domain:</strong> ${dns.domain || "Not Available"}</p>
           <p><strong>Looked Up At:</strong> ${dns.lookedUpAt ? new Date(dns.lookedUpAt).toLocaleString() : "N/A"}</p>
-          <button onclick="window.open('http://localhost:5000/export-dns-pdf', '_blank')">Download DNS PDF</button>
+          <button onclick="window.open('/export-dns-pdf', '_blank')">Download DNS PDF</button>
         </div>
 
         <div class="cards">
@@ -575,14 +575,14 @@ protectPage();
           : "N/A"
       }</p>
 
-      <button onclick="window.open('http://localhost:5000/export-port-pdf', '_blank')">
+      <button onclick="window.open('/export-port-pdf', '_blank')">
         Download Port + CVE PDF
       </button>
     </div>
 
     <div class="cards">
       <div class="card">
-        <h3>${portData.results?.length || 0}</h3>
+        <h3>${<p>Detected Open Services</p>}</h3>
         <p>Total Ports Checked</p>
       </div>
 
@@ -670,7 +670,7 @@ protectPage();
               : "N/A"
           }</p>
 
-          <button onclick="window.open('http://localhost:5000/export-whois-pdf', '_blank')">
+          <button onclick="window.open('/export-whois-pdf', '_blank')">
             Download WHOIS PDF
           </button>
         </div>
@@ -785,7 +785,7 @@ protectPage();
           <p><strong>Scanned At:</strong> ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</p>
           <p><strong>Total Subdomains Found:</strong> ${scan.totalFound || 0}</p>
 
-          <button onclick="window.open('http://localhost:5000/export-subdomain-pdf', '_blank')">
+          <button onclick="window.open('/export-subdomain-pdf', '_blank')">
             Download Subdomain PDF
           </button>
         </div>
@@ -896,7 +896,7 @@ protectPage();
           <p><strong>Scanned At:</strong> ${data.scannedAt ? new Date(data.scannedAt).toLocaleString() : "N/A"}</p>
           <p><strong>Overall Risk:</strong> ${severityBadge(riskLevel)}</p>
 
-          <button onclick="window.open('http://localhost:5000/export-full-scan-pdf', '_blank')">
+          <button onclick="window.open('/export-full-scan-pdf', '_blank')">
             Download Full Scan PDF
           </button>
         </div>
@@ -1173,18 +1173,18 @@ protectPage();
       `;
     }
 
-    if (vulnerabilityReport) {
-      renderVulnerabilityReport(vulnerabilityReport);
-    }else if (dnsReport) {
-      renderDnsReport(dnsReport);
-    }else if (portReport) {
-      renderPortReport(portReport);
-    }else if (whoisReport) {
-      renderWhoisReport(whoisReport);
-    }else if (subdomainReport) {
-      renderSubdomainReport(subdomainReport);
-    } else if (fullReport) {
+    if (fullReport) {
       renderFullReport(fullReport);
+    } else if (portReport) {
+      renderPortReport(portReport);
+    } else if (vulnerabilityReport) {
+      renderVulnerabilityReport(vulnerabilityReport);
+    } else if (dnsReport) {
+      renderDnsReport(dnsReport);
+    } else if (whoisReport) {
+      renderWhoisReport(whoisReport);
+    } else if (subdomainReport) {
+      renderSubdomainReport(subdomainReport);
     } else {
       reportContent.innerHTML = `
         <div class="section">
