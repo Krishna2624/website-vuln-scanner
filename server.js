@@ -25,7 +25,6 @@ const commonPorts = [
   { port: 8080, service: "HTTP-Alt", risk: "Medium" }
 ];
 const whois = require("whois-json");
-const { exec } = require("child_process");
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
