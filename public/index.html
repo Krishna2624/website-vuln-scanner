@@ -776,74 +776,77 @@
 
     </div>
     </div>
-  <script>
+ <script>
+function protectPage() {
+  const token = localStorage.getItem("token");
 
-    function protectPage() {
-      const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "auth.html";
+  }
+}
 
-      if (!token) {
-        window.location.href = "auth.html";
-      }
-    }
-    function logout() {
-      window.location.href = "auth.html";
-    }
-    protectPage();
+function logout() {
+  localStorage.clear();
+  window.location.href = "auth.html";
+}
 
-    function showModule(moduleId, button) {
-      document.querySelectorAll(".module-section").forEach(section => {
-        section.classList.remove("active");
-      });
+function clearAllReports() {
+  localStorage.removeItem("latestReport");
+  localStorage.removeItem("latestDnsReport");
+  localStorage.removeItem("latestPortReport");
+  localStorage.removeItem("latestWhoisReport");
+  localStorage.removeItem("latestSubdomainReport");
+  localStorage.removeItem("latestFullReport");
+}
 
-      document.querySelectorAll(".module-tab").forEach(tab => {
-        tab.classList.remove("active");
-      });
+protectPage();
 
-      document.getElementById(moduleId).classList.add("active");
+function showModule(moduleId, button) {
+  document.querySelectorAll(".module-section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  document.querySelectorAll(".module-tab").forEach(tab => {
+    tab.classList.remove("active");
+  });
+
+  document.getElementById(moduleId).classList.add("active");
+  button.classList.add("active");
+
+  localStorage.setItem("activeScannerModule", moduleId);
+}
+
+function selectPortMode(mode, selectedCard) {
+  document.getElementById("portScanMode").value = mode;
+
+  document.querySelectorAll(".scan-mode-card").forEach(card => {
+    card.classList.remove("active");
+  });
+
+  selectedCard.classList.add("active");
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const savedModule = localStorage.getItem("activeScannerModule");
+
+  if (savedModule) {
+    const section = document.getElementById(savedModule);
+    const button = document.querySelector(`.module-tab[onclick*="${savedModule}"]`);
+
+    if (section && button) {
+      document.querySelectorAll(".module-section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".module-tab").forEach(tab => tab.classList.remove("active"));
+
+      section.classList.add("active");
       button.classList.add("active");
-
-      localStorage.setItem("activeScannerModule", moduleId);
     }
+  }
+});
 
-    function selectPortMode(mode, selectedCard) {
-      document.getElementById("portScanMode").value = mode;
-
-      document.querySelectorAll(".scan-mode-card").forEach(card => {
-        card.classList.remove("active");
-      });
-
-      selectedCard.classList.add("active");
-    }
-
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const savedModule = localStorage.getItem("activeScannerModule");
-
-      if (savedModule) {
-        const section = document.getElementById(savedModule);
-        const button = document.querySelector(
-          `.module-tab[onclick*="${savedModule}"]`
-        );
-
-        if (section && button) {
-          document.querySelectorAll(".module-section").forEach(sec => {
-            sec.classList.remove("active");
-          });
-
-          document.querySelectorAll(".module-tab").forEach(tab => {
-            tab.classList.remove("active");
-          });
-
-          section.classList.add("active");
-          button.classList.add("active");
-        }
-      }
-    });
-
-   async function scanWebsite() {
-    
+async function scanWebsite() {
   const url = document.getElementById("url").value.trim();
   const output = document.getElementById("output");
+  const token = localStorage.getItem("token");
 
   if (!url) {
     output.innerText = "Please enter a website URL";
@@ -853,14 +856,6 @@
   output.innerText = "Scanning website... please wait";
 
   try {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Please login first");
-      window.location.href = "auth.html";
-      return;
-    }
-
     const res = await fetch("/scan", {
       method: "POST",
       headers: {
@@ -869,82 +864,67 @@
       },
       body: JSON.stringify({ url })
     });
-    
-
-
 
     const data = await res.json();
-
-    console.log("STATUS:", res.status);
-    console.log("SCAN RESPONSE:", data);
-
-    if (res.status === 401) {
-      alert("Session expired. Please login again.");
-      localStorage.removeItem("token");
-      window.location.href = "auth.html";
-      return;
-    }
 
     if (!res.ok) {
       output.innerText = data.message || data.error || "Scan failed";
       return;
     }
 
-    localStorage.removeItem("latestDnsReport");
-    localStorage.removeItem("latestPortReport");
-    localStorage.removeItem("latestWhoisReport");
-    localStorage.removeItem("latestSubdomainReport");
-    localStorage.removeItem("latestFullReport");
-clearAllReports();
+    clearAllReports();
     localStorage.setItem("latestReport", JSON.stringify(data));
-
-    
-    window.location.assign("report.html");
+    window.location.href = "report.html";
 
   } catch (err) {
-    console.error("FRONTEND ERROR:", err);
     output.innerText = "Frontend error: " + err.message;
   }
 }
-    
-    async function runDnsLookup() {
-    const input = document.getElementById("dnsInput").value.trim();
-    const output = document.getElementById("dnsOutput");
 
-    if (!input) {
-      output.innerText = "Please enter a domain";
+async function runDnsLookup() {
+  const input = document.getElementById("dnsInput").value.trim();
+  const output = document.getElementById("dnsOutput");
+  const token = localStorage.getItem("token");
+
+  if (!input) {
+    output.innerText = "Please enter a domain";
+    return;
+  }
+
+  const url = input.startsWith("http") ? input : "https://" + input;
+  output.innerText = "Checking DNS records...";
+
+  try {
+    const res = await fetch("/dns-lookup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ url })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      output.innerText = data.message || data.error || "DNS lookup failed";
       return;
     }
 
-    const url = input.startsWith("http") ? input : "https://" + input;
+    clearAllReports();
+    localStorage.setItem("latestDnsReport", JSON.stringify(data));
+    window.location.href = "report.html";
 
-    output.innerText = "Checking DNS records...";
-
-    try {
-      const res = await fetch("/dns-lookup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": localStorage.getItem("token")
-        },
-        body: JSON.stringify({ url })
-      });
-
-      const data = await res.json();
-
-      localStorage.removeItem("latestReport");
-       clearAllReports();
-      localStorage.setItem("latestDnsReport", JSON.stringify(data));
-     
-      window.location.href = "report.html";
-        } catch (err) {
-          output.innerText = "DNS Lookup failed: " + err.message;
-        }
+  } catch (err) {
+    output.innerText = "DNS Lookup failed: " + err.message;
   }
-  async function startPortScan() {
+}
+
+async function startPortScan() {
   const target = document.getElementById("portTarget").value.trim();
   const statusBox = document.getElementById("portStatus");
   const mode = document.getElementById("portScanMode").value;
+  const token = localStorage.getItem("token");
 
   if (!target) {
     alert("Please enter a target IP or domain");
@@ -960,7 +940,7 @@ clearAllReports();
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": localStorage.getItem("token")
+        "Authorization": token
       },
       body: JSON.stringify({ target, mode })
     });
@@ -968,152 +948,132 @@ clearAllReports();
     const data = await res.json();
 
     if (!res.ok) {
-      statusBox.innerText = data.error || "Scan failed";
+      statusBox.innerText = data.error || data.message || "Port scan failed";
       return;
     }
 
     clearAllReports();
     localStorage.setItem("latestPortReport", JSON.stringify(data));
-
     window.location.href = "report.html";
 
   } catch (error) {
-    console.error(error);
-    statusBox.innerText = "Port scan failed";
+    statusBox.innerText = "Port scan failed: " + error.message;
   }
 }
-    
 
-    async function startWhoisLookup() {
-      const domain = document.getElementById("whoisDomain").value.trim();
-      const output = document.getElementById("whoisOutput");
+async function startWhoisLookup() {
+  const domain = document.getElementById("whoisDomain").value.trim();
+  const output = document.getElementById("whoisOutput");
+  const token = localStorage.getItem("token");
 
-      if (!domain) {
-        alert("Please enter a domain");
-        return;
-      }
+  if (!domain) {
+    alert("Please enter a domain");
+    return;
+  }
 
-      output.innerHTML = "Running WHOIS lookup...";
+  output.innerHTML = "Running WHOIS lookup...";
 
-      try {
-        const res = await fetch("/whois-lookup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token")
-          },
-          body: JSON.stringify({ domain })
-        });
+  try {
+    const res = await fetch("/whois-lookup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ domain })
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        localStorage.removeItem("latestReport");
-        localStorage.removeItem("latestDnsReport");
-        localStorage.removeItem("latestPortReport");
-        clearAllReports();
-        localStorage.setItem("latestWhoisReport", JSON.stringify(data));
-
-        window.location.href = "report.html";
-
-      } catch (error) {
-        console.error(error);
-        output.innerHTML = "WHOIS lookup failed.";
-      }
-    }
-    
-    async function startSubdomainDiscovery() {
-      const domain = document.getElementById("subdomainInput").value.trim();
-      const output = document.getElementById("subdomainOutput");
-
-      if (!domain) {
-        alert("Please enter a domain");
-        return;
-      }
-
-      output.innerHTML = "Discovering subdomains...";
-
-      try {
-        const res = await fetch("/subdomain-discovery", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token")
-          },
-          body: JSON.stringify({ domain })
-        });
-
-        const data = await res.json();
-
-        localStorage.removeItem("latestReport");
-        localStorage.removeItem("latestDnsReport");
-        localStorage.removeItem("latestPortReport");
-        localStorage.removeItem("latestWhoisReport");
-clearAllReports();
-
-        localStorage.setItem("latestSubdomainReport", JSON.stringify(data));
-
-        window.location.href = "report.html";
-
-      } catch (error) {
-        console.error(error);
-        output.innerHTML = "Subdomain discovery failed.";
-      }
-    }
-    
-  async function runFullScan() {
-    const url = document.getElementById("fullScanInput").value.trim();
-    const output = document.getElementById("fullScanOutput");
-
-    if (!url) {
-      output.innerText = "Please enter a website URL";
+    if (!res.ok) {
+      output.innerText = data.message || data.error || "WHOIS lookup failed";
       return;
     }
 
-    output.innerText = "Running full security scan. Please wait...";
+    clearAllReports();
+    localStorage.setItem("latestWhoisReport", JSON.stringify(data));
+    window.location.href = "report.html";
 
-    try {
-      const res = await fetch("/full-scan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": localStorage.getItem("token")
-        },
-        body: JSON.stringify({ url })
-      });
+  } catch (error) {
+    output.innerHTML = "WHOIS lookup failed.";
+  }
+}
 
-      const data = await res.json();
+async function startSubdomainDiscovery() {
+  const domain = document.getElementById("subdomainInput").value.trim();
+  const output = document.getElementById("subdomainOutput");
+  const token = localStorage.getItem("token");
 
-      if (!res.ok) {
-        output.innerText = data.message || data.error || "Full scan failed";
-        return;
-      }
-
-      localStorage.removeItem("latestReport");
-      localStorage.removeItem("latestDnsReport");
-      localStorage.removeItem("latestPortReport");
-      localStorage.removeItem("latestWhoisReport");
-      localStorage.removeItem("latestSubdomainReport");
-clearAllReports();
-      localStorage.setItem("latestFullReport", JSON.stringify(data));
-
-      window.location.href = "risk-intelligence.html";
-
-    } catch (error) {
-      output.innerText = "Frontend error: " + error.message;
-    }
+  if (!domain) {
+    alert("Please enter a domain");
+    return;
   }
 
-      function clearAllReports() {
-        localStorage.removeItem("latestReport");
-        localStorage.removeItem("latestDnsReport");
-        localStorage.removeItem("latestPortReport");
-        localStorage.removeItem("latestWhoisReport");
-        localStorage.removeItem("latestSubdomainReport");
-        localStorage.removeItem("latestFullReport");
-      }
- 
-  
-  </script>
+  output.innerHTML = "Discovering subdomains...";
 
+  try {
+    const res = await fetch("/subdomain-discovery", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ domain })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      output.innerText = data.message || data.error || "Subdomain discovery failed";
+      return;
+    }
+
+    clearAllReports();
+    localStorage.setItem("latestSubdomainReport", JSON.stringify(data));
+    window.location.href = "report.html";
+
+  } catch (error) {
+    output.innerHTML = "Subdomain discovery failed.";
+  }
+}
+
+async function runFullScan() {
+  const url = document.getElementById("fullScanInput").value.trim();
+  const output = document.getElementById("fullScanOutput");
+  const token = localStorage.getItem("token");
+
+  if (!url) {
+    output.innerText = "Please enter a website URL";
+    return;
+  }
+
+  output.innerText = "Running full security scan. Please wait...";
+
+  try {
+    const res = await fetch("/full-scan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ url })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      output.innerText = data.message || data.error || "Full scan failed";
+      return;
+    }
+
+    clearAllReports();
+    localStorage.setItem("latestFullReport", JSON.stringify(data));
+    window.location.href = "risk-intelligence.html";
+
+  } catch (error) {
+    output.innerText = "Frontend error: " + error.message;
+  }
+}
+</script>
 </body>
 </html>
