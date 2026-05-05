@@ -979,7 +979,53 @@
         } catch (error) {
           console.error(error);
           statusBox.innerHTML = "Port scan failed";
-        }
+     async function startPortScan() {
+  const target = document.getElementById("portTarget").value.trim();
+  const statusBox = document.getElementById("portStatus");
+  const mode = document.getElementById("portScanMode").value;
+
+  if (!target) {
+    alert("Please enter a target IP or domain");
+    return;
+  }
+
+  statusBox.innerText = mode === "full"
+    ? "Running full Nmap port scan... please wait"
+    : "Running quick port scan...";
+
+  try {
+    const res = await fetch("/port-scan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+      body: JSON.stringify({ target, mode })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("PORT SCAN ERROR:", data);
+      statusBox.innerText = data.error || data.message || "Port scan failed";
+      return;
+    }
+
+    localStorage.removeItem("latestReport");
+    localStorage.removeItem("latestDnsReport");
+    localStorage.removeItem("latestWhoisReport");
+    localStorage.removeItem("latestSubdomainReport");
+    localStorage.removeItem("latestFullReport");
+
+    localStorage.setItem("latestPortReport", JSON.stringify(data));
+
+    window.location.href = "report.html";
+
+  } catch (error) {
+    console.error(error);
+    statusBox.innerText = "Port scan failed: " + error.message;
+  }
+}   }
       }
 
     async function startWhoisLookup() {
