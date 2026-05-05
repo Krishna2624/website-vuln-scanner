@@ -25,6 +25,7 @@ const commonPorts = [
   { port: 8080, service: "HTTP-Alt", risk: "Medium" }
 ];
 const whois = require("whois-json");
+const { exec } = require("child_process");
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
@@ -1135,46 +1136,76 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
     });
   }
 });
-app.post("/register-admin", async (req, res) => {
+app.post("/port-scan", authMiddleware, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { target, mode } = req.body;
 
-    const adminExists = await User.findOne({ role: "admin" });
-
-    if (adminExists) {
-      return res.status(403).json({
-        message: "Admin account already exists. Only one admin is allowed."
-      });
+    if (!target) {
+      return res.status(400).json({ message: "Target is required" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const cleanTarget = target
+      .replace("https://", "")
+      .replace("http://", "")
+      .replace("www.", "")
+      .split("/")[0]
+      .trim();
 
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists with this email."
+    const command =
+      mode === "full"
+        ? `nmap -p- -T4 ${cleanTarget}`
+        : `nmap --top-ports 1000 -T4 ${cleanTarget}`;
+
+    exec(command, { timeout: 300000 }, async (error, stdout, stderr) => {
+      if (error) {
+        console.error("Nmap error:", error.message);
+        return res.status(500).json({
+          message: "Port scan failed",
+          error: error.message
+        });
+      }
+
+      const results = [];
+
+      stdout.split("\n").forEach(line => {
+        if (line.includes("/tcp") && line.includes("open")) {
+          const parts = line.trim().split(/\s+/);
+          const portNumber = Number(parts[0].split("/")[0]);
+          const service = parts[2] || "unknown";
+
+          const cveInfo = getCveForService(service, portNumber, "Open");
+
+          results.push({
+            port: portNumber,
+            service,
+            status: "Open",
+            risk:
+              portNumber === 21 || portNumber === 23 || portNumber === 3306 || portNumber === 6379
+                ? "High"
+                : portNumber === 22 || portNumber === 25 || portNumber === 8080
+                ? "Medium"
+                : "Low",
+            recommendation: "Review exposed service and restrict access if not required.",
+            ...cveInfo
+          });
+        }
       });
-    }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+      const savedScan = await PortScan.create({
+        userId: req.userId,
+        target: cleanTarget,
+        scannedAt: new Date(),
+        results
+      });
 
-    await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role: "admin"
-    });
-
-    res.json({
-      message: "Admin account created successfully."
+      res.json(savedScan);
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: "Admin registration failed"
-    });
+    console.error("Port scan error:", error);
+    res.status(500).json({ message: "Port scan failed" });
   }
 });
-
 
 
 app.get("/scans", authMiddleware, async (req, res) => {

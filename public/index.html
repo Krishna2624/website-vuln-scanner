@@ -457,13 +457,14 @@
       </p>
 
       <div class="input-group">
-        <input 
-          type="text" 
-          id="portTarget" 
-          placeholder="Enter IP or domain (example: 127.0.0.1)"
+          <input id="portTarget" placeholder="Enter IP or domain (example: 127.0.0.1)"
         >
 
-        <button class="scan-btn" onclick="startPortScan()">Start Port Scan</button>
+        <button onclick="startPortScan()">Start Port Scan</button>
+        <select id="portScanMode">
+          <option value="quick">Quick Scan - Common Ports</option>
+          <option value="full">Full Scan - All 65535 Ports</option>
+        </select>
       </div>
 
       <div id="portStatus">Ready for port scan...</div>
@@ -836,7 +837,8 @@
       return;
     }
 
-    statusBox.innerHTML = "Scanning ports...";
+  
+  document.getElementById("portStatus").innerText = "Scanning ports...";
 
     try {
       const res = await fetch("/port-scan", {
@@ -858,6 +860,11 @@
       localStorage.setItem("latestPortReport", JSON.stringify(data));
 
       window.location.href = "report.html";
+       document.getElementById("portResult").innerHTML = `
+          <h3>Open Ports</h3>
+          <pre>${JSON.stringify(data.openPorts, null, 2)}</pre>
+        `;
+
     } catch (error) {
       console.error(error);
       statusBox.innerHTML = "Port scan failed";
