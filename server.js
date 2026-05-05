@@ -615,44 +615,59 @@ app.post("/scan", authMiddleware, async (req, res) => {
 });
 app.post("/port-scan", authMiddleware, async (req, res) => {
   try {
-    const { target } = req.body;
+    const { target, mode } = req.body;
 
-    if (!target) {
-      return res.status(400).json({ message: "Target is required" });
-    }
+    const cleanTarget = target
+      .replace("https://", "")
+      .replace("http://", "")
+      .replace("www.", "")
+      .split("/")[0];
 
-    const results = [];
+    const command =
+      mode === "full"
+        ? `"C:\\Program Files (x86)\\Nmap\\nmap.exe" -p- -T4 ${cleanTarget}`
+        : `"C:\\Program Files (x86)\\Nmap\\nmap.exe" --top-ports 1000 -T4 ${cleanTarget}`;
 
-    for (const item of commonPorts) {
-      const status = await scanPort(target, item.port);
+    exec(command, async (error, stdout, stderr) => {
+      if (error) {
+        console.error("Nmap error:", error.message);
+        return res.status(500).json({ error: error.message });
+      }
 
-      const cveInfo = getCveForService(item.service, item.port, status);
+      const results = [];
 
-        results.push({
-          port: item.port,
-          service: item.service,
-          status,
-          risk: status === "Open" ? item.risk : "None",
-          recommendation:
-            status === "Open"
-              ? "Review exposed service and restrict access if not required."
-              : "No action required.",
-          ...cveInfo
-        });
-    }
+      stdout.split("\n").forEach(line => {
+        if (line.includes("/tcp") && line.includes("open")) {
+          const parts = line.trim().split(/\s+/);
 
-    const savedScan = await PortScan.create({
-      userId: req.userId,
-      target,
-      scannedAt: new Date(),
-      results,
-        
+          const port = parseInt(parts[0]);
+          const service = parts[2] || "unknown";
+
+          const cveInfo = getCveForService(service, port, "Open");
+
+          results.push({
+            port,
+            service,
+            status: "Open",
+            risk: "High",
+            ...cveInfo
+          });
+        }
+      });
+
+      const saved = await PortScan.create({
+        userId: req.userId,
+        target: cleanTarget,
+        scannedAt: new Date(),
+        results
+      });
+
+      res.json(saved);
     });
-    res.json(savedScan);
 
-    } catch (error) {
-    console.error("Port scan error:", error);
-    res.status(500).json({ message: "Port scan failed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Scan failed" });
   }
 });
 app.post("/dns-lookup", authMiddleware, async (req, res) => {
