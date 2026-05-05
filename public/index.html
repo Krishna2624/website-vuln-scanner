@@ -899,7 +899,7 @@
 
     localStorage.setItem("latestReport", JSON.stringify(data));
 
-    
+    clearAllReports();
     window.location.assign("report.html");
 
   } catch (err) {
@@ -935,6 +935,7 @@
 
       localStorage.removeItem("latestReport");
       localStorage.setItem("latestDnsReport", JSON.stringify(data));
+      clearAllReports();
       window.location.href = "report.html";
         } catch (err) {
           output.innerText = "DNS Lookup failed: " + err.message;
@@ -972,7 +973,7 @@
           localStorage.removeItem("latestSubdomainReport");
 
           localStorage.setItem("latestPortReport", JSON.stringify(data));
-
+clearAllReports();
           window.location.href = "report.html";
     
 
@@ -1055,7 +1056,7 @@
         localStorage.removeItem("latestDnsReport");
         localStorage.removeItem("latestPortReport");
         localStorage.setItem("latestWhoisReport", JSON.stringify(data));
-
+clearAllReports();
         window.location.href = "report.html";
 
       } catch (error) {
@@ -1093,7 +1094,7 @@
         localStorage.removeItem("latestWhoisReport");
 
         localStorage.setItem("latestSubdomainReport", JSON.stringify(data));
-
+clearAllReports();
         window.location.href = "report.html";
 
       } catch (error) {
@@ -1137,13 +1138,24 @@
       localStorage.removeItem("latestSubdomainReport");
 
       localStorage.setItem("latestFullReport", JSON.stringify(data));
-
+clearAllReports();
       window.location.href = "risk-intelligence.html";
 
     } catch (error) {
       output.innerText = "Frontend error: " + error.message;
     }
   }
+
+      function clearAllReports() {
+        localStorage.removeItem("latestReport");
+        localStorage.removeItem("latestDnsReport");
+        localStorage.removeItem("latestPortReport");
+        localStorage.removeItem("latestWhoisReport");
+        localStorage.removeItem("latestSubdomainReport");
+        localStorage.removeItem("latestFullReport");
+      }
+ 
+  
   </script>
 
 </body>
