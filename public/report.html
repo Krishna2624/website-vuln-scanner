@@ -316,13 +316,23 @@
   <div id="reportContent"></div>
 
   <script>
-    const vulnerabilityReport = JSON.parse(localStorage.getItem("latestReport"));
-    const dnsReport = JSON.parse(localStorage.getItem("latestDnsReport"));
-    const portReport = JSON.parse(localStorage.getItem("latestPortReport"));
-    const whoisReport = JSON.parse(localStorage.getItem("latestWhoisReport"));
-    const subdomainReport = JSON.parse(localStorage.getItem("latestSubdomainReport"));
-    const fullReport = JSON.parse(localStorage.getItem("latestFullReport"));
+    function safeParse(key) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  } catch (error) {
+    console.error("Broken localStorage value:", key, error);
+    localStorage.removeItem(key);
+    return null;
+  }
+}
 
+const vulnerabilityReport = safeParse("latestReport");
+const dnsReport = safeParse("latestDnsReport");
+const portReport = safeParse("latestPortReport");
+const whoisReport = safeParse("latestWhoisReport");
+const subdomainReport = safeParse("latestSubdomainReport");
+const fullReport = safeParse("latestFullReport");
 
     const reportContent = document.getElementById("reportContent");
 
