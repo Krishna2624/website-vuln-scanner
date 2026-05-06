@@ -890,8 +890,12 @@ const resolvedIPs = await dns.resolve4(domain).catch(() => []);
       }
     }
 
+    const resolvedIPs = await dns.resolve4(domain).catch(() => []);
+
     const savedWhois = await WhoisScan.create({
+      userId: req.userId,
       ...finalData,
+      resolvedIPs,
       scannedAt: new Date()
     });
 
