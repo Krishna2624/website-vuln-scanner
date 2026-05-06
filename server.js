@@ -751,7 +751,7 @@ app.post("/whois-lookup", authMiddleware, async (req, res) => {
 
       return res.json(savedWhois);
     }
-
+const resolvedIPs = await dns.resolve4(domain).catch(() => []);
     if (!domain.includes(".")) {
       const savedWhois = await WhoisScan.create({
             userId: req.userId,
