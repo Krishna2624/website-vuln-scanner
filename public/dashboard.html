@@ -1368,33 +1368,50 @@ function selectUserFilter(userId, label) {
       window.location.href = "report.html";
     }
 
-    async function loadWhoisHistory() {
-      const res = await fetch("/whois-history", {
-        headers: getAuthHeaders()
-      });
-      const data = await res.json();
+   async function loadWhoisHistory() {
+  try {
+    const res = await fetch("/whois-history", {
+      headers: getAuthHeaders()
+    });
 
-      const whoisTable = document.getElementById("whoisTableBody");
-      whoisTable.innerHTML = "";
+    const data = await res.json();
 
-      data.forEach(whois => {
-        whoisTable.innerHTML += `
-           <tr class="history-row">
-            <td>${whois.domain || "Not Available"}</td>
-            <td>${whois.resolvedIPs?.length ? whois.resolvedIPs.join("<br>") : "Not Available"}</td>
-            <td>${whois.registrar || "Not Available"}</td>
-            <td>${whois.creationDate || "Not Available"}</td>
-            <td>${whois.expirationDate || "Not Available"}</td>
-            <td>${whois.scannedAt ? new Date(whois.scannedAt).toLocaleString() : "N/A"}</td>
-            <td>
-              <button onclick='viewWhoisReport(${JSON.stringify("WHOIS_PLACEHOLDER")})'>
-                View Report
-              </button>
-            </td>
-          </tr>
-        `.replace('"WHOIS_PLACEHOLDER"', JSON.stringify(whois).replace(/'/g, "&#39;"));
-      });
+    const whoisTable = document.getElementById("whoisTableBody");
+    whoisTable.innerHTML = "";
+
+    if (!data.length) {
+      whoisTable.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color:#cbd5e1;">
+            No WHOIS history found
+          </td>
+        </tr>
+      `;
+      return;
     }
+
+    data.forEach(whois => {
+      whoisTable.innerHTML += `
+        <tr class="history-row">
+          <td>${whois.domain || "Not Available"}</td>
+          <td>${whois.resolvedIPs?.length ? whois.resolvedIPs.join("<br>") : "Not Available"}</td>
+          <td>${whois.registrar || "Not Available"}</td>
+          <td>${whois.creationDate || "Not Available"}</td>
+          <td>${whois.expirationDate || "Not Available"}</td>
+          <td>${whois.scannedAt ? new Date(whois.scannedAt).toLocaleString() : "N/A"}</td>
+          <td>
+            <button onclick='viewWhoisReport(${JSON.stringify(whois).replace(/'/g, "&#39;")})'>
+              View Report
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+  } catch (error) {
+    console.error("WHOIS history loading failed:", error);
+  }
+}
     function viewWhoisReport(whois) {
       localStorage.removeItem("latestReport");
       localStorage.removeItem("latestDnsReport");

@@ -754,6 +754,7 @@ app.post("/whois-lookup", authMiddleware, async (req, res) => {
 
     if (!domain.includes(".")) {
       const savedWhois = await WhoisScan.create({
+            userId: req.userId,
         domain,
         registrar: "Invalid Domain Format",
         creationDate: "Not Applicable",
