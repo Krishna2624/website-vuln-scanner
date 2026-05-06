@@ -737,7 +737,7 @@ app.post("/whois-lookup", authMiddleware, async (req, res) => {
       const savedWhois = await WhoisScan.create({
        userId: req.userId,
         domain,
-        resolvedIPs,
+        resolvedIPs: [],
         registrar: "Private/Internal Resource",
         creationDate: "Not Applicable",
         expirationDate: "Not Applicable",
