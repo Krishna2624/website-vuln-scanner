@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Asset Inventory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827);
+      color: white;
+      padding: 30px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 30px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 12px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.08);
+      color: #93c5fd;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      padding: 28px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #93c5fd;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .metric {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .metric h3 {
+      font-size: 34px;
+      color: #93c5fd;
+    }
+
+    .metric p {
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      text-align: left;
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+
+    th {
+      color: #93c5fd;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .critical { background: rgba(127,29,29,0.8); }
+    .high { background: rgba(239,68,68,0.35); }
+    .medium { background: rgba(234,179,8,0.35); }
+    .low { background: rgba(34,197,94,0.30); }
+    .info { background: rgba(59,130,246,0.30); }
+
+    .filter-box {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .filter-box input,
+    .filter-box select {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      outline: none;
+    }
+
+    option {
+      color: black;
+    }
+    .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+
+    
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    overflow-y: auto;
+    }
+    .modal-box {
+        width: 100%;
+        max-width: 900px;
+
+        background: rgba(15,23,42,0.96);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 26px;
+
+        padding: 30px;
+        color: white;
+
+        box-shadow: 0 25px 70px rgba(0,0,0,0.45);
+
+        max-height: 90vh;
+        overflow-y: auto;
+
+        animation: modalFade 0.25s ease;
+        }
+    @keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    }
+
+    .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    }
+
+    .close-btn {
+    background: rgba(239,68,68,0.35);
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    }
+
+    .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    }
+
+    .profile-item {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+    padding: 16px;
+    }
+
+    .profile-item small {
+    color: #94a3b8;
+    }
+
+    .profile-item h3 {
+    margin-top: 6px;
+    color: #e2e8f0;
+    font-size: 16px;
+    }
+
+
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>Asset Inventory</h1>
+    <div class="nav-links">
+      <a href="index.html">Scanner</a>
+      <a href="asset-inventory.html">Asset Inventory</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="report.html">Reports</a>
+      <a href="risk-intelligence.html">Risk Intelligence</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+
+  <div id="assetContent"></div>
+  <div id="assetModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Asset Intelligence Profile</h2>
+      <button class="close-btn" onclick="closeAssetModal()">Close</button>
+    </div>
+
+    <div id="assetModalContent"></div>
+  </div>
+</div>
+
+<script>
+function protectPage() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "auth.html";
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "auth.html";
+}
+
+protectPage();
+
+const assetContent = document.getElementById("assetContent");
+let inventoryAssets = [];
+function severityBadge(level) {
+  if (!level) return `<span class="badge info">Info</span>`;
+
+  const value = level.toLowerCase();
+
+  if (value.includes("critical")) return `<span class="badge critical">Critical</span>`;
+  if (value.includes("high")) return `<span class="badge high">High</span>`;
+  if (value.includes("medium")) return `<span class="badge medium">Medium</span>`;
+  if (value.includes("low")) return `<span class="badge low">Low</span>`;
+
+  return `<span class="badge info">${level}</span>`;
+}
+
+function calculateAssetRisk(asset) {
+  let score = 100;
+
+  if (asset.risk === "Critical") score -= 45;
+  if (asset.risk === "High") score -= 30;
+  if (asset.risk === "Medium") score -= 15;
+  if (asset.risk === "Low") score -= 5;
+
+  if (asset.exposure === "Public") score -= 10;
+
+  if (asset.cveId && asset.cveId !== "N/A") {
+    score -= 15;
+  }
+
+  score = Math.max(0, score);
+
+  let level = "Low";
+
+  if (score < 40) level = "Critical";
+  else if (score < 65) level = "High";
+  else if (score < 85) level = "Medium";
+
+  return {
+    score,
+    level
+  };
+}
+
+function buildAssets(scan) {
+  const assets = [];
+
+  const domain = scan.domain || scan.target || "Unknown Target";
+  const dns = scan.dns || {};
+  const ports = scan.ports || {};
+  const subdomains = scan.subdomains || {};
+  const website = scan.website || {};
+
+  assets.push({
+    name: domain,
+    type: "Primary Domain",
+    ip: dns.A?.length ? dns.A.join(", ") : "Not Available",
+    technology: website.technologies?.allDetected?.length
+        ? website.technologies.allDetected.join(", ")
+        : website.technologies?.server || "Not Detected",
+    service: "Website",
+    exposure: "Public",
+    risk: "Medium",
+    cveId: "N/A",
+    lastScan: scan.scannedAt || new Date()
+  });
+
+  if (subdomains.subdomains?.length) {
+    subdomains.subdomains.forEach(sub => {
+      assets.push({
+        name: sub,
+        type: "Subdomain",
+        ip: "Resolve required",
+        technology: "Unknown",
+        service: "Web Asset",
+        exposure: "Public",
+        risk: "Medium",
+        cveId: "N/A",
+        lastScan: subdomains.scannedAt || scan.scannedAt
+      });
+    });
+  }
+
+  if (ports.results?.length) {
+    ports.results.forEach(port => {
+      assets.push({
+        name: `${port.service} on ${domain}`,
+        type: "Network Service",
+        ip: dns.A?.[0] || "Not Available",
+        technology: port.version || port.service || "Unknown",
+        service: `${port.port}/${port.service}`,
+        exposure: "Public",
+        risk: port.cveSeverity || port.risk || "Medium",
+        cveId: port.cveId || "N/A",
+        lastScan: ports.scannedAt || scan.scannedAt
+      });
+    });
+  }
+
+  return assets.map(asset => ({
+    ...asset,
+    ...calculateAssetRisk(asset)
+  }));
+}
+
+function renderAssets(scan) {
+  const assets = buildAssets(scan);
+   inventoryAssets = assets;
+
+  const totalAssets = assets.length;
+  const publicAssets = assets.filter(a => a.exposure === "Public").length;
+  const criticalAssets = assets.filter(a => a.assetRisk === "Critical").length;
+  const vulnerableAssets = assets.filter(a => a.cveId && a.cveId !== "N/A").length;
+
+  const technologySet = new Set();
+
+    assets.forEach(asset => {
+    if (asset.technology && asset.technology !== "Not Detected") {
+        asset.technology.split(",").forEach(t => technologySet.add(t.trim()));
+    }
+    });
+
+const totalTechnologies = technologySet.size;
+  assetContent.innerHTML = `
+    <div class="metric-grid">
+      <div class="metric"><h3>${totalAssets}</h3><p>Total Assets</p></div>
+      <div class="metric"><h3>${publicAssets}</h3><p>Internet Facing</p></div>
+      <div class="metric"><h3>${criticalAssets}</h3><p>Critical Assets</p></div>
+      <div class="metric"><h3>${vulnerableAssets}</h3><p>Vulnerable Assets</p></div>
+      <div class="metric"><h3>${totalTechnologies}</h3><p>Technologies</p></div>
+      </div>
+
+    <div class="glass-card">
+      <div class="section-title">Enterprise Asset Inventory</div>
+
+      <div class="filter-box">
+        <input id="assetSearch" placeholder="Search asset..." onkeyup="filterAssets()">
+
+        <select id="riskFilter" onchange="filterAssets()">
+          <option value="">All Risks</option>
+          <option value="Critical">Critical</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+
+        <select id="typeFilter" onchange="filterAssets()">
+          <option value="">All Types</option>
+          <option value="Primary Domain">Primary Domain</option>
+          <option value="Subdomain">Subdomain</option>
+          <option value="Network Service">Network Service</option>
+        </select>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Asset Name</th>
+            <th>Type</th>
+            <th>IP Address</th>
+            <th>Technology</th>
+            <th>Service</th>
+            <th>Exposure</th>
+            <th>Risk</th>
+            <th>Score</th>
+            <th>CVE</th>
+            <th>Last Scan</th>
+          </tr>
+        </thead>
+
+        <tbody id="assetTableBody">
+            ${assets.map((asset, index) => `
+            <tr onclick="openAssetModal(${index})"
+                style="cursor:pointer;"
+                data-risk="${asset.level} (${asset.score}/100)"
+                data-type="${asset.type}">
+                <td>${asset.name}</td>
+                <td>${asset.type}</td>
+                <td>${asset.ip}</td>
+                <td>${asset.technology}</td>
+                <td>${asset.service}</td>
+                <td>${asset.exposure}</td>
+                <td>${severityBadge(asset.level)}</td>
+                <td>${asset.score}/100</td>
+                <td>${asset.cveId}</td>
+                <td>${asset.lastScan ? new Date(asset.lastScan).toLocaleString() : "N/A"}</td>
+                </tr>
+            `).join("")}
+            </tbody>
+      </table>
+    </div>
+
+    <div class="glass-card">
+      <div class="section-title">Asset Inventory Explanation</div>
+      <p style="color:#cbd5e1; line-height:1.8;">
+        This inventory consolidates discovered domains, subdomains, network services,
+        technologies, exposure status, and CVE indicators into a centralized asset view.
+        It helps security teams understand what assets exist, what is internet-facing,
+        and which assets require priority remediation.
+      </p>
+    </div>
+  `;
+}
+
+function filterAssets() {
+  const search = document.getElementById("assetSearch").value.toLowerCase();
+  const risk = document.getElementById("riskFilter").value;
+  const type = document.getElementById("typeFilter").value;
+
+  document.querySelectorAll("#assetTableBody tr").forEach(row => {
+    const text = row.innerText.toLowerCase();
+    const rowRisk = row.getAttribute("data-risk");
+    const rowType = row.getAttribute("data-type");
+
+    const matchSearch = text.includes(search);
+    const matchRisk = !risk || rowRisk === risk;
+    const matchType = !type || rowType === type;
+
+    row.style.display = matchSearch && matchRisk && matchType ? "" : "none";
+  });
+}
+
+function openAssetModal(index) {
+  const asset = inventoryAssets[index];
+
+  if (!asset) return;
+
+  document.getElementById("assetModalContent").innerHTML = `
+    <div class="profile-grid">
+      <div class="profile-item">
+        <small>Asset Name</small>
+        <h3>${asset.name}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>Asset Type</small>
+        <h3>${asset.type}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>IP Address</small>
+        <h3>${asset.ip}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>Technology / Version</small>
+        <h3>${asset.technology}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>Service</small>
+        <h3>${asset.service}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>Exposure</small>
+        <h3>${asset.exposure}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>Risk Level</small>
+        <h3>${asset.level} (${asset.score}/100)</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>CVE Reference</small>
+        <h3>${asset.cveId || "N/A"}</h3>
+      </div>
+
+      <div class="profile-item">
+        <small>Last Scan</small>
+        <h3>${asset.lastScan ? new Date(asset.lastScan).toLocaleString() : "N/A"}</h3>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="glass-card">
+      <div class="section-title">Security Interpretation</div>
+      <p style="color:#cbd5e1; line-height:1.8;">
+        This asset is classified as <b>${asset.type}</b> with <b>${asset.exposure}</b> exposure.
+        Its current risk level is <b>${asset.level} (${asset.score}/100)</b>.
+        ${
+          asset.cveId && asset.cveId !== "N/A"
+            ? `A CVE reference was detected: <b>${asset.cveId}</b>. Prioritize validation and remediation.`
+            : `No direct CVE reference is currently mapped for this asset. Continue monitoring and validate service versions.`
+        }
+      </p>
+    </div>
+
+    <div class="glass-card">
+    <div class="section-title">Technology Intelligence</div>
+
+    <div style="
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap:14px;
+    ">
+
+        <div class="profile-item">
+        <small>Detected Technology</small>
+        <h3>${asset.technology || "Not Detected"}</h3>
+        </div>
+
+        <div class="profile-item">
+        <small>Service Layer</small>
+        <h3>${asset.service || "Not Available"}</h3>
+        </div>
+
+        <div class="profile-item">
+        <small>Technology Risk</small>
+        <h3>
+            ${
+            asset.technology &&
+            (
+                asset.technology.toLowerCase().includes("apache") ||
+                asset.technology.toLowerCase().includes("php") ||
+                asset.technology.toLowerCase().includes("wordpress") ||
+                asset.technology.toLowerCase().includes("mysql") ||
+                asset.technology.toLowerCase().includes("redis")
+            )
+            ? "Version Review Recommended"
+            : "Standard Monitoring"
+            }
+        </h3>
+        </div>
+
+        <div class="profile-item">
+        <small>Patch Priority</small>
+        <h3>
+            ${
+            asset.level === "Critical"
+                ? "Immediate"
+                : asset.level === "High"
+                ? "High"
+                : asset.level === "Medium"
+                ? "Medium"
+                : "Normal"
+            }
+        </h3>
+        </div>
+
+    </div>
+    </div>
+
+
+    <div class="glass-card">
+        <div class="section-title">Attack Surface Analysis</div>
+
+        <div style="
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 20px;
+            padding: 24px;
+            line-height: 1.9;
+            color: #cbd5e1;
+        ">
+
+            <div style="
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-bottom:20px;
+            ">
+
+            <span class="badge ${asset.exposure === 'Public' ? 'critical' : 'low'}">
+                ${asset.exposure === 'Public' ? 'Internet Facing' : 'Internal'}
+            </span>
+
+            <span class="badge ${asset.level === 'Critical' ? 'critical' :
+                asset.level === 'High' ? 'high' :
+                asset.level === 'Medium' ? 'medium' : 'low'}">
+                ${asset.level} Risk
+            </span>
+
+            <span class="badge info">
+                ${asset.service}
+            </span>
+
+            </div>
+
+            <p>
+            This asset is currently identified as
+            <b>${asset.type}</b> with
+            <b>${asset.exposure}</b> exposure status.
+            </p>
+
+            <p>
+            The detected technology stack includes
+            <b>${asset.technology}</b>,
+            and the exposed service
+            <b>${asset.service}</b>
+            contributes to the externally visible attack surface.
+            </p>
+
+            <p>
+            ${
+                asset.cveId && asset.cveId !== "N/A" && asset.cveId !== "Review Required"
+                ? `A mapped vulnerability reference <b>${asset.cveId}</b> was identified,
+                increasing exploitation probability if the affected service remains exposed.`
+                : asset.cveId === "Review Required"
+                ? `Security review is recommended for this exposed service because version-specific vulnerability validation is required.`
+                : `No direct CVE mapping was identified for this asset,
+                however exposed services should still be continuously monitored and validated.`
+            }
+            </p>
+
+            <div style="
+                margin-top:25px;
+                display:grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap:14px;
+                ">
+
+                <div class="profile-item">
+                    <small>Internet Exposure</small>
+                    <h3>
+                    ${asset.exposure === "Public"
+                        ? "Externally Reachable"
+                        : "Internal Only"}
+                    </h3>
+                </div>
+
+                <div class="profile-item">
+                    <small>Potential Entry Point</small>
+                    <h3>
+                    ${
+                        asset.service.toLowerCase().includes("ssh") ||
+                        asset.service.toLowerCase().includes("ftp") ||
+                        asset.service.toLowerCase().includes("rdp")
+                        ? "Remote Access Service"
+                        : "Application Exposure"
+                    }
+                    </h3>
+                </div>
+
+                <div class="profile-item">
+                    <small>Threat Condition</small>
+                    <h3>
+                    ${
+                        asset.cveId && asset.cveId !== "N/A"
+                        ? "Vulnerability Indicator Present"
+                        : "No Known CVE Indicator"
+                    }
+                    </h3>
+                </div>
+
+                <div class="profile-item">
+                    <small>Security Priority</small>
+                    <h3>
+                    ${
+                        asset.level === "Critical"
+                        ? "Immediate Remediation"
+                        : asset.level === "High"
+                        ? "High Priority Review"
+                        : asset.level === "Medium"
+                        ? "Routine Validation"
+                        : "Standard Monitoring"
+                    }
+                    </h3>
+                </div>
+
+                </div>
+
+            <p>
+            Current calculated asset risk score is
+            <b>${asset.score}/100</b>,
+            indicating a
+            <b>${asset.level}</b>
+            exposure posture.
+            </p>
+
+        </div>
+        </div>
+
+    <div class="glass-card">
+      <div class="section-title">Recommended Action</div>
+      <p style="color:#cbd5e1; line-height:1.8;">
+        Review exposure, restrict unnecessary public access, verify patch status,
+        and include this asset in recurring vulnerability assessments.
+      </p>
+    </div>
+  `;
+
+  document.getElementById("assetModal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+function closeAssetModal() {
+  document.getElementById("assetModal").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+async function loadAssetInventory() {
+  try {
+    let scan = JSON.parse(localStorage.getItem("latestFullReport"));
+
+    if (!scan) {
+      const res = await fetch("/full-scan-history", {
+        headers: {
+          Authorization: localStorage.getItem("token")
+        }
+      });
+
+      const data = await res.json();
+      scan = data[0];
+    }
+
+    if (!scan) {
+      assetContent.innerHTML = `
+        <div class="glass-card">
+          <h2>No Asset Data Found</h2>
+          <p style="color:#cbd5e1; margin-top:10px;">
+            Please run a Full Security Scan first.
+          </p>
+          <br>
+          <button onclick="window.location.href='index.html'">Go to Scanner</button>
+        </div>
+      `;
+      return;
+    }
+
+    renderAssets(scan);
+
+  } catch (error) {
+    assetContent.innerHTML = `
+      <div class="glass-card">
+        <h2>Asset Inventory Loading Failed</h2>
+        <p style="color:#cbd5e1; margin-top:10px;">
+          Please check backend connection or login again.
+        </p>
+      </div>
+    `;
+  }
+}
+
+loadAssetInventory();
+</script>
+
+</body>
+</html>

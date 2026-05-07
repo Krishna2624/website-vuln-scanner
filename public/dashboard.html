@@ -562,6 +562,7 @@
     <a href="dashboard.html">Dashboard</a>
     <a href="report.html">Reports</a>
     <a href="risk-intelligence.html">Risk Intelligence</a>
+    <a href="asset-inventory.html">Asset Inventory</a>
     <a href="#" onclick="logout()">Logout</a>
   </div>
 </div>
@@ -588,6 +589,7 @@
 
       <div id="userDropdownMenu" class="dropdown-menu"></div>
     </div>
+    <button onclick="openMonitoringCenter()">Continuous Monitoring</button>
    <button onclick="openTrendModal()">Target Risk Timeline</button>
    <button onclick="openExportModal()">Export Report</button>
   </div>
@@ -1687,6 +1689,10 @@ function analyzeTargetTrend() {
       </table>
     </div>
   `;
+}
+
+function openMonitoringCenter() {
+  window.location.href = "monitoring.html";
 }
 loadFullScanHistory();
 loadDashboard();

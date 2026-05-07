@@ -308,6 +308,7 @@
       <a href="index.html">Scanner</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="report.html">Reports</a>
+      <a href="asset-inventory.html">Asset Inventory</a>
       <a href="risk-intelligence.html">Risk Intelligence</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
@@ -610,6 +611,17 @@ protectPage();
         <p>Critical CVEs</p>
       </div>
     </div>
+    <div class="section">
+      <h2>Host Intelligence</h2>
+      <table>
+        <tr><th>Target</th><td>${portData.hostInfo?.target || portData.target || "Not Available"}</td></tr>
+        <tr><th>Hostname</th><td>${portData.hostInfo?.hostname || "Not Detected"}</td></tr>
+        <tr><th>Operating System</th><td>${portData.hostInfo?.os || "Not Detected"}</td></tr>
+        <tr><th>Device Type</th><td>${portData.hostInfo?.deviceType || "Not Detected"}</td></tr>
+        <tr><th>Latency</th><td>${portData.hostInfo?.latency || "Not Available"}</td></tr>
+        <tr><th>Scan Time</th><td>${portData.hostInfo?.scanTime ? new Date(portData.hostInfo.scanTime).toLocaleString() : "N/A"}</td></tr>
+      </table>
+    </div>
 
     <div class="section">
       <h2>Executive Summary</h2>
@@ -628,6 +640,7 @@ protectPage();
           <tr>
             <th>Port</th>
             <th>Service</th>
+            <th>Version</th>
             <th>Status</th>
             <th>Risk</th>
             <th>CVE ID</th>
@@ -643,6 +656,7 @@ protectPage();
               <tr>
                 <td>${item.port}</td>
                 <td>${item.service}</td>
+                <td>${item.version || "Not Detected"}</td>
                 <td>${item.status}</td>
                 <td>${item.risk}</td>
                 <td>${item.cveId || "N/A"}</td>

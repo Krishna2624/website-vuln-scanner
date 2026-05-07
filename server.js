@@ -6,9 +6,11 @@ const cheerio = require("cheerio");
 const sslChecker = require("ssl-checker").default;
 const PDFDocument = require("pdfkit");
 const dnsModule = require("dns");
+const { exec } = require("child_process");
 dnsModule.setServers(["8.8.8.8", "1.1.1.1"]);
 const dns = dnsModule.promises;
 const net = require("net");
+require("dotenv").config();
 const commonPorts = [
   { port: 21, service: "FTP", risk: "High" },
   { port: 22, service: "SSH", risk: "Medium" },
@@ -79,11 +81,19 @@ const portScanSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+      hostInfo: {
+      hostname: String,
+      os: String,
+      latency: String,
+      deviceType: String,
+      scanTime: Date
+    },
   results: [
     {
       port: Number,
       service: String,
       status: String,
+      version: String,
       risk: String,
       cveId: String,
       cveSeverity: String,
@@ -133,6 +143,8 @@ const fullScanSchema = new mongoose.Schema({
   reportType: String,
   target: String,
   domain: String,
+  riskScore: Number,
+  riskLevel: String,
   scannedAt: {
     type: Date,
     default: Date.now
@@ -303,68 +315,6 @@ async function runDnsLookupModule(targetUrl) {
   }
 }
 
-function getCveForService(service, port, status) {
-  if (status !== "Open") {
-    return {
-      cveId: "N/A",
-      cveSeverity: "None",
-      cvssScore: "N/A",
-      cveDescription: "No CVE mapping for closed ports.",
-      cveRecommendation: "No action required."
-    };
-  }
-
-  const serviceName = service.toLowerCase();
-
-  if (serviceName.includes("ssh") || port === 22) {
-    return {
-      cveId: "CVE-2024-6387",
-      cveSeverity: "Critical",
-      cvssScore: "9.8",
-      cveDescription: "Known OpenSSH race condition vulnerability reference.",
-      cveRecommendation: "Patch OpenSSH immediately and restrict SSH access."
-    };
-  }
-
-  if (serviceName.includes("mysql") || port === 3306) {
-    return {
-      cveId: "CVE-2023-21980",
-      cveSeverity: "High",
-      cvssScore: "8.1",
-      cveDescription: "Known MySQL vulnerability reference.",
-      cveRecommendation: "Restrict database exposure and apply security updates."
-    };
-  }
-
-  if (serviceName.includes("redis") || port === 6379) {
-    return {
-      cveId: "CVE-2022-0543",
-      cveSeverity: "Critical",
-      cvssScore: "10.0",
-      cveDescription: "Known Redis Lua sandbox escape vulnerability reference.",
-      cveRecommendation: "Do not expose Redis publicly. Patch immediately."
-    };
-  }
-
-  if (serviceName.includes("telnet") || port === 23) {
-    return {
-      cveId: "Legacy insecure protocol",
-      cveSeverity: "Critical",
-      cvssScore: "N/A",
-      cveDescription: "Telnet transmits credentials in clear text.",
-      cveRecommendation: "Disable Telnet and use SSH instead."
-    };
-  }
-
-  return {
-    cveId: "No direct CVE mapped",
-    cveSeverity: "Low",
-    cvssScore: "N/A",
-    cveDescription: "No demo CVE mapped for this service.",
-    cveRecommendation: "Keep the service patched and monitor advisories."
-  };
-}
-
 function scanPort(host, port) {
   return new Promise((resolve) => {
     const socket = new net.Socket();
@@ -413,6 +363,306 @@ function adminMiddleware(req, res, next) {
 
   next();
 }
+
+function runNmapFullScan(target) {
+  return new Promise((resolve, reject) => {
+    const command = `nmap -Pn -T4 -sV --top-ports 1000 --open ${target}`;
+
+    exec(command, { timeout: 600000 }, async (error, stdout, stderr) => {
+      if (error) {
+        return reject(error);
+      }
+
+      const lines = stdout.split("\n");
+
+      const results = [];
+
+      const hostInfo = {
+        target,
+        hostname: "Unknown",
+        os: "Unknown",
+        latency: "Unknown",
+        deviceType: "Unknown",
+        scanTime: new Date()
+      };
+
+      for (const line of lines) {
+                if (line.includes("Host is up")) {
+          const latencyMatch = line.match(/\((.*?) latency\)/);
+
+          if (latencyMatch) {
+            hostInfo.latency = latencyMatch[1];
+          }
+        }
+
+        if (line.includes("OS details:")) {
+          hostInfo.os = line.replace("OS details:", "").trim();
+        }
+
+        if (line.includes("Device type:")) {
+          hostInfo.deviceType = line.replace("Device type:", "").trim();
+        }
+
+        if (line.includes("Nmap scan report for")) {
+          const hostnameMatch = line.replace("Nmap scan report for", "").trim();
+
+          hostInfo.hostname = hostnameMatch;
+        }
+        const match = line.match(/^(\d+)\/tcp\s+open\s+(\S+)\s*(.*)$/);
+
+        if (match) {
+          const port = Number(match[1]);
+          const service = match[2];
+          const version = match[3] || "Version not detected";
+
+          let cves = await searchNvdCves(service, version, port);
+
+          let cveInfo = cves.length
+            ? cves[0]
+            : getRealisticCveForService(service, version, port);
+
+          results.push({
+            port,
+            service,
+            status: "Open",
+            version,
+            risk: cveInfo.cveSeverity || "Medium",
+            recommendation:
+              cveInfo.cveRecommendation ||
+              "Review exposed service and restrict access if not required.",
+            ...cveInfo
+          });
+        }
+      }
+
+      resolve({
+        hostInfo,
+        results
+      });
+    });
+  });
+}
+async function searchNvdCves(service, version, port) {
+  try {
+    const keyword = `${service} ${version}`.replace("Version not detected", "").trim();
+
+    if (!keyword || keyword.length < 3) {
+      return [];
+    }
+
+    const response = await axios.get("https://services.nvd.nist.gov/rest/json/cves/2.0", {
+      params: {
+        keywordSearch: keyword,
+        resultsPerPage: 5,
+        noRejected: ""
+      },
+      timeout: 15000
+    });
+
+    const vulnerabilities = response.data.vulnerabilities || [];
+
+    return vulnerabilities.map(item => {
+      const cve = item.cve;
+
+      const metrics =
+        cve.metrics?.cvssMetricV31?.[0] ||
+        cve.metrics?.cvssMetricV30?.[0] ||
+        cve.metrics?.cvssMetricV2?.[0];
+
+      return {
+        cveId: cve.id || "N/A",
+        cveSeverity:
+          metrics?.cvssData?.baseSeverity ||
+          metrics?.baseSeverity ||
+          "Unknown",
+        cvssScore:
+          metrics?.cvssData?.baseScore ||
+          "N/A",
+        cveDescription:
+          cve.descriptions?.find(d => d.lang === "en")?.value ||
+          "No description available.",
+        cveRecommendation:
+          "Verify affected product version, apply vendor patches, and restrict exposure where possible.",
+        source: "NVD"
+      };
+    });
+
+  } catch (error) {
+    console.error("NVD lookup error:", error.message);
+    return [];
+  }
+}
+
+function getRealisticCveForService(service, version, port) {
+  const text = `${service} ${version}`.toLowerCase();
+
+  if (text.includes("apache") && text.includes("2.4.49")) {
+    return {
+      cveId: "CVE-2021-41773",
+      cveSeverity: "Critical",
+      cvssScore: "9.8",
+      cveDescription:
+        "Apache HTTP Server 2.4.49 path traversal and file disclosure vulnerability.",
+      cveRecommendation:
+        "Upgrade Apache immediately to a patched version."
+    };
+  }
+
+  if (text.includes("apache") && text.includes("2.4.50")) {
+    return {
+      cveId: "CVE-2021-42013",
+      cveSeverity: "Critical",
+      cvssScore: "9.8",
+      cveDescription:
+        "Apache HTTP Server 2.4.50 path traversal and remote code execution vulnerability.",
+      cveRecommendation:
+        "Upgrade Apache immediately to a patched version."
+    };
+  }
+
+  if (text.includes("openssh") && text.includes("8.5")) {
+    return {
+      cveId: "CVE-2024-6387",
+      cveSeverity: "Critical",
+      cvssScore: "8.1",
+      cveDescription:
+        "OpenSSH regreSSHion vulnerability affecting vulnerable OpenSSH versions.",
+      cveRecommendation:
+        "Upgrade OpenSSH and restrict SSH access to trusted IP addresses."
+    };
+  }
+
+  if (text.includes("openssh") && text.includes("8.6")) {
+    return {
+      cveId: "CVE-2024-6387",
+      cveSeverity: "Critical",
+      cvssScore: "8.1",
+      cveDescription:
+        "OpenSSH regreSSHion vulnerability affecting vulnerable OpenSSH versions.",
+      cveRecommendation:
+        "Upgrade OpenSSH and restrict SSH access to trusted IP addresses."
+    };
+  }
+
+  if (text.includes("mysql")) {
+    return {
+      cveId: "Review Required",
+      cveSeverity: "High",
+      cvssScore: "N/A",
+      cveDescription:
+        "Database service exposed. Version-specific CVE validation required.",
+      cveRecommendation:
+        "Restrict MySQL exposure and allow access only from trusted hosts."
+    };
+  }
+
+  if (text.includes("redis")) {
+    return {
+      cveId: "Review Required",
+      cveSeverity: "Critical",
+      cvssScore: "N/A",
+      cveDescription:
+        "Redis service exposed. Public Redis exposure is high risk.",
+      cveRecommendation:
+        "Do not expose Redis publicly. Bind to localhost or private network."
+    };
+  }
+
+  if (text.includes("telnet") || port === 23) {
+    return {
+      cveId: "Insecure Protocol",
+      cveSeverity: "Critical",
+      cvssScore: "N/A",
+      cveDescription:
+        "Telnet transmits credentials in clear text.",
+      cveRecommendation:
+        "Disable Telnet and use SSH instead."
+    };
+  }
+    if (text.includes("microsoft-ds") || text.includes("smb") || port === 445) {
+    return {
+      cveId: "SMB Exposure Review",
+      cveSeverity: "High",
+      cvssScore: "N/A",
+      cveDescription:
+        "SMB service is exposed. SMB has a history of critical vulnerabilities and should not be exposed publicly.",
+      cveRecommendation:
+        "Restrict SMB to internal networks only and block port 445 from public access."
+    };
+  }
+
+  if (text.includes("rdp") || port === 3389) {
+    return {
+      cveId: "RDP Exposure Review",
+      cveSeverity: "High",
+      cvssScore: "N/A",
+      cveDescription:
+        "Remote Desktop service exposure increases brute-force and remote access risk.",
+      cveRecommendation:
+        "Restrict RDP using VPN, firewall rules, and strong authentication."
+    };
+  }
+
+  if (text.includes("ftp") || port === 21) {
+    return {
+      cveId: "Insecure Protocol",
+      cveSeverity: "Medium",
+      cvssScore: "N/A",
+      cveDescription:
+        "FTP can transmit credentials in clear text.",
+      cveRecommendation:
+        "Use SFTP or FTPS instead of plain FTP."
+    };
+  }
+
+  if (text.includes("iis")) {
+    return {
+      cveId: "IIS Review Required",
+      cveSeverity: "Medium",
+      cvssScore: "N/A",
+      cveDescription:
+        "Microsoft IIS detected. Version-specific CVE validation is recommended.",
+      cveRecommendation:
+        "Apply Windows/IIS updates and disable unnecessary modules."
+    };
+  }
+      if (port === 5040) {
+      return {
+        cveId: "Windows Service Exposure Review",
+        cveSeverity: "Medium",
+        cvssScore: "N/A",
+        cveDescription:
+          "Port 5040 is commonly associated with Windows CDPSvc service exposure.",
+        cveRecommendation:
+          "Restrict this port with Windows Firewall if not required."
+      };
+    }
+
+    if (port === 7070 || text.includes("realserver")) {
+      return {
+        cveId: "RealServer Service Review",
+        cveSeverity: "Medium",
+        cvssScore: "N/A",
+        cveDescription:
+          "RealServer/streaming service detected. Version-specific validation is required.",
+        cveRecommendation:
+          "Verify the service version, patch if outdated, and restrict public access if unnecessary."
+      };
+    }
+
+
+
+    return {
+        cveId: "Manual Review Recommended",
+        cveSeverity:
+          port < 1024 ? "Medium" : "Info",
+        cvssScore: "N/A",
+        cveDescription:
+          `Service detected on port ${port}. No direct local CVE mapping found.`,
+        cveRecommendation:
+          "Review service version manually and verify against NVD/CVE databases."
+      };
+  }
 
 
 app.post("/register", async (req, res) => {
@@ -548,16 +798,156 @@ app.post("/scan", authMiddleware, async (req, res) => {
     const findings = detectVulnerabilities(headers, targetUrl, html);
     console.log("VULN DETECTION DONE");
 
+    const htmlLower = html.toLowerCase();
+
     const technologies = {
       server: headers["server"] || "Hidden / Not detected",
       poweredBy: headers["x-powered-by"] || "Hidden / Not detected",
-      frameworkHints: []
+      frameworks: [],
+      cms: [],
+      languages: [],
+      cdn: [],
+      analytics: [],
+      security: [],
+      databases: [],
+      allDetected: []
     };
 
-    if (html.includes("wp-content")) technologies.frameworkHints.push("WordPress");
-    if (html.toLowerCase().includes("react")) technologies.frameworkHints.push("React");
-    if (html.toLowerCase().includes("vue")) technologies.frameworkHints.push("Vue");
-    if (html.toLowerCase().includes("angular")) technologies.frameworkHints.push("Angular");
+    // Server / CDN detection
+    if ((headers["server"] || "").toLowerCase().includes("nginx")) {
+      technologies.allDetected.push("Nginx");
+    }
+
+    if ((headers["server"] || "").toLowerCase().includes("apache")) {
+      technologies.allDetected.push("Apache");
+    }
+
+    if ((headers["server"] || "").toLowerCase().includes("iis")) {
+      technologies.allDetected.push("Microsoft IIS");
+    }
+
+    if (
+      (headers["server"] || "").toLowerCase().includes("cloudflare") ||
+      headers["cf-ray"] ||
+      headers["cf-cache-status"]
+    ) {
+      technologies.cdn.push("Cloudflare");
+      technologies.allDetected.push("Cloudflare");
+    }
+
+    // Backend / powered by
+    if ((headers["x-powered-by"] || "").toLowerCase().includes("express")) {
+      technologies.frameworks.push("Express.js");
+      technologies.allDetected.push("Express.js");
+    }
+
+    if ((headers["x-powered-by"] || "").toLowerCase().includes("php")) {
+      technologies.languages.push("PHP");
+      technologies.allDetected.push("PHP");
+    }
+
+    if ((headers["x-powered-by"] || "").toLowerCase().includes("asp.net")) {
+      technologies.frameworks.push("ASP.NET");
+      technologies.allDetected.push("ASP.NET");
+    }
+
+    // Frontend frameworks
+    if (htmlLower.includes("react") || htmlLower.includes("__react")) {
+      technologies.frameworks.push("React");
+      technologies.allDetected.push("React");
+    }
+
+    if (htmlLower.includes("vue") || htmlLower.includes("__vue")) {
+      technologies.frameworks.push("Vue.js");
+      technologies.allDetected.push("Vue.js");
+    }
+
+    if (htmlLower.includes("angular")) {
+      technologies.frameworks.push("Angular");
+      technologies.allDetected.push("Angular");
+    }
+
+    if (htmlLower.includes("next_data") || htmlLower.includes("__next")) {
+      technologies.frameworks.push("Next.js");
+      technologies.allDetected.push("Next.js");
+    }
+
+    if (htmlLower.includes("nuxt")) {
+      technologies.frameworks.push("Nuxt.js");
+      technologies.allDetected.push("Nuxt.js");
+    }
+
+    // CMS detection
+    if (
+      htmlLower.includes("wp-content") ||
+      htmlLower.includes("wp-includes") ||
+      htmlLower.includes("wordpress")
+    ) {
+      technologies.cms.push("WordPress");
+      technologies.allDetected.push("WordPress");
+    }
+
+    if (htmlLower.includes("drupal")) {
+      technologies.cms.push("Drupal");
+      technologies.allDetected.push("Drupal");
+    }
+
+    if (htmlLower.includes("joomla")) {
+      technologies.cms.push("Joomla");
+      technologies.allDetected.push("Joomla");
+    }
+
+    if (htmlLower.includes("shopify")) {
+      technologies.cms.push("Shopify");
+      technologies.allDetected.push("Shopify");
+    }
+
+    // JavaScript libraries
+    if (htmlLower.includes("jquery")) {
+      technologies.frameworks.push("jQuery");
+      technologies.allDetected.push("jQuery");
+    }
+
+    if (htmlLower.includes("bootstrap")) {
+      technologies.frameworks.push("Bootstrap");
+      technologies.allDetected.push("Bootstrap");
+    }
+
+    if (htmlLower.includes("tailwind")) {
+      technologies.frameworks.push("Tailwind CSS");
+      technologies.allDetected.push("Tailwind CSS");
+    }
+
+    // Analytics
+    if (htmlLower.includes("google-analytics") || htmlLower.includes("gtag(")) {
+      technologies.analytics.push("Google Analytics");
+      technologies.allDetected.push("Google Analytics");
+    }
+
+    if (htmlLower.includes("googletagmanager")) {
+      technologies.analytics.push("Google Tag Manager");
+      technologies.allDetected.push("Google Tag Manager");
+    }
+
+    // Security / CDN headers
+    if (headers["strict-transport-security"]) {
+      technologies.security.push("HSTS Enabled");
+      technologies.allDetected.push("HSTS Enabled");
+    }
+
+    if (headers["content-security-policy"]) {
+      technologies.security.push("Content Security Policy");
+      technologies.allDetected.push("Content Security Policy");
+    }
+
+    // Remove duplicates
+    technologies.frameworks = [...new Set(technologies.frameworks)];
+    technologies.cms = [...new Set(technologies.cms)];
+    technologies.languages = [...new Set(technologies.languages)];
+    technologies.cdn = [...new Set(technologies.cdn)];
+    technologies.analytics = [...new Set(technologies.analytics)];
+    technologies.security = [...new Set(technologies.security)];
+    technologies.allDetected = [...new Set(technologies.allDetected)];
 
     const links = [];
     $("a").each((i, el) => {
@@ -614,7 +1004,7 @@ app.post("/scan", authMiddleware, async (req, res) => {
 });
 app.post("/port-scan", authMiddleware, async (req, res) => {
   try {
-    const { target } = req.body;
+    const { target, mode } = req.body;
 
     if (!target) {
       return res.status(400).json({ message: "Target is required" });
@@ -627,29 +1017,44 @@ app.post("/port-scan", authMiddleware, async (req, res) => {
       .split("/")[0]
       .trim();
 
-    const results = [];
+    let results = [];
 
-    for (const item of commonPorts) {
-      const status = await scanPort(cleanTarget, item.port);
-      const cveInfo = getCveForService(item.service, item.port, status);
+    if (mode === "full") {
+      const fullScanData = await runNmapFullScan(cleanTarget);
 
-      results.push({
-        port: item.port,
-        service: item.service,
-        status,
-        risk: status === "Open" ? item.risk : "None",
-        recommendation:
-          status === "Open"
-            ? "Review exposed service and restrict access if not required."
-            : "No action required.",
-        ...cveInfo
-      });
+        results = fullScanData.results;
+
+        var hostInfo = fullScanData.hostInfo;
+    } else {
+      for (const item of commonPorts) {
+        const status = await scanPort(cleanTarget, item.port);
+
+        if (status === "Open") {
+          const cveInfo = getRealisticCveForService(
+            item.service,
+            "Version not detected",
+            item.port
+          );
+
+          results.push({
+            port: item.port,
+            service: item.service,
+            status,
+            version: "Version not detected in quick scan",
+            risk: item.risk,
+            recommendation:
+              "Review exposed service and restrict access if not required.",
+            ...cveInfo
+          });
+        }
+      }
     }
 
-    const savedScan = await PortScan.create({
+   const savedScan = await PortScan.create({
       userId: req.userId,
       target: cleanTarget,
       scannedAt: new Date(),
+      hostInfo,
       results
     });
 
@@ -657,7 +1062,10 @@ app.post("/port-scan", authMiddleware, async (req, res) => {
 
   } catch (error) {
     console.error("Port scan error:", error);
-    res.status(500).json({ message: "Port scan failed" });
+    res.status(500).json({
+      message: "Port scan failed",
+      error: error.message
+    });
   }
 });
 app.post("/dns-lookup", authMiddleware, async (req, res) => {
@@ -974,10 +1382,11 @@ app.post("/subdomain-discovery", authMiddleware,async (req, res) => {
     console.error("Subdomain discovery error:", error.message);
 
     const savedScan = await SubdomainScan.create({
+      userId: req.userId,
       domain: req.body.domain,
       subdomains: [],
       totalFound: 0,
-      source: "crt.sh timeout or unavailable",
+      source: "crt.sh timeout or unavailable / 502 error",
       scannedAt: new Date()
     });
 
@@ -1043,16 +1452,156 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
       if (href && links.length < 20) links.push(href);
     });
 
+    const htmlLower = html.toLowerCase();
+
     const technologies = {
       server: headers["server"] || "Hidden / Not detected",
       poweredBy: headers["x-powered-by"] || "Hidden / Not detected",
-      frameworkHints: []
+      frameworks: [],
+      cms: [],
+      languages: [],
+      cdn: [],
+      analytics: [],
+      security: [],
+      databases: [],
+      allDetected: []
     };
 
-    if (html.includes("wp-content")) technologies.frameworkHints.push("WordPress");
-    if (html.toLowerCase().includes("react")) technologies.frameworkHints.push("React");
-    if (html.toLowerCase().includes("vue")) technologies.frameworkHints.push("Vue");
-    if (html.toLowerCase().includes("angular")) technologies.frameworkHints.push("Angular");
+    // Server / CDN detection
+    if ((headers["server"] || "").toLowerCase().includes("nginx")) {
+      technologies.allDetected.push("Nginx");
+    }
+
+    if ((headers["server"] || "").toLowerCase().includes("apache")) {
+      technologies.allDetected.push("Apache");
+    }
+
+    if ((headers["server"] || "").toLowerCase().includes("iis")) {
+      technologies.allDetected.push("Microsoft IIS");
+    }
+
+    if (
+      (headers["server"] || "").toLowerCase().includes("cloudflare") ||
+      headers["cf-ray"] ||
+      headers["cf-cache-status"]
+    ) {
+      technologies.cdn.push("Cloudflare");
+      technologies.allDetected.push("Cloudflare");
+    }
+
+    // Backend / powered by
+    if ((headers["x-powered-by"] || "").toLowerCase().includes("express")) {
+      technologies.frameworks.push("Express.js");
+      technologies.allDetected.push("Express.js");
+    }
+
+    if ((headers["x-powered-by"] || "").toLowerCase().includes("php")) {
+      technologies.languages.push("PHP");
+      technologies.allDetected.push("PHP");
+    }
+
+    if ((headers["x-powered-by"] || "").toLowerCase().includes("asp.net")) {
+      technologies.frameworks.push("ASP.NET");
+      technologies.allDetected.push("ASP.NET");
+    }
+
+    // Frontend frameworks
+    if (htmlLower.includes("react") || htmlLower.includes("__react")) {
+      technologies.frameworks.push("React");
+      technologies.allDetected.push("React");
+    }
+
+    if (htmlLower.includes("vue") || htmlLower.includes("__vue")) {
+      technologies.frameworks.push("Vue.js");
+      technologies.allDetected.push("Vue.js");
+    }
+
+    if (htmlLower.includes("angular")) {
+      technologies.frameworks.push("Angular");
+      technologies.allDetected.push("Angular");
+    }
+
+    if (htmlLower.includes("next_data") || htmlLower.includes("__next")) {
+      technologies.frameworks.push("Next.js");
+      technologies.allDetected.push("Next.js");
+    }
+
+    if (htmlLower.includes("nuxt")) {
+      technologies.frameworks.push("Nuxt.js");
+      technologies.allDetected.push("Nuxt.js");
+    }
+
+    // CMS detection
+    if (
+      htmlLower.includes("wp-content") ||
+      htmlLower.includes("wp-includes") ||
+      htmlLower.includes("wordpress")
+    ) {
+      technologies.cms.push("WordPress");
+      technologies.allDetected.push("WordPress");
+    }
+
+    if (htmlLower.includes("drupal")) {
+      technologies.cms.push("Drupal");
+      technologies.allDetected.push("Drupal");
+    }
+
+    if (htmlLower.includes("joomla")) {
+      technologies.cms.push("Joomla");
+      technologies.allDetected.push("Joomla");
+    }
+
+    if (htmlLower.includes("shopify")) {
+      technologies.cms.push("Shopify");
+      technologies.allDetected.push("Shopify");
+    }
+
+    // JavaScript libraries
+    if (htmlLower.includes("jquery")) {
+      technologies.frameworks.push("jQuery");
+      technologies.allDetected.push("jQuery");
+    }
+
+    if (htmlLower.includes("bootstrap")) {
+      technologies.frameworks.push("Bootstrap");
+      technologies.allDetected.push("Bootstrap");
+    }
+
+    if (htmlLower.includes("tailwind")) {
+      technologies.frameworks.push("Tailwind CSS");
+      technologies.allDetected.push("Tailwind CSS");
+    }
+
+    // Analytics
+    if (htmlLower.includes("google-analytics") || htmlLower.includes("gtag(")) {
+      technologies.analytics.push("Google Analytics");
+      technologies.allDetected.push("Google Analytics");
+    }
+
+    if (htmlLower.includes("googletagmanager")) {
+      technologies.analytics.push("Google Tag Manager");
+      technologies.allDetected.push("Google Tag Manager");
+    }
+
+    // Security / CDN headers
+    if (headers["strict-transport-security"]) {
+      technologies.security.push("HSTS Enabled");
+      technologies.allDetected.push("HSTS Enabled");
+    }
+
+    if (headers["content-security-policy"]) {
+      technologies.security.push("Content Security Policy");
+      technologies.allDetected.push("Content Security Policy");
+    }
+
+    // Remove duplicates
+    technologies.frameworks = [...new Set(technologies.frameworks)];
+    technologies.cms = [...new Set(technologies.cms)];
+    technologies.languages = [...new Set(technologies.languages)];
+    technologies.cdn = [...new Set(technologies.cdn)];
+    technologies.analytics = [...new Set(technologies.analytics)];
+    technologies.security = [...new Set(technologies.security)];
+    technologies.allDetected = [...new Set(technologies.allDetected)];
 
     // 2. DNS Lookup
     const dnsLookup = await runDnsLookupModule(targetUrl);
@@ -1062,7 +1611,7 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
 
     for (const item of commonPorts) {
       const status = await scanPort(domain, item.port);
-      const cveInfo = getCveForService(item.service, item.port, status);
+      const cveInfo = getRealisticCveForService(item.service, item.port, status);
 
       portResults.push({
         port: item.port,
@@ -1077,6 +1626,13 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
       });
     }
 
+    // 5. Subdomain basic placeholder
+    let subdomainData = {
+      domain,
+      subdomains: [],
+      totalFound: 0,
+      source: "Use detailed subdomain module for full CT log results"
+    };
     // 4. WHOIS basic reuse
     let whoisData = {
       domain,
@@ -1087,13 +1643,58 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
       status: "Included in full scan summary"
     };
 
-    // 5. Subdomain basic placeholder
-    let subdomainData = {
-      domain,
-      subdomains: [],
-      totalFound: 0,
-      source: "Use detailed subdomain module for full CT log results"
-    };
+    // Risk Score Calculation
+    let riskScore = 100;
+
+    const criticalFindings =
+      findings.filter(f => f.severity === "Critical").length;
+
+    const highFindings =
+      findings.filter(f => f.severity === "High").length;
+
+    const mediumFindings =
+      findings.filter(f => f.severity === "Medium").length;
+
+    const openPorts =
+      portResults.filter(p => p.status === "Open").length;
+
+    const criticalCves =
+      portResults.filter(p => p.cveSeverity === "Critical").length;
+
+    const highCves =
+      portResults.filter(p => p.cveSeverity === "High").length;
+
+    // Website vulnerabilities
+    riskScore -= criticalFindings * 20;
+    riskScore -= highFindings * 10;
+    riskScore -= mediumFindings * 5;
+
+    // Open services
+    riskScore -= openPorts * 2;
+
+    // CVEs
+    riskScore -= criticalCves * 15;
+    riskScore -= highCves * 8;
+
+    // Large attack surface
+    if (subdomainData.totalFound > 10) {
+      riskScore -= 10;
+    }
+
+    riskScore = Math.max(0, riskScore);
+
+    let riskLevel = "Low";
+
+    if (riskScore < 40) {
+      riskLevel = "Critical";
+    } else if (riskScore < 65) {
+      riskLevel = "High";
+    } else if (riskScore < 85) {
+      riskLevel = "Medium";
+    }
+
+    
+    
 
     const fullReport = {
       userId: req.userId,
@@ -1101,6 +1702,8 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
       target: targetUrl,
       domain,
       scannedAt: new Date(),
+      riskScore,
+      riskLevel,
 
       website: {
         statusCode: response.status,

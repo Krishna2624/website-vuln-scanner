@@ -742,6 +742,7 @@
       <a href="index.html">Scanner</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="report.html">Reports</a>
+      <a href="asset-inventory.html">Asset Inventory</a>
       <a href="risk-intelligence.html">Risk Intelligence</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
@@ -1200,6 +1201,11 @@ protectPage();
             </div>
             </div>
 
+            <div class="glass-card" style="margin-bottom:25px;">
+              <div class="section-title">Historical Risk Timeline</div>
+              <div id="riskTimeline" style="margin-top:20px;"></div>
+            </div>
+
         <div class="glass-card" style="margin-bottom:25px;">
           <div class="section-title">Remediation Roadmap</div>
 
@@ -1436,6 +1442,7 @@ protectPage();
         }
 
         renderRiskPage(scan);
+        loadRiskTimeline();
 
       } catch (error) {
         riskContent.innerHTML = `
@@ -1448,6 +1455,75 @@ protectPage();
         `;
       }
     }
+
+    async function loadRiskTimeline() {
+  try {
+    const res = await fetch("/full-scans", {
+      headers: {
+        Authorization: localStorage.getItem("token")
+      }
+    });
+
+    const scans = await res.json();
+    const timeline = document.getElementById("riskTimeline");
+
+    if (!timeline) return;
+
+    if (!scans.length) {
+      timeline.innerHTML = "<p style='color:#cbd5e1;'>No historical scans found.</p>";
+      return;
+    }
+
+    timeline.innerHTML = scans.slice(0, 10).map(scan => {
+      const score = scan.riskScore ?? "N/A";
+      const level = scan.riskLevel || "Unknown";
+
+      const color =
+        level === "Critical"
+          ? "#ef4444"
+          : level === "High"
+          ? "#f97316"
+          : level === "Medium"
+          ? "#eab308"
+          : "#22c55e";
+
+      return `
+        <div style="
+          background: rgba(255,255,255,0.05);
+          border-left: 5px solid ${color};
+          padding: 16px;
+          margin-bottom: 15px;
+          border-radius: 14px;
+        ">
+          <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            flex-wrap:wrap;
+          ">
+            <div>
+              <strong>${scan.domain || "Unknown Domain"}</strong><br>
+              <small style="color:#cbd5e1;">
+                ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}
+              </small>
+            </div>
+
+            <div style="text-align:right;">
+              <strong>${score}/100</strong><br>
+              <small style="color:${color};">
+                ${level} Risk
+              </small>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Timeline error:", error);
+  }
+}
 
     loadLatestRiskData();
   </script>

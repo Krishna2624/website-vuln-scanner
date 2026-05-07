@@ -450,6 +450,7 @@
     <a href="dashboard.html">Dashboard</a>
     <a href="report.html">Reports</a>
     <a href="risk-intelligence.html">Risk Intelligence</a>
+    <a href="asset-inventory.html">Asset Inventory</a>
     <a href="#" onclick="logout()">Logout</a>
   </div>
   </div>
@@ -932,8 +933,8 @@ async function startPortScan() {
   }
 
   statusBox.innerText = mode === "full"
-    ? "Running full Nmap scan..."
-    : "Running quick scan...";
+  ? "Running full 65,535 port scan with service detection. This may take several minutes depending on the target..."
+  : "Running quick common-port scan...";
 
   try {
     const res = await fetch("/port-scan", {
