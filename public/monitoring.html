@@ -2,13 +2,318 @@
 <html>
 <head>
   <title>Continuous Monitoring</title>
-</head>
-<body style="background:#020617;color:white;font-family:Poppins,sans-serif;padding:30px;">
-  <h1>Continuous Monitoring</h1>
-  <p>This module will track scanned assets, risk changes, last scan, next scan, and alert status.</p>
 
-  <button onclick="window.location.href='dashboard.html'">
-    Back to Dashboard
-  </button>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins',sans-serif;
+    }
+
+    body{
+      background:
+        radial-gradient(circle at top left,#0f172a,#020617 60%);
+      color:white;
+      min-height:100vh;
+      padding:30px;
+    }
+
+    .navbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);
+
+      padding:20px 30px;
+      border-radius:24px;
+
+      backdrop-filter:blur(14px);
+
+      margin-bottom:30px;
+    }
+
+    .navbar h1{
+      font-size:32px;
+      color:#93c5fd;
+    }
+
+    .back-btn{
+      background:linear-gradient(135deg,#2563eb,#3b82f6);
+      border:none;
+      color:white;
+      padding:12px 22px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .glass-card{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.10);
+
+      border-radius:26px;
+      padding:28px;
+
+      backdrop-filter:blur(18px);
+
+      margin-bottom:25px;
+    }
+
+    .hero-title{
+      font-size:38px;
+      color:#93c5fd;
+      margin-bottom:10px;
+    }
+
+    .hero-sub{
+      color:#cbd5e1;
+      font-size:18px;
+    }
+
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:20px;
+
+      margin-top:25px;
+    }
+
+    .metric{
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+
+      border-radius:22px;
+      padding:24px;
+    }
+
+    .metric h2{
+      font-size:42px;
+      margin-bottom:10px;
+      color:#93c5fd;
+    }
+
+    .metric p{
+      color:#cbd5e1;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+
+    th,td{
+      padding:18px;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+
+    th{
+      color:#93c5fd;
+      font-size:15px;
+    }
+
+    tr:hover{
+      background:rgba(255,255,255,0.04);
+    }
+
+    .badge{
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:600;
+      display:inline-block;
+    }
+
+    .critical{
+      background:rgba(239,68,68,0.22);
+      color:#fca5a5;
+    }
+
+    .high{
+      background:rgba(249,115,22,0.22);
+      color:#fdba74;
+    }
+
+    .medium{
+      background:rgba(234,179,8,0.22);
+      color:#fde68a;
+    }
+
+    .low{
+      background:rgba(34,197,94,0.22);
+      color:#86efac;
+    }
+
+    .stable{
+      background:rgba(59,130,246,0.22);
+      color:#93c5fd;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>Continuous Monitoring</h1>
+
+    <button class="back-btn"
+      onclick="window.location.href='dashboard.html'">
+      Back to Dashboard
+    </button>
+  </div>
+
+  <div class="glass-card">
+
+    <div class="hero-title">
+      Security Monitoring Center
+    </div>
+
+    <div class="hero-sub">
+      Real-time monitoring of scanned assets, exposure posture, and risk progression.
+    </div>
+
+    <div class="metrics">
+
+      <div class="metric">
+        <h2 id="totalAssets">0</h2>
+        <p>Monitored Assets</p>
+      </div>
+
+      <div class="metric">
+        <h2 id="criticalAssets">0</h2>
+        <p>Critical Risk Assets</p>
+      </div>
+
+      <div class="metric">
+        <h2 id="riskChanges">0</h2>
+        <p>Risk Changes Detected</p>
+      </div>
+
+      <div class="metric">
+        <h2 id="alerts">0</h2>
+        <p>Active Alerts</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="glass-card">
+
+    <h2 style="color:#93c5fd;">
+      Monitoring Timeline
+    </h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Asset</th>
+          <th>Risk Score</th>
+          <th>Risk Level</th>
+          <th>Last Scan</th>
+          <th>Status</th>
+          <th>Alert</th>
+        </tr>
+      </thead>
+
+      <tbody id="monitoringTable"></tbody>
+
+    </table>
+
+  </div>
+
+<script>
+
+async function loadMonitoring() {
+
+  try {
+
+    const res = await fetch("/full-scans", {
+      headers:{
+        Authorization: localStorage.getItem("token")
+      }
+    });
+
+    const scans = await res.json();
+
+    document.getElementById("totalAssets").innerText =
+      scans.length;
+
+    document.getElementById("criticalAssets").innerText =
+      scans.filter(s => s.riskLevel === "Critical").length;
+
+    document.getElementById("riskChanges").innerText =
+      scans.filter(s => s.riskScore < 65).length;
+
+    document.getElementById("alerts").innerText =
+      scans.filter(s => s.riskLevel === "Critical" || s.riskLevel === "High").length;
+
+    const table = document.getElementById("monitoringTable");
+
+    table.innerHTML = scans.map(scan => {
+
+      const riskClass =
+        scan.riskLevel === "Critical"
+          ? "critical"
+          : scan.riskLevel === "High"
+          ? "high"
+          : scan.riskLevel === "Medium"
+          ? "medium"
+          : "low";
+
+      return `
+        <tr>
+
+          <td>${scan.domain}</td>
+
+          <td>${scan.riskScore}/100</td>
+
+          <td>
+            <span class="badge ${riskClass}">
+              ${scan.riskLevel}
+            </span>
+          </td>
+
+          <td>
+            ${new Date(scan.scannedAt).toLocaleString()}
+          </td>
+
+          <td>
+            <span class="badge stable">
+              Monitoring Active
+            </span>
+          </td>
+
+          <td>
+            ${
+              scan.riskLevel === "Critical" ||
+              scan.riskLevel === "High"
+                ? `<span class="badge critical">Attention Required</span>`
+                : `<span class="badge low">Stable</span>`
+            }
+          </td>
+
+        </tr>
+      `;
+    }).join("");
+
+  } catch(error){
+    console.error(error);
+  }
+}
+
+loadMonitoring();
+
+</script>
+
 </body>
 </html>
