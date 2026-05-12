@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Penetration Testing Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.16), transparent 30%),
+        linear-gradient(180deg, #101827 0%, #131c2e 45%, #172235 100%);
+      color: white;
+      padding: 28px;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      max-width: 1600px;
+      margin: 0 auto 28px;
+      padding: 20px 28px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      border-radius: 24px;
+
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+
+      border: 1px solid rgba(255,255,255,0.16);
+
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+
+      box-shadow:
+        0 22px 50px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+
+    .navbar h1 {
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 16px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 12px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.08);
+      color: #93c5fd;
+    }
+
+    .pt-header,
+    .pt-card,
+    .pt-panel {
+      position: relative;
+      overflow: hidden;
+
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+
+      border: 1px solid rgba(255,255,255,0.16);
+
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+
+      box-shadow:
+        0 22px 50px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+
+      transition: 0.3s ease;
+    }
+
+    .pt-header::before,
+    .pt-card::before,
+    .pt-panel::before {
+      content: "";
+      position: absolute;
+      top: -45%;
+      left: -70%;
+      width: 180%;
+      height: 180%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.16),
+        transparent
+      );
+      transform: rotate(25deg);
+      opacity: 0;
+      transition: 0.6s;
+      pointer-events: none;
+    }
+
+    .pt-header:hover::before,
+    .pt-card:hover::before,
+    .pt-panel:hover::before {
+      opacity: 1;
+      left: 100%;
+    }
+
+    .pt-header:hover,
+    .pt-card:hover,
+    .pt-panel:hover {
+      transform: translateY(-4px);
+      border-color: rgba(168,85,247,0.38);
+    }
+
+    .pt-header {
+      max-width: 1600px;
+      margin: 0 auto 30px;
+      padding: 30px 34px;
+      border-radius: 30px;
+    }
+
+    .pt-header h2 {
+      font-size: 40px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .pt-header p {
+      color: #cbd5e1;
+      max-width: 900px;
+      line-height: 1.7;
+    }
+
+    .pt-metric-grid {
+      max-width: 1600px;
+      margin: 0 auto 32px;
+
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .pt-card {
+      min-height: 190px;
+      padding: 26px;
+      border-radius: 24px;
+    }
+
+    .pt-card h4 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+    }
+
+    .pt-card h2 {
+      font-size: 52px;
+      line-height: 1;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .pt-card p {
+      color: #94a3b8;
+      font-size: 15px;
+    }
+
+    .pt-grid {
+      max-width: 1600px;
+      margin: 0 auto;
+
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .pt-panel {
+      min-height: 300px;
+      padding: 26px;
+      border-radius: 24px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .panel-head h3 {
+      color: #bfdbfe;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .panel-head button {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+    }
+
+    .pt-list {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pt-list li {
+      padding: 14px 16px;
+      border-radius: 16px;
+
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.09);
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+
+    @media(max-width: 1200px) {
+      .pt-metric-grid,
+      .pt-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media(max-width: 700px) {
+      .pt-metric-grid,
+      .pt-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>Penetration Testing Workspace</h1>
+
+    <div class="nav-links">
+      <a href="workspace.html">Workspace</a>
+      <a href="dashboard.html">VA Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+
+  <div class="pt-header">
+    <h2>Penetration Testing Dashboard</h2>
+    <p>
+      Manage manual security testing engagements, scope, reconnaissance,
+      exploitation workflow, evidence collection, findings, remediation tracking,
+      and final penetration testing reports.
+    </p>
+  </div>
+
+  <div class="pt-metric-grid">
+
+    <div class="pt-card">
+      <h4>Active Engagements</h4>
+      <h2>0</h2>
+      <p>Currently running PT assignments</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>In-Scope Assets</h4>
+      <h2>0</h2>
+      <p>Targets approved for testing</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>Open Findings</h4>
+      <h2>0</h2>
+      <p>Confirmed manual findings</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>Evidence Items</h4>
+      <h2>0</h2>
+      <p>Screenshots, notes, and proof</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>Critical Exploits</h4>
+      <h2>0</h2>
+      <p>High impact exploitable issues</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>Testing Progress</h4>
+      <h2>0%</h2>
+      <p>Overall engagement completion</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>Report Status</h4>
+      <h2>Draft</h2>
+      <p>Current PT report state</p>
+    </div>
+
+    <div class="pt-card">
+      <h4>Risk Rating</h4>
+      <h2>Low</h2>
+      <p>Current manual assessment risk</p>
+    </div>
+
+  </div>
+
+  <div class="pt-grid">
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Engagements</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>No active engagement</span><b>0</b></li>
+        <li><span>Pending approval</span><b>0</b></li>
+        <li><span>Completed tests</span><b>0</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Scope</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>Domains</span><b>0</b></li>
+        <li><span>IP ranges</span><b>0</b></li>
+        <li><span>Excluded assets</span><b>0</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Recon</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>Subdomains noted</span><b>0</b></li>
+        <li><span>Services identified</span><b>0</b></li>
+        <li><span>Technologies mapped</span><b>0</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Evidence Vault</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>Screenshots</span><b>0</b></li>
+        <li><span>Payload notes</span><b>0</b></li>
+        <li><span>Proof files</span><b>0</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Testing Checklist</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>Recon completed</span><b>0%</b></li>
+        <li><span>Exploitation completed</span><b>0%</b></li>
+        <li><span>Reporting completed</span><b>0%</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Findings</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>Critical</span><b>0</b></li>
+        <li><span>High</span><b>0</b></li>
+        <li><span>Medium</span><b>0</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>Methodology</h3>
+        <button>View</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>OWASP Web</span><b>Ready</b></li>
+        <li><span>API Testing</span><b>Ready</b></li>
+        <li><span>Network Testing</span><b>Ready</b></li>
+      </ul>
+    </div>
+
+    <div class="pt-panel">
+      <div class="panel-head">
+        <h3>PT Reports</h3>
+        <button>Generate</button>
+      </div>
+
+      <ul class="pt-list">
+        <li><span>Draft reports</span><b>0</b></li>
+        <li><span>Final reports</span><b>0</b></li>
+        <li><span>Client-ready reports</span><b>0</b></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    function protectPage() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "auth.html";
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "auth.html";
+    }
+
+    protectPage();
+  </script>
+
+</body>
+</html>

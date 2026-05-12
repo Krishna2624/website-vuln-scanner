@@ -22,50 +22,203 @@
       }
 
     body {
-    background:
-        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
-        linear-gradient(135deg, #020617, #0f172a, #111827);
-    min-height: 100vh;
-    color: #fff;
-    padding: 30px;
+      position: relative;
+      background:
+        radial-gradient(circle at top left,
+          rgba(59,130,246,0.10),
+          transparent 28%),
+
+        radial-gradient(circle at bottom right,
+          rgba(168,85,247,0.10),
+          transparent 28%),
+
+        linear-gradient(
+          180deg,
+          #101827 0%,
+          #131c2e 45%,
+          #172235 100%
+        );
+
+      min-height: 100vh;
+      color: white;
+
+      padding: 28px;
+
+      overflow-x: hidden;
     }
+    body::before {
+  content: "";
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle,
+    rgba(59,130,246,0.12),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  bottom: -250px;
+  right: -250px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(168,85,247,0.10),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
 
     .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 30px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 24px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    margin-bottom: 30px;
-    box-shadow:
-        0 20px 45px rgba(0,0,0,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.12);
-    }
 
+  max-width: 1600px;
+
+  margin: 0 auto 28px;
+
+  padding: 20px 30px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 26px;
+
+  flex-wrap: wrap;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.09),
+      rgba(255,255,255,0.035)
+    );
+
+  border: 1px solid rgba(255,255,255,0.14);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
     .navbar h1 {
     font-size: 28px;
     font-weight: 700;
     }
+    .nav-links {
 
-    .nav-links a {
-    color: white;
-    text-decoration: none;
-    margin-left: 18px;
-    font-weight: 500;
-    padding: 10px 18px;
-    border-radius: 12px;
-    transition: 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      flex-wrap: wrap;
     }
+
+   .nav-links a {
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+
+  padding: 0 18px;
+
+  border-radius: 14px;
+
+  text-decoration: none;
+
+  color: #f8fafc;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition: 0.28s ease;
+
+  border: 1px solid transparent;
+}
 
     .nav-links a:hover {
     background: rgba(255,255,255,0.08);
     color: #93c5fd;
     }
+
+    .soc-title-box {
+
+  max-width: 1600px;
+
+  margin: 0 auto 28px;
+
+  padding: 28px 34px;
+
+  border-radius: 28px;
+
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,41,59,0.78),
+      rgba(15,23,42,0.72)
+    );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.soc-title-box::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,0.25),
+      transparent
+    );
+}
+
+.soc-title-box h1 {
+
+  font-size: 42px;
+
+  font-weight: 900;
+
+  color: white;
+
+  letter-spacing: -1px;
+
+  margin: 0;
+}
 
     .top-bar {
     display: flex;
@@ -82,16 +235,30 @@
     }
 
     .search-box input {
-    width: 100%;
-    padding: 15px 18px;
-    border: none;
-    border-radius: 16px;
-    outline: none;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: white;
-    font-size: 15px;
-    backdrop-filter: blur(14px);
+      width: 100%;
+
+      padding: 18px 20px;
+
+      border-radius: 16px;
+
+      outline: none;
+
+      background: rgba(255,255,255,0.04);
+
+      border: 1px solid rgba(148,163,184,0.16);
+
+      color: #f8fafc;
+
+      font-size: 14px;
+
+      transition: 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: rgba(96,165,250,0.55);
+
+      box-shadow:
+        0 0 0 4px rgba(59,130,246,0.08);
     }
 
     .cards {
@@ -219,19 +386,21 @@
     }
 
     button {
-    border: none;
-    padding: 10px 18px;
-    border-radius: 14px;
-    cursor: pointer;
-    font-weight: 600;
-    background: linear-gradient(90deg, #2563eb, #3b82f6);
-    color: white;
-    transition: 0.3s;
-    box-shadow: 0 10px 20px rgba(37,99,235,0.25);
+      border: 1px solid #334155;
+      padding: 11px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      background: #111827;
+      color: #e5e7eb;
+      transition: 0.2s ease;
+      box-shadow: none;
     }
 
     button:hover {
-    transform: scale(1.04);
+      background: #1e293b;
+      border-color: #475569;
+      transform: translateY(-1px);
     }
 
     .module-tabs {
@@ -526,10 +695,224 @@
   box-shadow: inset 0 0 12px rgba(168,85,247,0.15);
 }
 .section-title {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   margin-bottom: 18px;
   color: #a855f7;
+}
+/* =========================
+   HISTORY HEADER DESIGN
+========================= */
+
+.history-header-box{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:30px;
+  flex-wrap:wrap;
+
+  padding:22px 28px;
+  margin-bottom:35px;
+
+  background:
+    linear-gradient(135deg,
+      rgba(15,23,42,0.88),
+      rgba(30,41,59,0.78)
+    );
+
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:30px;
+
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.history-title-wrap{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+.history-icon{
+  width:46px;
+  height:46px;
+  border-radius:14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:20px;
+
+  background:rgba(168,85,247,0.08);
+  border:1px solid rgba(168,85,247,0.35);
+}
+
+.history-title-wrap h2{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:4px;
+  color:#ffffff;
+}
+
+.history-title-wrap p{
+  color:#94a3b8;
+  font-size:14px;
+}
+
+.history-main-tabs{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+}
+
+.history-group-toggle{
+  min-width:190px;
+  padding:16px 24px !important;
+
+  border-radius:18px !important;
+
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.06),
+      rgba(255,255,255,0.03)
+    ) !important;
+
+  border:1px solid rgba(255,255,255,0.14) !important;
+
+  font-size:16px !important;
+  font-weight:600 !important;
+
+  transition:0.3s ease;
+}
+
+.history-group-toggle.active{
+  background:
+    linear-gradient(135deg,
+      rgba(37,99,235,0.85),
+      rgba(168,85,247,0.72)
+    ) !important;
+
+  box-shadow:
+    0 0 35px rgba(59,130,246,0.28);
+}
+
+/* =========================
+   SECOND LEVEL TABS
+========================= */
+
+.surface-tabs{
+  justify-content:flex-start !important;
+  gap:18px;
+  margin-bottom:35px;
+}
+
+.surface-tabs .module-tab{
+  min-width:180px;
+
+  padding:14px 18px;
+
+  border-radius:16px;
+
+  font-size:15px;
+  font-weight:600;
+
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.02)
+    );
+
+  border:1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.20);
+
+  transition:0.3s ease;
+}
+
+.surface-tabs .module-tab:hover{
+  transform:translateY(-4px);
+  border-color:rgba(96,165,250,0.35);
+}
+
+.surface-tabs .module-tab.active{
+  background:
+    linear-gradient(135deg,
+      #2563eb,
+      #3b82f6
+    );
+
+  box-shadow:
+    0 0 30px rgba(59,130,246,0.28);
+}
+.history-header-box {
+  max-width: 1500px;
+  margin: 35px auto 40px;
+}
+
+.history-main-tabs {
+  display: flex;
+  gap: 24px;
+}
+
+.history-group-toggle {
+  min-width: 310px;
+  padding: 22px 36px;
+  border-radius: 18px;
+  border: 1px solid rgba(168,85,247,0.35);
+  background: rgba(15,23,42,0.75);
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(168,85,247,0.12);
+}
+
+.history-group-toggle.active {
+  background:
+    linear-gradient(135deg, rgba(37,99,235,0.75), rgba(168,85,247,0.55)),
+    rgba(15,23,42,0.85);
+  border-color: rgba(96,165,250,0.75);
+  box-shadow:
+    0 0 30px rgba(59,130,246,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.surface-tabs {
+  max-width: 1450px;
+  margin: 0 auto 35px;
+  justify-content: center !important;
+}
+
+.table-box {
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 28px;
+}
+
+.section-title::before {
+  content: "🛡️";
+  width: 40px;
+  height: 40px;
+  font-size:16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(168,85,247,0.08);
+  border: 1px solid rgba(168,85,247,0.45);
 }
 
     @media (max-width: 768px) {
@@ -543,7 +926,1038 @@
         gap: 12px;
     }
     }
+    .history-group {
+      display: none;
+    }
 
+    .history-group.active {
+      display: block;
+    }
+
+    /* =========================
+   FINAL PROFESSIONAL SOC LAYOUT
+========================= */
+
+.executive-header {
+
+  max-width: 1600px;
+
+  margin: 0 auto 28px;
+
+  padding: 26px 30px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 24px;
+  flex-wrap: wrap;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,41,59,0.78),
+      rgba(15,23,42,0.72)
+    );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+
+  position: relative;
+  overflow: hidden;
+}
+
+.executive-header::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,0.28),
+      transparent
+    );
+}
+
+.executive-left {
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+.executive-icon {
+
+  width: 58px;
+  height: 58px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  font-weight: 700;
+
+  color: #93c5fd;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(59,130,246,0.18),
+      rgba(168,85,247,0.14)
+    );
+
+  border: 1px solid rgba(96,165,250,0.22);
+}
+
+.executive-left h2 {
+
+  font-size: 30px;
+  font-weight: 800;
+
+  color: white;
+
+  margin-bottom: 6px;
+}
+
+.executive-left p {
+
+  color: #94a3b8;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+.executive-right {
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 10px;
+}
+
+.executive-status {
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 10px 16px;
+
+  border-radius: 999px;
+
+  background: rgba(34,197,94,0.10);
+
+  border: 1px solid rgba(34,197,94,0.22);
+
+  color: #86efac;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status-dot {
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  box-shadow:
+    0 0 12px #22c55e;
+}
+
+.executive-time {
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.soc-metric-grid {
+
+  max-width: 1600px;
+
+  margin: 0 auto 40px;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 24px;
+}
+
+.soc-metric-card {
+
+  min-height: 210px;
+
+  padding: 26px;
+
+  border-radius: 24px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,41,59,0.78),
+      rgba(15,23,42,0.72)
+    );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+
+  transition: 0.28s ease;
+}
+.soc-metric-card::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,0.28),
+      transparent
+    );
+}
+.soc-metric-card::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255,255,255,0.05),
+      transparent 40%
+    );
+
+  pointer-events: none;
+}
+
+.soc-metric-card:hover {
+
+  transform: translateY(-6px);
+
+  border-color: rgba(96,165,250,0.25);
+
+  box-shadow:
+    0 30px 65px rgba(0,0,0,0.30),
+    0 0 25px rgba(59,130,246,0.08);
+}
+
+.metric-head {
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  color: #cbd5e1;
+
+  margin-bottom: 24px;
+}
+
+.soc-metric-card h2 {
+  font-size: 54px;
+  line-height: 1;
+  margin-bottom: 18px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.soc-metric-card p {
+
+  font-size: 15px;
+
+  color: #94a3b8;
+
+  line-height: 1.6;
+
+  max-width: 220px;
+}
+
+.soc-metric-card small {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.mini-line {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  height: 3px;
+  border-radius: 999px;
+}
+
+.red-line { background: #ef4444; }
+.orange-line { background: #f97316; }
+.yellow-line { background: #eab308; }
+.green-line { background: #22c55e; }
+.blue-line { background: #3b82f6; }
+.purple-line { background: #8b5cf6; }
+
+.score-ring {
+  position: absolute;
+  right: 20px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background:
+    conic-gradient(#3b82f6 0deg, #8b5cf6 220deg, #1e293b 220deg);
+}
+
+.score-ring::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: #0b1220;
+}
+
+.mini-bars {
+  position: absolute;
+  left: 32px;
+  bottom: 22px;
+  height: 28px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.mini-bars::before {
+  content: "";
+  width: 12px;
+  height: 14px;
+  background: #22c55e;
+  border-radius: 4px;
+  box-shadow:
+    22px -8px 0 #22c55e,
+    44px -2px 0 #22c55e,
+    66px -12px 0 #22c55e,
+    88px -5px 0 #22c55e;
+}
+
+/* MAIN DASHBOARD GRID */
+
+.soc-dashboard-grid {
+  max-width: 1500px;
+  margin: 0 auto 36px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.soc-panel{
+  min-height:280px;
+  padding:18px;
+  border-radius:20px;
+  position:relative;
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0f172a,
+      #111c38
+    );
+
+  border:1px solid rgba(59,130,246,0.14);
+
+  box-shadow:
+    0 12px 35px rgba(0,0,0,0.32);
+}
+
+
+
+.panel-head {
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 5;
+}
+
+.panel-head h3 {
+  font-size: 18px !important;
+  line-height: 1.2;
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+.panel-head button {
+  min-width: 70px;
+  padding: 7px 12px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+/* LISTS */
+
+.soc-list,
+.fix-list,
+.activity-list,
+.surface-list {
+  position: relative;
+  z-index: 2;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.soc-list li,
+.fix-list li,
+.activity-list li,
+.surface-list div,
+.owasp-box div {
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.08);
+
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.35;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.surface-list b,
+.owasp-box b {
+  color: #c4b5fd;
+}
+
+/* LOWER PANELS */
+
+.chart-panel {
+  min-height: 300px;
+}
+
+.risk-bars {
+  height: 210px;
+  display: flex;
+  align-items: flex-end;
+  gap: 9px;
+  padding: 14px 6px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.risk-bars div {
+  flex: 1;
+  min-height: 35px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(to top, #2563eb, #7c3aed);
+}
+
+.owasp-box {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.coverage-list {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.coverage-list > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 12px;
+  align-items: center;
+}
+
+.coverage-list span {
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.coverage-list b {
+  font-size: 13px;
+  color: white;
+}
+
+.coverage-list div div {
+  grid-column: 1 / 3;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.coverage-list i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1400px) {
+  .soc-metric-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .soc-dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 800px) {
+  .soc-metric-grid,
+  .soc-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.custom-modal{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,0.65);
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  z-index:99999;
+}
+
+.custom-modal-content{
+  width:90%;
+  max-width:850px;
+
+  max-height:85vh;
+  overflow-y:auto;
+
+  border-radius:24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0f172a,
+      #111c38
+    );
+
+  border:1px solid rgba(59,130,246,0.16);
+
+  padding:24px;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45);
+}
+
+.custom-modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:22px;
+}
+
+.custom-modal-header h2{
+  font-size:24px;
+  color:#93c5fd;
+}
+
+.custom-modal-body{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.target-risk-item{
+  padding:16px 18px;
+
+  border-radius:16px;
+
+  background:rgba(255,255,255,0.05);
+
+  border:1px solid rgba(255,255,255,0.08);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.target-risk-item:hover{
+  background:rgba(59,130,246,0.12);
+}
+/* FIX DASHBOARD GRID SHAPING OUT */
+
+
+
+.soc-dashboard-grid {
+  max-width: 1600px !important;
+  width: 100% !important;
+  margin: 0 auto 40px !important;
+
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 24px !important;
+
+  overflow: visible !important;
+}
+
+.soc-panel {
+  min-height: 300px;
+  padding: 26px;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,41,59,0.78),
+      rgba(15,23,42,0.72)
+    );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.10);
+
+  box-shadow:
+    0 20px 45px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+
+  transition: 0.28s ease;
+}
+.soc-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,0.28),
+      transparent
+    );
+
+  pointer-events: none;
+}
+
+.soc-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255,255,255,0.05),
+      transparent 40%
+    );
+
+  pointer-events: none;
+}
+.soc-panel:hover {
+  transform: translateY(-6px);
+
+  border-color: rgba(96,165,250,0.25);
+
+  box-shadow:
+    0 30px 65px rgba(0,0,0,0.30),
+    0 0 25px rgba(59,130,246,0.08);
+}
+
+
+.panel-head {
+  width: 100%;
+  gap: 12px;
+}
+
+.panel-head h3 {
+  font-size: 22px !important;
+  line-height: 1.15;
+  color: #bfdbfe;
+  font-weight: 800;
+}
+
+.panel-head button {
+  flex-shrink: 0;
+}
+
+
+.soc-list li,
+.fix-list li,
+.activity-list li,
+.surface-list div,
+.owasp-box div {
+  min-height: 54px;
+  padding: 14px 16px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.09);
+
+  color: #e2e8f0;
+  font-size: 14px;
+  line-height: 1.35;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+  z-index: 2;
+}
+
+.history-header-box,
+.table-box,
+.surface-tabs {
+  max-width: 1500px !important;
+  width: 100% !important;
+} 
+.metric-status {
+  display: inline-flex;
+  margin-top: 14px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #cbd5e1;
+  background: #111827;
+  border: 1px solid #1f2937;
+}
+
+.danger-status {
+  color: #fecaca;
+  background: rgba(239,68,68,0.10);
+  border-color: rgba(239,68,68,0.25);
+}
+
+.safe-status {
+  color: #bbf7d0;
+  background: rgba(34,197,94,0.10);
+  border-color: rgba(34,197,94,0.25);
+}
+
+.info-status {
+  color: #bfdbfe;
+  background: rgba(59,130,246,0.10);
+  border-color: rgba(59,130,246,0.25);
+}
+.metric-status {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 22px;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+}
+
+.metric-status::before {
+
+  content: "";
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+}
+
+.danger-status {
+  color: #fca5a5;
+  background: rgba(239,68,68,0.10);
+}
+
+.danger-status::before {
+  background: #ef4444;
+}
+
+.safe-status {
+  color: #86efac;
+  background: rgba(34,197,94,0.10);
+}
+
+.safe-status::before {
+  background: #22c55e;
+}
+
+.info-status {
+  color: #93c5fd;
+  background: rgba(59,130,246,0.10);
+}
+
+.info-status::before {
+  background: #3b82f6;
+}
+.metric-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.metric-icon{
+  width:28px;
+  height:28px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:8px;
+
+  background:rgba(255,255,255,0.05);
+
+  color:#93c5fd;
+
+  font-size:14px;
+
+  border:1px solid rgba(148,163,184,0.14);
+}
+  
+.critical-icon { color:#f87171; }
+.high-icon { color:#fb923c; }
+.medium-icon { color:#facc15; }
+.low-icon { color:#4ade80; }
+.asset-icon { color:#60a5fa; }
+.service-icon { color:#a78bfa; }
+.score-icon { color:#818cf8; }
+.risk-icon { color:#22c55e; }
+
+/* =========================
+   REPORT STYLE GLASS EFFECT
+   FOR DASHBOARD HEADERS
+========================= */
+
+.executive-header,
+.history-header-box {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.09),
+      rgba(255,255,255,0.035)
+    ) !important;
+
+  border: 1px solid rgba(255,255,255,0.16) !important;
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  box-shadow:
+    0 22px 50px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.10) !important;
+
+  transition: 0.3s ease;
+}
+
+.executive-header::before,
+.history-header-box::before {
+  content: "";
+  position: absolute;
+  top: -45%;
+  left: -70%;
+  width: 180%;
+  height: 180%;
+
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.16),
+    transparent
+  );
+
+  transform: rotate(25deg);
+  opacity: 0;
+  transition: 0.6s;
+  pointer-events: none;
+}
+
+.executive-header:hover::before,
+.history-header-box:hover::before {
+  opacity: 1;
+  left: 100%;
+}
+
+.executive-header:hover,
+.history-header-box:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168,85,247,0.38) !important;
+}
+.executive-left h2,
+.history-title-wrap h2 {
+  color: #c084fc !important;
+}
+
+.executive-left p,
+.history-title-wrap p {
+  color: #cbd5e1 !important;
+}
+.executive-icon,
+.history-icon {
+  background:
+    linear-gradient(135deg,
+      rgba(124,58,237,0.20),
+      rgba(59,130,246,0.14)
+    ) !important;
+
+  border: 1px solid rgba(255,255,255,0.16) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 10px 25px rgba(0,0,0,0.18);
+}
+
+.score-card {
+  position: relative;
+}
+
+.score-ring {
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background:
+    conic-gradient(#3b82f6 0deg, #8b5cf6 220deg, #1e293b 220deg);
+}
+
+.score-ring::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background: #111827;
+}
+/* FINAL RISK STATUS FIX */
+
+.risk-card {
+  position: relative !important;
+  padding-bottom: 60px !important;
+}
+
+.risk-card h2 {
+  font-size: 62px !important;
+  margin-bottom: 18px !important;
+}
+
+.risk-card p {
+  position: relative !important;
+  z-index: 3 !important;
+  margin-bottom: 20px !important;
+}
+
+.risk-card .mini-bars {
+  position: absolute !important;
+  left: 34px !important;
+  bottom: 28px !important;
+  height: 26px !important;
+  width: 150px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  z-index: 2 !important;
+}
+
+.risk-card .mini-bars::before {
+  content: "" !important;
+  width: 12px !important;
+  height: 14px !important;
+  background: #22c55e !important;
+  border-radius: 4px !important;
+  box-shadow:
+    22px -6px 0 #22c55e,
+    44px -2px 0 #22c55e,
+    66px -12px 0 #22c55e,
+    88px -5px 0 #22c55e !important;
+}
 
 
 
@@ -553,16 +1967,18 @@
 
   <div class="navbar">
   <div style="display:flex; align-items:center; gap:15px;">
-    <h1>Security Platform</h1>
+    <h1>Vulnerability Assessment</h1>
     <span id="roleBadge" class="badge"></span>
   </div>
 
   <div class="nav-links">
+    <a href="workspace.html">Workspace</a>
     <a href="index.html">Scanner</a>
     <a href="dashboard.html">Dashboard</a>
-    <a href="report.html">Reports</a>
+    <a href="pt-dashboard.html">PT Dashboard</a>
     <a href="risk-intelligence.html">Risk Intelligence</a>
     <a href="asset-inventory.html">Asset Inventory</a>
+    <a href="report.html">Reports</a>
     <a href="#" onclick="logout()">Logout</a>
   </div>
 </div>
@@ -576,7 +1992,6 @@
 </div>
 
   
-
   <div class="top-bar">
     <div class="search-box">
       <input type="text" placeholder="Search scanned website URL..." />
@@ -593,113 +2008,238 @@
    <button onclick="openTrendModal()">Target Risk Timeline</button>
    <button onclick="openExportModal()">Export Report</button>
   </div>
+  
 
-  <div class="cards">
-    <div class="card"><h2 id="totalScans">0</h2><p>Total Scans</p></div>
-    <div class="card"><h2 id="critical">0</h2><p>Critical Issues</p></div>
-    <div class="card"><h2 id="high">0</h2><p>High Severity</p></div>
-    <div class="card"><h2 id="medium">0</h2><p>Medium Severity</p></div>
-    <div class="card"><h2 id="low">0</h2><p>Low Severity</p></div>
-    <div class="card"><h2 id="riskLevel">LOW</h2><p>Overall Risk Status</p></div>
+
+
+ <div class="soc-metric-grid">
+
+  <div class="soc-metric-card critical-card">
+    <div class="metric-head"><span class="metric-icon">⛔</span>
+  Critical Exposure</div>
+    <h2 id="critical">0</h2>
+    <p id="criticalTrend">Real-time critical exposure</p>
+    
   </div>
+
+  <div class="soc-metric-card high-card">
+    <div class="metric-head"><span class="metric-icon high-icon">▲</span>
+  High Findings</div>
+    <h2 id="high">0</h2>
+    <p id="highTrend">High severity findings</p>
+    
+  </div>
+
+  <div class="soc-metric-card medium-card">
+    <div class="metric-head"><span class="metric-icon medium-icon">⚠</span>
+  Medium Findings</div>
+    <h2 id="medium">0</h2>
+    <p id="mediumTrend">Medium severity findings</p>
+    
+  </div>
+
+  <div class="soc-metric-card low-card">
+    <div class="metric-head"><span class="metric-icon low-icon">✓</span>
+  Low Findings</div>
+    <h2 id="low">0</h2>
+    <p id="lowTrend">Low severity findings</p>
+   
+  </div>
+
+  <div class="soc-metric-card">
+    <div class="metric-head"> <span class="metric-icon asset-icon">◫</span>
+  Assets</div>
+    <h2 id="totalAssetsCard">0</h2>
+    <p id="assetTrend">Assets from scans</p>
+    
+  </div>
+
+  <div class="soc-metric-card">
+    <div class="metric-head"><span class="metric-icon service-icon">◎</span>
+  Internet Services</div>
+    <h2 id="exposedServicesCard">0</h2>
+    <p id="serviceTrend">Internet-facing services</p>
+    
+  </div>
+
+  <div class="soc-metric-card score-card">
+    <div class="metric-head"><span class="metric-icon score-icon">◔</span>
+  Posture Score</div>
+    <h2><span id="securityScoreCard">100</span><small>/100</small></h2>
+    <p id="scoreTrend">Calculated posture score</p>
+    <div class="score-ring"></div>
+  </div>
+
+  <div class="soc-metric-card risk-card">
+    <div class="metric-head"><span class="metric-icon risk-icon">▣</span>
+  Risk Status</div>
+    <h2 id="riskLevel">Stable</h2>
+    <p id="overallTrendText">Security posture status</p>
+    <div class="mini-bars"></div>
+  </div>
+
+</div>
+
+<div class="executive-header">
+
+  <div class="executive-left">
+
+    <div class="executive-icon">◈</div>
+
+    <div>
+      <h2>Executive Security Overview</h2>
+
+      <p>
+        Threat analytics, attack Surface visibility,
+        Risk prioritization, and Live operational telemetry
+      </p>
+    </div>
+
+  </div>
+
+  <div class="executive-right">
+
+    <div class="executive-status">
+      <span class="status-dot"></span>
+      Monitoring Active
+    </div>
+
+    <div class="executive-time">
+      SOC Telemetry Live
+    </div>
+
+  </div>
+
+</div>
 
   <!-- 🔥 INTELLIGENCE LAYER -->
-<div class="intelligence-grid">
+<div class="soc-dashboard-grid">
 
-  <div class="glass-card">
-    <h3>🎯 Top Risk Targets</h3>
-    <ul id="topTargets"></ul>
-  </div>
-
-  <div class="glass-card">
-    <h3>🧠 Common Issues</h3>
-    <ul id="commonVulns"></ul>
-  </div>
-
-  <div class="glass-card">
-    <h3>⚡ Priority Fixes</h3>
-    <ul id="priorityFixes"></ul>
-  </div>
-
-  <div class="glass-card">
-    <h3>🌐 Attack Surface</h3>
-    <p>Subdomains: <span id="subCount">0</span></p>
-    <p>Open Ports: <span id="portCount">0</span></p>
-    <p>Services: <span id="services">N/A</span></p>
-  </div>
-
-  <div class="glass-card">
-    <h3>📡 Live Activity</h3>
-    <ul id="activityFeed"></ul>
-  </div>
-
-</div>
-
-<!--Live Threat Feed-->
-<div class="glass-card threat-feed-card" style="margin-bottom:25px;">
-  <h3>🚨 Live Threat Feed</h3>
-  <ul id="threatFeed"></ul>
-</div>
-
-  <!-- 🧠 Common Vulnerabilities -->
-  <div class="glass-card Common-issues-card" style="margin-bottom:25px;">
-    <h3>🧠 Common Issues</h3>
-    <ul id="commonVulns">
-      <li>Missing CSP</li>
-      <li>Missing HSTS</li>
-      <li>Server Disclosure</li>
-    </ul>
+  <div class="soc-panel">
+    <div class="panel-head">
+      <h3>🎯 Top Risk Targets</h3>
+     <button type="button" onclick="openTopTargetsModal()">View All</button>
     </div>
- 
-
-  <!-- 🔥 ADVANCED INTELLIGENCE -->
-
-
-  <!-- ⚡ Priority Actions -->
-  <div class="glass-card Priority-Fixes-card" style="margin-bottom:25px;">
-    <h3>⚡ Priority Fixes</h3>
-    <ul id="priorityFixes">
-      <li>Enable Content Security Policy</li>
-      <li>Close Telnet Port</li>
-      <li>Hide Server Header</li>
-    </ul>
+    <ul id="topTargets" class="soc-list"></ul>
   </div>
 
-  <!-- 🌐 Attack Surface -->
-  <div class="glass-card Attack-Surface-card" style="margin-bottom:25px;">
-  <h3>🌐 Attack Surface</h3>
+  <div class="soc-panel">
+    <div class="panel-head">
+      <h3>🧠 Common Issues</h3>
+      <button type="button" onclick="openCommonIssuesModal()"> View All</button>
+    </div>
+    <ul id="commonVulns" class="soc-list"></ul>
+  </div>
 
-  <ul class="attack-list">
-    <li>
-      <span>🌐 Subdomains</span>
-      <strong id="subCount">0</strong>
-    </li>
+  <div class="soc-panel">
+    <div class="panel-head">
+      <h3>⚡ Priority Fixes</h3>
+      <button type="button" onclick="openPriorityFixesModal()">View All</button>
+    </div>
+    <ul id="priorityFixes" class="fix-list"></ul>
+  </div>
 
-    <li>
-      <span>Open Ports</span>
-      <strong id="portCount">0</strong>
-    </li>
+  <div class="soc-panel">
+    <div class="panel-head">
+      <h3>🌐 Attack Surface Overview</h3>
+      <button type="button" onclick="openAttackSurfaceModal()">View All</button>
+    </div>
 
-    <li>
-      <span>Services</span>
-      <strong id="services">N/A</strong>
-    </li>
-  </ul>
+    <div class="surface-list">
+      <div><span>🌍 Subdomains</span><b id="subCount">0</b></div>
+      <div><span>🔌 Open Ports</span><b id="portCount">0</b></div>
+      <div><span>🧬 Live Services</span><b id="servicesCount">0</b></div>
+      <div><span>🧪 Technologies</span><b id="techCount">0</b></div>
+    </div>
+  </div>
+
+  <div class="soc-panel">
+    <div class="panel-head">
+      <h3>📡 Live Activity</h3>
+      <button type="button" onclick="openLiveActivityModal()">View All</button>
+    </div>
+    <ul id="activityFeed" class="activity-list"></ul>
+  </div>
+
+  <div class="soc-panel chart-panel">
+  <div class="panel-head">
+    <h3>📈 Risk Trend Snapshot</h3>
+    <button type="button" onclick="openRiskTrendSnapshotModal()">
+      View All
+    </button>
+  </div>
+
+  <div id="riskTrendBars" class="risk-bars"></div>
 </div>
 
-  <!-- 📡 Activity Feed -->
-  <div class="glass-card Live-Activity-card" style="margin-bottom:25px;">
-    <h3>📡 Live Activity</h3>
-    <ul id="activityFeed">
-      <li>System Ready</li>
-    </ul>
+<div class="soc-panel chart-panel">
+  <div class="panel-head">
+    <h3>🛡️ OWASP Top 10 Distribution</h3>
+    <button type="button" onclick="openOwaspModal()">View All</button>
+  </div>
+  <div id="owaspDistribution" class="owasp-box"></div>
+</div>
+  <div class="soc-panel">
+    <div class="panel-head">
+      <h3>🧭 Scan Coverage</h3>
+      <button type="button" onclick="openCoverageModal()">
+        View All
+      </button>
+    </div>
+
+    <div class="coverage-list">
+      <div>
+        <span>Web Pages Crawled</span>
+        <b id="coveragePages">0</b>
+        <div><i id="coveragePagesBar"></i></div>
+      </div>
+
+      <div>
+        <span>Forms Tested</span>
+        <b id="coverageForms">0</b>
+        <div><i id="coverageFormsBar"></i></div>
+      </div>
+
+      <div>
+        <span>APIs Discovered</span>
+        <b id="coverageApis">0</b>
+        <div><i id="coverageApisBar"></i></div>
+      </div>
+
+      <div>
+        <span>Subdomains Found</span>
+        <b id="coverageSubs">0</b>
+        <div><i id="coverageSubsBar"></i></div>
+      </div>
+    </div>
   </div>
 
 </div>
 
-</div>
+  <div class="history-header-box">
+  <div class="history-title-wrap">
+    <div class="history-icon">🛡️</div>
+    <div>
+      <h2>Scan History</h2>
+      <p>View and analyze all your security scan history</p>
+    </div>
+  </div>
 
-  <div class="module-tabs">
+  <div class="history-main-tabs">
+    <button class="history-group-toggle active"
+      onclick="showHistoryGroup('surfaceHistoryGroup', this)">
+      🌐 Surface History
+    </button>
+
+    <button class="history-group-toggle"
+      onclick="showHistoryGroup('dynamicHistoryGroup', this)">
+      〽️ Dynamic History
+    </button>
+  </div>
+</div>
+  <div id="surfaceHistoryGroup" class="history-group active">
+
+  <div class="module-tabs surface-tabs">
     <button class="module-tab" onclick="showDashboardTab('fullScanHistory', this)">Full Scan History</button>
     <button class="module-tab active" onclick="showDashboardTab('vulnHistory', this)">Vulnerability History</button>
     <button class="module-tab" onclick="showDashboardTab('dnsHistory', this)">DNS History</button>
@@ -827,126 +2367,406 @@
           <th>Scanned At</th>
           <th>Report View</th>
           <th>Risk Intelligence</th>
+          <th>Asset Inventory</th>
         </tr>
       </thead>
       <tbody id="fullScanTableBody"></tbody>
     </table>
   </div>
+ </div>
+</div> <!-- surfaceHistoryGroup -->
+
+<div id="dynamicHistoryGroup" class="history-group">
+
+    <div class="module-tabs">
+
+    <button class="module-tab active"
+      onclick="showDashboardTab('dynamicDiscoveryHistory', this)">
+      Discovery History
+    </button>
+
+    <button class="module-tab"
+      onclick="showDashboardTab('dynamicInputHistory', this)">
+      Input Analysis History
+    </button>
+
+    <button class="module-tab"
+      onclick="showDashboardTab('dynamicAuthHistory', this)">
+      Authentication History
+    </button>
+
+    <button class="module-tab"
+      onclick="showDashboardTab('dynamicControlsHistory', this)">
+      Security Controls History
+    </button>
+
+    <button class="module-tab"
+      onclick="showDashboardTab('dynamicApiHistory', this)">
+      API Security History
+    </button>
+
+    <button class="module-tab"
+      onclick="showDashboardTab('dynamicVulnHistory', this)">
+      Vulnerability History
+    </button>
+
+  </div>
+
+    <div id="dynamicDiscoveryHistory" class="dashboard-tab active">
+      <div class="table-box" style="margin-top:30px;">
+        <div class="section-title">Dynamic Discovery History</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Pages</th>
+              <th>Routes</th>
+              <th>Forms</th>
+              <th>JS Files</th>
+              <th>Risk</th>
+              <th>Scanned At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="dynamicDiscoveryTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="dynamicInputHistory" class="dashboard-tab">
+
+      <div class="table-box" style="margin-top:30px;">
+        <div class="section-title">Dynamic Input Analysis History</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Parameters</th>
+              <th>Forms</th>
+              <th>Inputs</th>
+              <th>Hidden</th>
+              <th>Password</th>
+              <th>Risk</th>
+              <th>Scanned At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="dynamicInputTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="dynamicAuthHistory" class="dashboard-tab">
+
+      <div class="table-box" style="margin-top:30px;">
+        <div class="section-title">Authentication Assessment History</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Login Forms</th>
+              <th>Password Fields</th>
+              <th>Cookie Issues</th>
+              <th>Total Findings</th>
+              <th>Risk</th>
+              <th>Scanned At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="dynamicAuthTableBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div id="dynamicControlsHistory" class="dashboard-tab">
+
+      <div class="table-box" style="margin-top:30px;">
+        <div class="section-title">Security Controls History</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Total Controls</th>
+              <th>Passed</th>
+              <th>Failed</th>
+              <th>Cookie Issues</th>
+              <th>Risk</th>
+              <th>Scanned At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="dynamicControlsTableBody"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <div id="dynamicApiHistory" class="dashboard-tab">
+      <div class="table-box" style="margin-top:30px;">
+        <div class="section-title">API Security History</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>APIs</th>
+              <th>Swagger</th>
+              <th>JSON</th>
+              <th>CORS Issues</th>
+              <th>Findings</th>
+              <th>Risk</th>
+              <th>Scanned At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="dynamicApiTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div id="dynamicVulnHistory" class="dashboard-tab">
+      <div class="table-box" style="margin-top:30px;">
+        <div class="section-title">Dynamic Vulnerability Assessment History</div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Target</th>
+              <th>Mode</th>
+              <th>Total Findings</th>
+              <th>Sensitive Files</th>
+              <th>JS Secrets</th>
+              <th>Upload Risks</th>
+              <th>Risk</th>
+              <th>Scanned At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="dynamicVulnTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="topTargetsModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>🎯 Top Risk Targets</h2>
+      <button type="button" onclick="closeTopTargetsModal()">Close</button>
+    </div>
+
+    <div id="topTargetsModalBody"></div>
+  </div>
 </div>
 
-  <!-- Export Modal -->
-<div id="exportModal" style="
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter: blur(8px);
-  justify-content:center;
-  align-items:center;
-  z-index:999;
+<div id="commonIssuesModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>🧠 Common Issues</h2>
+      <button type="button" onclick="closeCommonIssuesModal()">Close</button>
+    </div>
+
+    <div id="commonIssuesModalBody"></div>
+  </div>
+</div>
+
+<div id="priorityFixesModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>⚡ Priority Fixes</h2>
+      <button type="button" onclick="closePriorityFixesModal()">Close</button>
+    </div>
+
+    <div id="priorityFixesModalBody"></div>
+  </div>
+</div>
+
+<div id="attackSurfaceModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>🌐 Attack Surface Overview</h2>
+      <button type="button" onclick="closeAttackSurfaceModal()">Close</button>
+    </div>
+
+    <div id="attackSurfaceModalBody"></div>
+  </div>
+</div>
+
+<div id="liveActivityModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>📡 Live Activity</h2>
+      <button type="button" onclick="closeLiveActivityModal()">Close</button>
+    </div>
+
+    <div id="liveActivityModalBody"></div>
+  </div>
+</div>
+
+<div id="riskTrendSnapshotModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>📈 Risk Trend Snapshot</h2>
+      <button type="button" onclick="closeRiskTrendSnapshotModal()">Close</button>
+    </div>
+
+    <div id="riskTrendSnapshotModalBody"></div>
+  </div>
+</div>
+
+<div id="owaspModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>🛡️ OWASP Top 10 Distribution</h2>
+      <button type="button" onclick="closeOwaspModal()">Close</button>
+    </div>
+
+    <div id="owaspModalBody"></div>
+  </div>
+</div>
+
+<div id="coverageModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="custom-modal-header">
+      <h2>🧭 Scan Coverage</h2>
+
+      <button type="button" onclick="closeCoverageModal()">
+        Close
+      </button>
+    </div>
+
+    <div id="coverageModalBody"></div>
+  </div>
+</div>
+
+
+
+
+    <!-- Export Modal -->
+  <div id="exportModal" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+    ">
+
+      <div style="
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 30px;
+        border-radius: 20px;
+        width: 400px;
+        text-align: center;
+        backdrop-filter: blur(20px);
+        color: white;
+      ">
+
+        <h2 style="margin-bottom:20px;">Select Report Type</h2>
+
+        <button onclick="downloadFullScanPDF()" style="margin:10px;">
+          Full Security Scan PDF
+        </button>
+
+        <button onclick="downloadVulnerabilityPDF()" style="margin:10px;">
+          Vulnerability Scan PDF
+        </button>
+
+        <button onclick="downloadDNSPDF()" style="margin:10px;">
+          DNS Lookup PDF
+        </button>
+
+        <button onclick="downloadPortPDF()">
+          Port Scan PDF
+        </button>
+
+        <button onclick="downloadWhoisPDF()" style="margin:10px;">
+          WHOIS Lookup PDF
+        </button>
+
+        <button onclick="downloadSubdomainPDF()" style="margin:10px;">
+          Subdomain Discovery PDF
+        </button>
+
+        
+        <br><br>
+
+        <button onclick="closeExportModal()" style="background:#ef4444;">
+          Close
+        </button>
+
+      </div>
+    </div>
+  <div id="trendModal" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
   ">
 
     <div style="
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.18);
-      padding: 30px;
-      border-radius: 20px;
-      width: 400px;
-      text-align: center;
-      backdrop-filter: blur(20px);
-      color: white;
+      width:90%;
+      max-width:900px;
+      max-height:90vh;
+      overflow:auto;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:24px;
+      padding:30px;
+      backdrop-filter:blur(22px);
+      color:white;
+      box-shadow:0 25px 60px rgba(0,0,0,0.35);
     ">
 
-      <h2 style="margin-bottom:20px;">Select Report Type</h2>
+      <h2 style="margin-bottom:10px;">Target Risk Timeline Analyzer</h2>
+      <p style="color:#cbd5e1; margin-bottom:20px;">
+        Enter a website URL to analyze its previous scan history, risk movement, repeated findings, and security trend.
+      </p>
 
-      <button onclick="downloadFullScanPDF()" style="margin:10px;">
-        Full Security Scan PDF
-      </button>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:25px;">
+        <input id="trendUrlInput" placeholder="https://example.com" style="
+          flex:1;
+          min-width:260px;
+          padding:14px;
+          border-radius:14px;
+          border:1px solid rgba(255,255,255,0.18);
+          background:rgba(255,255,255,0.08);
+          color:white;
+          outline:none;
+        ">
+        <button onclick="analyzeTargetTrend()">Analyze Trend</button>
+        <button onclick="closeTrendModal()" style="background:#ef4444;">Close</button>
+      </div>
 
-      <button onclick="downloadVulnerabilityPDF()" style="margin:10px;">
-        Vulnerability Scan PDF
-      </button>
-
-      <button onclick="downloadDNSPDF()" style="margin:10px;">
-        DNS Lookup PDF
-      </button>
-
-      <button onclick="downloadPortPDF()">
-        Port Scan PDF
-      </button>
-
-      <button onclick="downloadWhoisPDF()" style="margin:10px;">
-        WHOIS Lookup PDF
-      </button>
-
-      <button onclick="downloadSubdomainPDF()" style="margin:10px;">
-        Subdomain Discovery PDF
-      </button>
-
-      
-      <br><br>
-
-      <button onclick="closeExportModal()" style="background:#ef4444;">
-        Close
-      </button>
+      <div id="targetTrendResult"></div>
 
     </div>
   </div>
-<div id="trendModal" style="
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.65);
-  backdrop-filter: blur(8px);
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
-">
-
-  <div style="
-    width:90%;
-    max-width:900px;
-    max-height:90vh;
-    overflow:auto;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.18);
-    border-radius:24px;
-    padding:30px;
-    backdrop-filter:blur(22px);
-    color:white;
-    box-shadow:0 25px 60px rgba(0,0,0,0.35);
-  ">
-
-    <h2 style="margin-bottom:10px;">Target Risk Timeline Analyzer</h2>
-    <p style="color:#cbd5e1; margin-bottom:20px;">
-      Enter a website URL to analyze its previous scan history, risk movement, repeated findings, and security trend.
-    </p>
-
-    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:25px;">
-      <input id="trendUrlInput" placeholder="https://example.com" style="
-        flex:1;
-        min-width:260px;
-        padding:14px;
-        border-radius:14px;
-        border:1px solid rgba(255,255,255,0.18);
-        background:rgba(255,255,255,0.08);
-        color:white;
-        outline:none;
-      ">
-      <button onclick="analyzeTargetTrend()">Analyze Trend</button>
-      <button onclick="closeTrendModal()" style="background:#ef4444;">Close</button>
-    </div>
-
-    <div id="targetTrendResult"></div>
-
-  </div>
-</div>
 
   <script>
 
@@ -980,7 +2800,9 @@ const role = localStorage.getItem("role");
 let allScanData = [];
 let adminUsers = [];
 let selectedUserId = "all";
-
+let dynamicDiscoveryData = [];
+let dynamicInputData = [];
+let dynamicApiData = [];
 function showUserRole() {
   const role = localStorage.getItem("role");
   const badge = document.getElementById("roleBadge");
@@ -999,9 +2821,37 @@ function showUserRole() {
 function updateIntelligence(data) {
 
   // Top Targets
-  const sorted = [...data].sort((a,b) => 
-    (b.summary?.critical || 0) - (a.summary?.critical || 0)
-  );
+  const uniqueRiskMap = new Map();
+
+[...data]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueRiskMap.has(key)) {
+      uniqueRiskMap.set(key, scan);
+    }
+  });
+
+const sorted = Array.from(uniqueRiskMap.values())
+  .sort((a, b) => {
+
+    const aSummary =
+      a.website?.summary || a.summary || {};
+
+    const bSummary =
+      b.website?.summary || b.summary || {};
+
+    return (
+      (bSummary.critical || 0) -
+      (aSummary.critical || 0)
+    );
+  });
 
   document.getElementById("topTargets").innerHTML =
     sorted.slice(0,3).map(s => 
@@ -1010,47 +2860,395 @@ function updateIntelligence(data) {
 
   // Common Vulnerabilities
   let vulnMap = {};
-  data.forEach(scan => {
-    scan.findings?.forEach(f => {
-      vulnMap[f.title] = (vulnMap[f.title] || 0) + 1;
-    });
+
+data.forEach(scan => {
+  const allFindings = [
+    ...(scan.findings || []),
+    ...(scan.website?.findings || []),
+    ...(scan.headerFindings || []),
+    ...(scan.website?.headerFindings || [])
+  ];
+
+  allFindings.forEach(f => {
+    const title =
+      f.title ||
+      f.name ||
+      f.issue ||
+      f.header ||
+      "Unknown Issue";
+
+    vulnMap[title] = (vulnMap[title] || 0) + 1;
+  });
+});
+
+const common = Object.entries(vulnMap)
+  .sort((a, b) => b[1] - a[1]);
+
+document.getElementById("commonVulns").innerHTML =
+  common.length
+    ? common.slice(0, 3).map(([title, count]) => `
+        <li>
+          <span>${title}</span>
+          <b>${count}</b>
+        </li>
+      `).join("")
+    : `
+      <li>
+        <span>No common issues found</span>
+        <b>0</b>
+      </li>
+    `;
+
+    //priority 
+    let fixMap = {};
+
+data.forEach(scan => {
+  const allFindings = [
+    ...(scan.findings || []),
+    ...(scan.website?.findings || []),
+    ...(scan.headerFindings || []),
+    ...(scan.website?.headerFindings || [])
+  ];
+
+  allFindings.forEach(f => {
+    const fix =
+      f.recommendation ||
+      f.remediation ||
+      f.fix ||
+      f.solution ||
+      "Review and remediate this security finding";
+
+    fixMap[fix] = (fixMap[fix] || 0) + 1;
+  });
+});
+
+const fixes = Object.entries(fixMap)
+  .sort((a, b) => b[1] - a[1]);
+
+document.getElementById("priorityFixes").innerHTML =
+  fixes.length
+    ? fixes.slice(0, 3).map(([fix, count]) => `
+        <li>
+          <span>${fix}</span>
+          <b>${count}</b>
+        </li>
+      `).join("")
+    : `
+      <li>
+        <span>No priority fixes found</span>
+        <b>0</b>
+      </li>
+    `;
+
+
+    //attack surface overview
+
+    let totalSubdomains = 0;
+let totalOpenPorts = 0;
+let totalServices = 0;
+let totalTech = 0;
+
+const uniqueSurfaceMap = new Map();
+
+[...data]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueSurfaceMap.has(key)) {
+      uniqueSurfaceMap.set(key, scan);
+    }
   });
 
-  const common = Object.entries(vulnMap)
-    .sort((a,b)=>b[1]-a[1])
-    .slice(0,3);
+Array.from(uniqueSurfaceMap.values()).forEach(scan => {
+  totalSubdomains += scan.subdomains?.totalFound || scan.subdomains?.subdomains?.length || 0;
 
-  document.getElementById("commonVulns").innerHTML =
-    common.map(v => `<li>${v[0]} (${v[1]})</li>`).join("");
+  totalOpenPorts +=
+    scan.ports?.openPorts ||
+    scan.ports?.results?.filter(p => p.status === "Open").length ||
+    0;
+
+  totalServices +=
+    scan.ports?.results?.filter(p => p.status === "Open").length ||
+    0;
+
+  totalTech +=
+    scan.website?.technologies?.allDetected?.length ||
+    0;
+});
+
+document.getElementById("subCount").innerText = totalSubdomains;
+document.getElementById("portCount").innerText = totalOpenPorts;
+document.getElementById("servicesCount").innerText = totalServices;
+document.getElementById("techCount").innerText = totalTech;
+
 
   // Activity Feed
-  document.getElementById("activityFeed").innerHTML =
-    data.slice(0,5).map(s =>
-      `<li>${s.target} scanned</li>`
-    ).join("");
+  const uniqueActivityMap = new Map();
+
+[...data]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueActivityMap.has(key)) {
+      uniqueActivityMap.set(key, scan);
+    }
+  });
+
+const recentActivity =
+  Array.from(uniqueActivityMap.values());
+
+document.getElementById("activityFeed").innerHTML =
+  recentActivity.length
+    ? recentActivity.slice(0, 3).map(scan => {
+        const summary = scan.website?.summary || scan.summary || {};
+        const critical = summary.critical || 0;
+        const high = summary.high || 0;
+
+        let badge = "Info";
+
+        if (critical > 0) badge = "Critical";
+        else if (high > 0) badge = "High";
+
+        return `
+          <li>
+            <span>${scan.target || "Unknown Target"} scanned</span>
+            <b>${badge}</b>
+          </li>
+        `;
+      }).join("")
+    : `
+      <li>
+        <span>No recent activity</span>
+        <b>0</b>
+      </li>
+    `;
 
    
-  // 📈 Risk-Based Security Trend
-const recentScans = data
-  .slice()
-  .sort((a, b) => new Date(a.scannedAt) - new Date(b.scannedAt))
-  .slice(-5);
+  // 📈 Risk-Based Security Trend'
+
+  const uniqueTrendMap = new Map();
+
+[...data]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+    const key = scan.target || scan.targetUrl || scan.domain || "Unknown";
+
+    if (!uniqueTrendMap.has(key)) {
+      uniqueTrendMap.set(key, scan);
+    }
+  });
+
+const trendScans = Array.from(uniqueTrendMap.values()).slice(0, 8);
+
+const maxRiskValue = Math.max(
+  ...trendScans.map(scan => {
+    const summary = scan.website?.summary || scan.summary || {};
+    return (
+      (summary.critical || 0) * 4 +
+      (summary.high || 0) * 3 +
+      (summary.medium || 0) * 2 +
+      (summary.low || 0)
+    );
+  }),
+  1
+);
+
+document.getElementById("riskTrendBars").innerHTML =
+  trendScans.length
+    ? trendScans.map(scan => {
+        const summary = scan.website?.summary || scan.summary || {};
+        const riskValue =
+          (summary.critical || 0) * 4 +
+          (summary.high || 0) * 3 +
+          (summary.medium || 0) * 2 +
+          (summary.low || 0);
+
+        const height = Math.max(35, (riskValue / maxRiskValue) * 190);
+
+        return `
+          <div
+            title="${scan.target || "Target"} - Risk ${riskValue}"
+            style="height:${height}px">
+          </div>
+        `;
+      }).join("")
+    : `<p style="color:#94a3b8;">No trend data available</p>`;
+
+//owsap top 10 distrubtion
+
+const uniqueOwaspMap = new Map();
+
+[...data]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueOwaspMap.has(key)) {
+      uniqueOwaspMap.set(key, scan);
+    }
+  });
+
+const owaspMap = {};
+
+Array.from(uniqueOwaspMap.values()).forEach(scan => {
+  const allFindings = [
+    ...(scan.findings || []),
+    ...(scan.website?.findings || []),
+    ...(scan.headerFindings || []),
+    ...(scan.website?.headerFindings || [])
+  ];
+
+  allFindings.forEach(f => {
+    const text = (
+  f.owasp ||
+  f.owaspCategory ||
+  f.category ||
+  f.title ||
+  f.name ||
+  f.issue ||
+  f.header ||
+  ""
+).toLowerCase();
+
+let category = "A05: Security Misconfiguration";
+
+if (text.includes("content-security-policy") || text.includes("x-frame") || text.includes("security header")) {
+  category = "A05: Security Misconfiguration";
+} else if (text.includes("cookie") || text.includes("secure") || text.includes("httponly")) {
+  category = "A02: Cryptographic Failures";
+} else if (text.includes("cors") || text.includes("access-control")) {
+  category = "A05: Security Misconfiguration";
+} else if (text.includes("sql") || text.includes("injection") || text.includes("xss")) {
+  category = "A03: Injection";
+} else if (text.includes("auth") || text.includes("login") || text.includes("session")) {
+  category = "A07: Identification and Authentication Failures";
+} else if (text.includes("redirect") || text.includes("access control")) {
+  category = "A01: Broken Access Control";
+} else if (text.includes("outdated") || text.includes("version") || text.includes("cve")) {
+  category = "A06: Vulnerable and Outdated Components";
+}
+
+    owaspMap[category] = (owaspMap[category] || 0) + 1;
+  });
+});
+
+const owaspEntries = Object.entries(owaspMap)
+  .sort((a, b) => b[1] - a[1]);
+
+document.getElementById("owaspDistribution").innerHTML =
+  owaspEntries.length
+    ? owaspEntries.slice(0, 5).map(([category, count]) => `
+        <div>
+          <span>${category}</span>
+          <b>${count}</b>
+        </div>
+      `).join("")
+    : `
+      <div>
+        <span>No OWASP data found</span>
+        <b>0</b>
+      </div>
+    `;
+
+    //scan coverage 
+    
+
+
 
 
 
 }
 
 function showDashboardTab(tabId, button) {
-  document.querySelectorAll(".dashboard-tab").forEach(tab => {
+  const parentGroup = button.closest(".history-group");
+
+  parentGroup.querySelectorAll(".dashboard-tab").forEach(tab => {
     tab.style.display = "none";
+    tab.classList.remove("active");
   });
 
-  document.querySelectorAll(".module-tab").forEach(btn => {
+  parentGroup.querySelectorAll(".module-tab").forEach(btn => {
     btn.classList.remove("active");
   });
 
   document.getElementById(tabId).style.display = "block";
+  document.getElementById(tabId).classList.add("active");
+
   button.classList.add("active");
+
+  const groupId = parentGroup.id;
+
+  if (groupId === "surfaceHistoryGroup") {
+    localStorage.setItem("activeSurfaceTab", tabId);
+  }
+
+  if (groupId === "dynamicHistoryGroup") {
+    localStorage.setItem("activeDynamicTab", tabId);
+  }
+}
+
+function restoreHistoryTabs() {
+
+  const savedGroup =
+    localStorage.getItem("activeHistoryGroup") ||
+    "surfaceHistoryGroup";
+
+  const groupButton =
+    Array.from(document.querySelectorAll(".history-group-toggle"))
+      .find(btn =>
+        btn.getAttribute("onclick")?.includes(savedGroup)
+      );
+
+  if (groupButton) {
+    showHistoryGroup(savedGroup, groupButton);
+  }
+
+  setTimeout(() => {
+
+    const activeGroup =
+      document.getElementById(savedGroup);
+
+    if (!activeGroup) return;
+
+    let savedTab = "";
+
+    if (savedGroup === "surfaceHistoryGroup") {
+      savedTab =
+        localStorage.getItem("activeSurfaceTab") ||
+        "vulnHistory";
+    }
+
+    if (savedGroup === "dynamicHistoryGroup") {
+      savedTab =
+        localStorage.getItem("activeDynamicTab") ||
+        "dynamicDiscoveryHistory";
+    }
+
+    const tabButton =
+      Array.from(activeGroup.querySelectorAll(".module-tab"))
+        .find(btn =>
+          btn.getAttribute("onclick")?.includes(savedTab)
+        );
+
+    if (tabButton) {
+      showDashboardTab(savedTab, tabButton);
+    }
+
+  }, 120);
 }
 
 function updateThreatFeed(data) {
@@ -1104,6 +3302,25 @@ function viewFullScanRisk(id) {
       window.location.href = "risk-intelligence.html";
     }
 
+function viewFullScanAsset(id) {
+  const scan = fullScanHistoryData.find(item => item._id === id);
+
+  if (!scan) {
+    alert("Full scan asset data not found");
+    return;
+  }
+
+  localStorage.removeItem("latestAssetInventory");
+  localStorage.removeItem("latestFullReport");
+
+  localStorage.setItem(
+    "selectedAssetInventory",
+    JSON.stringify(scan)
+  );
+
+  window.location.href = "asset-inventory.html";
+}
+
 function populateUserFilter(data) {
   const role = localStorage.getItem("role");
   const select = document.getElementById("userFilter");
@@ -1156,10 +3373,12 @@ function renderVulnerabilityTable(data) {
   }
 
   data.forEach(scan => {
-    critical += scan.summary?.critical || 0;
-    high += scan.summary?.high || 0;
-    medium += scan.summary?.medium || 0;
-    low += scan.summary?.low || 0;
+   const summary = scan.website?.summary || scan.summary || {};
+
+    critical += summary.critical || 0;
+    high += summary.high || 0;
+    medium += summary.medium || 0;
+    low += summary.low || 0;
 
     const isOtherUser =
       role === "admin" && scan.userId && scan.userId !== currentUserId;
@@ -1169,7 +3388,7 @@ function renderVulnerabilityTable(data) {
         <td>${role === "admin" ? getUserLabel(scan.userId) : "You"}</td>
         <td>${scan.target || "N/A"}</td>
         <td><span class="badge ${scan.statusCode === 200 ? 'safe' : 'warn'}">${scan.statusCode || "N/A"}</span></td>
-        <td>${scan.summary?.totalFindings || 0}</td>
+        <td>${(scan.website?.summary || scan.summary)?.totalFindings || 0}</td>
         <td>${scan.headerFindings ? scan.headerFindings.length : 0}</td>
         <td>${(scan.dnsLookup?.domain || scan.dnsRecords?.domain) ? "Completed" : "Not Available"}</td>
         <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
@@ -1258,7 +3477,89 @@ function selectUserFilter(userId, label) {
     renderVulnerabilityTable(allScanData);
   } else {
     const filtered = allScanData.filter(scan => String(scan.userId) === String(userId));
+    updateSocMetrics(filtered);
     renderVulnerabilityTable(filtered);
+  }
+}
+
+function showHistoryGroup(groupId, button) {
+  document.querySelectorAll(".history-group").forEach(group => {
+    group.classList.remove("active");
+  });
+
+  document.querySelectorAll(".history-group-toggle").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  document.getElementById(groupId).classList.add("active");
+  button.classList.add("active");
+
+  localStorage.setItem("activeHistoryGroup", groupId);
+}
+
+function updateSocMetrics(data) {
+  let critical = 0;
+  let high = 0;
+  let medium = 0;
+  let low = 0;
+  let assets = new Set();
+  let exposedServices = 0;
+
+  data.forEach(scan => {
+    const summary = scan.website?.summary || scan.summary || {};
+
+    critical += summary.critical || 0;
+    high += summary.high || 0;
+    medium += summary.medium || 0;
+    low += summary.low || 0;
+
+    if (scan.domain) assets.add(scan.domain);
+    if (scan.target) assets.add(cleanUrl(scan.target));
+
+    exposedServices += scan.ports?.openPorts || 0;
+  });
+
+  const totalFindings = critical + high + medium + low;
+
+  const weightedRisk =
+    critical * 10 +
+    high * 5 +
+    medium * 2 +
+    low * 1;
+
+  let score = 100;
+
+  if (totalFindings > 0) {
+    score = Math.max(
+      0,
+      Math.round(100 - Math.min(weightedRisk, 90))
+    );
+  }
+
+  document.getElementById("critical").innerText = critical;
+  document.getElementById("high").innerText = high;
+  document.getElementById("medium").innerText = medium;
+  document.getElementById("low").innerText = low;
+
+  document.getElementById("totalAssetsCard").innerText = assets.size;
+  document.getElementById("exposedServicesCard").innerText = exposedServices;
+  document.getElementById("securityScoreCard").innerText = score;
+
+  const riskLevel = document.getElementById("riskLevel");
+  const trendText = document.getElementById("overallTrendText");
+
+  if (critical > 0 || score < 50) {
+    riskLevel.innerText = "Critical";
+    trendText.innerText = "Immediate action required";
+  } else if (high > 0 || score < 75) {
+    riskLevel.innerText = "At Risk";
+    trendText.innerText = "Security posture needs improvement";
+  } else if (medium > 0 || low > 0) {
+    riskLevel.innerText = "Moderate";
+    trendText.innerText = "Minor issues detected";
+  } else {
+    riskLevel.innerText = "Stable";
+    trendText.innerText = "Security posture status";
   }
 }
 
@@ -1269,7 +3570,7 @@ function selectUserFilter(userId, label) {
         window.location.href = "auth.html";
       }
 
-      const res = await fetch("/scans", {
+      const res = await fetch("/full-scans", {
         headers: {
           "Authorization": token
         }
@@ -1280,6 +3581,7 @@ function selectUserFilter(userId, label) {
       dashboardScanData = data;
       allScanData = data;
 
+      updateSocMetrics(data);
       updateIntelligence(data);
       populateUserFilter(data);
 
@@ -1463,6 +3765,7 @@ function selectUserFilter(userId, label) {
   });
       const data = await res.json();
       fullScanHistoryData = data;
+      updateScanCoverage();
       const table = document.getElementById("fullScanTableBody");
       table.innerHTML = "";
 
@@ -1478,6 +3781,7 @@ function selectUserFilter(userId, label) {
             <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
             <td><button onclick="viewFullScanReport('${scan._id}')">Report View</button></td>
             <td><button onclick="viewFullScanRisk('${scan._id}')">Risk View</button></td>
+            <td><button onclick="viewFullScanAsset('${scan._id}')">Asset View</button></td>
           </tr>
         `;
       });
@@ -1501,7 +3805,401 @@ function selectUserFilter(userId, label) {
       window.location.href = "report.html";
     }
 
+    async function loadDynamicDiscoveryHistory() {
+    try {
+      const res = await fetch("/dynamic-discovery-history", {
+        headers: getAuthHeaders()
+      });
 
+      const data = await res.json();
+      dynamicDiscoveryData = data;
+      updateScanCoverage();
+
+      const table = document.getElementById("dynamicDiscoveryTableBody");
+      table.innerHTML = "";
+
+      if (!data.length) {
+        table.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center; color:#cbd5e1;">
+              No dynamic discovery history found
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      data.forEach(scan => {
+        table.innerHTML += `
+          <tr class="history-row">
+           <td>${scan.targetUrl || scan.target || scan.url || "N/A"}</td>
+            <td>${scan.summary?.totalPages || scan.pages?.length || scan.totalPages || 0}</td>
+            <td>${scan.summary?.totalRoutes || scan.routesDiscovered?.length || scan.routes?.length || scan.totalRoutes || 0}</td>
+            <td>${scan.summary?.totalForms || scan.formsDiscovered?.length || scan.forms?.length || scan.totalForms || 0}</td>
+            <td>${scan.summary?.totalJsFiles || scan.jsFiles?.length || scan.totalJsFiles || 0}</td>
+            <td><span class="badge warn">${scan.riskLevel || scan.risk || "Medium"}</span></td>
+            <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
+            <td>
+              <button onclick='viewDynamicDiscoveryReport(${JSON.stringify(scan).replace(/'/g, "&#39;")})'>
+                View Report
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+    } catch (error) {
+      console.error("Dynamic discovery history loading failed:", error);
+    }
+  }
+    function viewDynamicDiscoveryReport(scan) {
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+      localStorage.removeItem("latestFullReport");
+
+      localStorage.setItem("latestDynamicReport", JSON.stringify({
+        reportType: "Discovery",
+        data: scan
+      }));
+
+      window.location.href = "dynamic-report.html";
+    }
+
+    async function loadDynamicInputHistory() {
+      try {
+
+        const res = await fetch("/dynamic-input-analysis-history", {
+          headers: getAuthHeaders()
+        });
+
+        const data = await res.json();
+        dynamicInputData = data;
+        updateScanCoverage();
+
+        const table =
+          document.getElementById("dynamicInputTableBody");
+
+        table.innerHTML = "";
+
+        if (!data.length) {
+          table.innerHTML = `
+            <tr>
+              <td colspan="9"
+                style="text-align:center;color:#cbd5e1;">
+                No input analysis history found
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        data.forEach(scan => {
+
+          table.innerHTML += `
+            <tr class="history-row">
+
+              <td>${scan.targetUrl || "N/A"}</td>
+
+              <td>${scan.summary?.totalParameters || 0}</td>
+              <td>${scan.summary?.totalForms || 0}</td>
+              <td>${scan.summary?.totalInputs || 0}</td>
+              <td>${scan.summary?.hiddenInputs || 0}</td>
+              <td>${scan.summary?.passwordInputs || 0}</td>
+
+              <td>
+                <span class="badge warn">
+                  ${scan.riskLevel || "Low"}
+                </span>
+              </td>
+
+              <td>
+                ${
+                  scan.scannedAt
+                    ? new Date(scan.scannedAt).toLocaleString()
+                    : "N/A"
+                }
+              </td>
+
+              <td>
+                <button
+                  onclick='viewDynamicInputReport(${JSON.stringify(scan).replace(/'/g, "&#39;")})'>
+                  View Report
+                </button>
+              </td>
+
+            </tr>
+          `;
+        });
+
+      } catch (error) {
+        console.error(
+          "Dynamic input history loading failed:",
+          error
+        );
+      }
+    }
+    function viewDynamicInputReport(scan) {
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+      localStorage.removeItem("latestFullReport");
+
+      localStorage.setItem("latestDynamicReport", JSON.stringify({
+        reportType: "Input Analysis",
+        data: scan
+      }));
+
+      window.location.href = "dynamic-report.html";
+    }
+
+    async function loadDynamicControlsHistory() {
+  try {
+    const res = await fetch("/dynamic-security-controls-history", {
+      headers: getAuthHeaders()
+    });
+
+    const data = await res.json();
+    const table = document.getElementById("dynamicControlsTableBody");
+    table.innerHTML = "";
+
+    if (!data.length) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align:center;color:#cbd5e1;">
+            No security controls history found
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    data.forEach(scan => {
+      table.innerHTML += `
+        <tr class="history-row">
+          <td>${scan.targetUrl || "N/A"}</td>
+          <td>${scan.summary?.totalControls || 0}</td>
+          <td>${scan.summary?.passedControls || 0}</td>
+          <td>${scan.summary?.failedControls || 0}</td>
+          <td>${scan.summary?.cookieIssues || 0}</td>
+          <td><span class="badge warn">${scan.riskLevel || "Low"}</span></td>
+          <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
+          <td>
+            <button onclick='viewDynamicControlsReport(${JSON.stringify(scan).replace(/'/g, "&#39;")})'>
+              View Report
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+  } catch (error) {
+    console.error("Dynamic controls history loading failed:", error);
+  }
+}
+    function viewDynamicControlsReport(scan) {
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+      localStorage.removeItem("latestFullReport");
+
+      localStorage.setItem("latestDynamicReport", JSON.stringify({
+        reportType: "Security Controls",
+        data: scan
+      }));
+
+      window.location.href = "dynamic-report.html";
+    }
+    
+    async function loadDynamicAuthHistory() {
+      try {
+        const res = await fetch("/dynamic-auth-history", {
+          headers: getAuthHeaders()
+        });
+
+        const data = await res.json();
+        const table = document.getElementById("dynamicAuthTableBody");
+        table.innerHTML = "";
+
+        if (!data.length) {
+          table.innerHTML = `
+            <tr>
+              <td colspan="8" style="text-align:center;color:#cbd5e1;">
+                No authentication assessment history found
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        data.forEach(scan => {
+          table.innerHTML += `
+            <tr class="history-row">
+              <td>${scan.targetUrl || "N/A"}</td>
+              <td>${scan.summary?.loginForms || 0}</td>
+              <td>${scan.summary?.passwordFields || 0}</td>
+              <td>${scan.summary?.cookieIssues || 0}</td>
+              <td>${scan.summary?.totalFindings || 0}</td>
+              <td><span class="badge warn">${scan.riskLevel || "Low"}</span></td>
+              <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
+              <td>
+                <button onclick='viewDynamicAuthReport(${JSON.stringify(scan).replace(/'/g, "&#39;")})'>
+                  View Report
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+      } catch (error) {
+        console.error("Dynamic authentication history loading failed:", error);
+      }
+    }
+    function viewDynamicAuthReport(scan) {
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+      localStorage.removeItem("latestFullReport");
+
+      localStorage.setItem("latestDynamicReport", JSON.stringify({
+        reportType: "Authentication Assessment",
+        data: scan
+      }));
+
+      window.location.href = "dynamic-report.html";
+    }
+    
+    async function loadDynamicApiHistory() {
+      try {
+        const res = await fetch("/dynamic-api-security-history", {
+          headers: getAuthHeaders()
+        });
+
+        const data = await res.json();
+        dynamicApiData = data;
+        updateScanCoverage();
+        const table = document.getElementById("dynamicApiTableBody");
+        table.innerHTML = "";
+
+        if (!data.length) {
+          table.innerHTML = `
+            <tr>
+              <td colspan="9" style="text-align:center;color:#cbd5e1;">
+                No API security history found
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        data.forEach(scan => {
+          table.innerHTML += `
+            <tr class="history-row">
+              <td>${scan.targetUrl || "N/A"}</td>
+              <td>${scan.summary?.totalApis || 0}</td>
+              <td>${scan.summary?.swaggerFound || 0}</td>
+              <td>${scan.summary?.jsonEndpoints || 0}</td>
+              <td>${scan.summary?.riskyCors || 0}</td>
+              <td>${scan.summary?.totalFindings || 0}</td>
+              <td><span class="badge warn">${scan.riskLevel || "Low"}</span></td>
+              <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
+              <td>
+                <button onclick='viewDynamicApiReport(${JSON.stringify(scan).replace(/'/g, "&#39;")})'>
+                  View Report
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+      } catch (error) {
+        console.error("Dynamic API history loading failed:", error);
+      }
+    }
+    function viewDynamicApiReport(scan) {
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+      localStorage.removeItem("latestFullReport");
+
+      localStorage.setItem("latestDynamicReport", JSON.stringify({
+        reportType: "API Security",
+        data: scan
+      }));
+
+      window.location.href = "dynamic-report.html";
+    }
+
+    async function loadDynamicVulnHistory() {
+      try {
+        const res = await fetch("/dynamic-vulnerability-history", {
+          headers: getAuthHeaders()
+        });
+
+        const data = await res.json();
+        const table = document.getElementById("dynamicVulnTableBody");
+        table.innerHTML = "";
+
+        if (!data.length) {
+          table.innerHTML = `
+            <tr>
+              <td colspan="9" style="text-align:center;color:#cbd5e1;">
+                No dynamic vulnerability history found
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        data.forEach(scan => {
+          table.innerHTML += `
+            <tr class="history-row">
+              <td>${scan.targetUrl || "N/A"}</td>
+              <td>${scan.mode || "standard"}</td>
+              <td>${scan.summary?.totalFindings || 0}</td>
+              <td>${scan.summary?.sensitiveFiles || 0}</td>
+              <td>${scan.summary?.jsSecrets || 0}</td>
+              <td>${scan.summary?.uploadRisks || 0}</td>
+              <td><span class="badge warn">${scan.riskLevel || "Low"}</span></td>
+              <td>${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}</td>
+              <td>
+                <button onclick='viewDynamicVulnReport(${JSON.stringify(scan).replace(/'/g, "&#39;")})'>
+                  View Report
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+      } catch (error) {
+        console.error("Dynamic vulnerability history loading failed:", error);
+      }
+    }
+    function viewDynamicVulnReport(scan) {
+      localStorage.removeItem("latestReport");
+      localStorage.removeItem("latestDnsReport");
+      localStorage.removeItem("latestPortReport");
+      localStorage.removeItem("latestWhoisReport");
+      localStorage.removeItem("latestSubdomainReport");
+      localStorage.removeItem("latestFullReport");
+
+      localStorage.setItem("latestDynamicReport", JSON.stringify({
+        reportType: "Vulnerability Assessment",
+        data: scan
+      }));
+
+      window.location.href = "dynamic-report.html";
+    }
 
 
 
@@ -1694,13 +4392,683 @@ function analyzeTargetTrend() {
 function openMonitoringCenter() {
   window.location.href = "monitoring.html";
 }
+
+function openDashboardHistory(groupId, tabId) {
+
+  const groupBtn = Array.from(
+    document.querySelectorAll(".history-group-toggle")
+  ).find(btn =>
+    btn.getAttribute("onclick")?.includes(groupId)
+  );
+
+  if (groupBtn) {
+    showHistoryGroup(groupId, groupBtn);
+  }
+
+  setTimeout(() => {
+
+    const group = document.getElementById(groupId);
+
+    if (!group) return;
+
+    const tabBtn = Array.from(
+      group.querySelectorAll(".module-tab")
+    ).find(btn =>
+      btn.getAttribute("onclick")?.includes(tabId)
+    );
+
+    if (tabBtn) {
+      showDashboardTab(tabId, tabBtn);
+
+      document.getElementById(tabId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+
+  }, 120);
+}
+
+function openTopTargetsModal() {
+
+  const modal = document.getElementById("topTargetsModal");
+  const body = document.getElementById("topTargetsModalBody");
+
+  if (!modal || !body) return;
+
+  const uniqueRiskMap = new Map();
+
+[...fullScanHistoryData]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueRiskMap.has(key)) {
+      uniqueRiskMap.set(key, scan);
+    }
+  });
+
+const sorted = Array.from(uniqueRiskMap.values())
+  .sort((a, b) => {
+
+    const aSummary =
+      a.website?.summary || a.summary || {};
+
+    const bSummary =
+      b.website?.summary || b.summary || {};
+
+    return (
+      (bSummary.critical || 0) -
+      (aSummary.critical || 0)
+    );
+  });
+
+  body.innerHTML = "";
+
+  sorted.slice(0,8).forEach(scan => {
+
+    const summary =
+      scan.website?.summary || scan.summary || {};
+
+    body.innerHTML += `
+      <div class="target-risk-item">
+
+        <div>
+          <strong>
+            ${scan.target || "Unknown Target"}
+          </strong>
+
+          <div style="margin-top:6px;font-size:12px;color:#94a3b8;">
+            Risk Level:
+            ${scan.riskLevel || "Unknown"}
+          </div>
+        </div>
+
+        <div style="text-align:right;">
+          <div style="color:#f87171;font-weight:700;">
+            ${summary.critical || 0} Critical
+          </div>
+
+          <div style="font-size:12px;color:#94a3b8;">
+            ${summary.high || 0} High
+          </div>
+        </div>
+
+      </div>
+    `;
+  });
+
+  modal.style.display = "flex";
+}
+
+function closeTopTargetsModal() {
+  document.getElementById("topTargetsModal").style.display = "none";
+}
+
+function openCommonIssuesModal() {
+  const modal = document.getElementById("commonIssuesModal");
+  const body = document.getElementById("commonIssuesModalBody");
+
+  if (!modal || !body) return;
+
+  let vulnMap = {};
+
+  fullScanHistoryData.forEach(scan => {
+    scan.findings?.forEach(f => {
+      const title = f.title || "Unknown Issue";
+      vulnMap[title] = (vulnMap[title] || 0) + 1;
+    });
+
+    scan.website?.findings?.forEach(f => {
+      const title = f.title || "Unknown Issue";
+      vulnMap[title] = (vulnMap[title] || 0) + 1;
+    });
+  });
+
+  const common = Object.entries(vulnMap)
+    .sort((a,b) => b[1] - a[1])
+    .slice(0,8);
+
+  body.innerHTML = common.length
+    ? common.map(([title, count]) => `
+        <div class="target-risk-item">
+          <strong>${title}</strong>
+          <span style="color:#c4b5fd;font-weight:700;">
+            ${count} times
+          </span>
+        </div>
+      `).join("")
+    : `<div class="target-risk-item">No common issues found yet.</div>`;
+
+  modal.style.display = "flex";
+}
+
+function closeCommonIssuesModal() {
+  document.getElementById("commonIssuesModal").style.display = "none";
+}
+
+function openPriorityFixesModal() {
+  const modal = document.getElementById("priorityFixesModal");
+  const body = document.getElementById("priorityFixesModalBody");
+
+  if (!modal || !body) return;
+
+  let fixMap = {};
+
+  fullScanHistoryData.forEach(scan => {
+    const allFindings = [
+      ...(scan.findings || []),
+      ...(scan.website?.findings || []),
+      ...(scan.headerFindings || []),
+      ...(scan.website?.headerFindings || [])
+    ];
+
+    allFindings.forEach(f => {
+      const fix =
+        f.recommendation ||
+        f.remediation ||
+        f.fix ||
+        f.solution ||
+        "Review and remediate this security finding";
+
+      fixMap[fix] = (fixMap[fix] || 0) + 1;
+    });
+  });
+
+  const fixes = Object.entries(fixMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8);
+
+  body.innerHTML = fixes.length
+    ? fixes.map(([fix, count]) => `
+        <div class="target-risk-item">
+          <strong>${fix}</strong>
+          <span style="color:#c4b5fd;font-weight:700;">
+            ${count} affected
+          </span>
+        </div>
+      `).join("")
+    : `<div class="target-risk-item">No priority fixes found yet.</div>`;
+
+  modal.style.display = "flex";
+}
+
+function closePriorityFixesModal() {
+  document.getElementById("priorityFixesModal").style.display = "none";
+}
+
+function openAttackSurfaceModal() {
+  const modal = document.getElementById("attackSurfaceModal");
+  const body = document.getElementById("attackSurfaceModalBody");
+
+  if (!modal || !body) return;
+
+  const uniqueSurfaceMap = new Map();
+
+[...fullScanHistoryData]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueSurfaceMap.has(key)) {
+      uniqueSurfaceMap.set(key, scan);
+    }
+  });
+
+const topAssets = Array.from(uniqueSurfaceMap.values())
+  .slice(0, 8)
+  .map(scan => {
+      const openPorts =
+        scan.ports?.openPorts ||
+        scan.ports?.results?.filter(p => p.status === "Open").length ||
+        0;
+
+      const subdomains =
+        scan.subdomains?.totalFound ||
+        scan.subdomains?.subdomains?.length ||
+        0;
+
+      const tech =
+        scan.website?.technologies?.allDetected?.length || 0;
+
+      return `
+        <div class="target-risk-item">
+          <div>
+            <strong>${scan.target || scan.domain || "Unknown Target"}</strong>
+            <div style="margin-top:6px;font-size:12px;color:#94a3b8;">
+              ${scan.domain || "Domain not available"}
+            </div>
+          </div>
+
+          <div style="text-align:right;font-size:13px;color:#cbd5e1;">
+            <div>🌍 ${subdomains} Subdomains</div>
+            <div>🔌 ${openPorts} Open Ports</div>
+            <div>🧪 ${tech} Technologies</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  body.innerHTML = topAssets || `
+    <div class="target-risk-item">
+      No attack surface data found yet.
+    </div>
+  `;
+
+  modal.style.display = "flex";
+}
+
+function closeAttackSurfaceModal() {
+  document.getElementById("attackSurfaceModal").style.display = "none";
+}
+
+function openLiveActivityModal() {
+  const modal = document.getElementById("liveActivityModal");
+  const body = document.getElementById("liveActivityModalBody");
+
+  if (!modal || !body) return;
+
+  const uniqueActivityMap = new Map();
+
+[...fullScanHistoryData]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueActivityMap.has(key)) {
+      uniqueActivityMap.set(key, scan);
+    }
+  });
+
+const recentActivity =
+  Array.from(uniqueActivityMap.values()).slice(0, 8);
+
+  body.innerHTML = recentActivity.length
+    ? recentActivity.map(scan => {
+        const summary = scan.website?.summary || scan.summary || {};
+        const critical = summary.critical || 0;
+        const high = summary.high || 0;
+        const medium = summary.medium || 0;
+        const low = summary.low || 0;
+
+        let badge = "Stable";
+        let color = "#22c55e";
+
+        if (critical > 0) {
+          badge = "Critical Activity";
+          color = "#f87171";
+        } else if (high > 0) {
+          badge = "High Risk Activity";
+          color = "#fb923c";
+        } else if (medium > 0) {
+          badge = "Medium Risk Activity";
+          color = "#facc15";
+        }
+
+        return `
+          <div class="target-risk-item">
+            <div>
+              <strong>${scan.target || "Unknown Target"}</strong>
+              <div style="margin-top:6px;font-size:12px;color:#94a3b8;">
+                ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}
+              </div>
+            </div>
+
+            <div style="text-align:right;">
+              <div style="color:${color};font-weight:700;">
+                ${badge}
+              </div>
+              <div style="font-size:12px;color:#94a3b8;">
+                C:${critical} H:${high} M:${medium} L:${low}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("")
+    : `<div class="target-risk-item">No live activity found yet.</div>`;
+
+  modal.style.display = "flex";
+}
+
+function closeLiveActivityModal() {
+  document.getElementById("liveActivityModal").style.display = "none";
+}
+
+function openRiskTrendSnapshotModal() {
+  const modal = document.getElementById("riskTrendSnapshotModal");
+  const body = document.getElementById("riskTrendSnapshotModalBody");
+
+  if (!modal || !body) return;
+
+  const uniqueTrendMap = new Map();
+
+[...fullScanHistoryData]
+  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+  .forEach(scan => {
+
+    const key =
+      scan.target ||
+      scan.targetUrl ||
+      scan.domain ||
+      "Unknown";
+
+    if (!uniqueTrendMap.has(key)) {
+      uniqueTrendMap.set(key, scan);
+    }
+  });
+
+const trendScans =
+  Array.from(uniqueTrendMap.values()).slice(0, 8);
+
+  body.innerHTML = trendScans.length
+    ? trendScans.map(scan => {
+        const summary = scan.website?.summary || scan.summary || {};
+
+        const riskScore =
+          (summary.critical || 0) * 4 +
+          (summary.high || 0) * 3 +
+          (summary.medium || 0) * 2 +
+          (summary.low || 0);
+
+        let trend = "Stable";
+        let color = "#22c55e";
+
+        if (riskScore >= 25) {
+          trend = "Critical Trend";
+          color = "#f87171";
+        } else if (riskScore >= 15) {
+          trend = "High Risk Trend";
+          color = "#fb923c";
+        } else if (riskScore >= 8) {
+          trend = "Moderate Trend";
+          color = "#facc15";
+        }
+
+        return `
+          <div class="target-risk-item">
+            <div>
+              <strong>${scan.target || "Unknown Target"}</strong>
+              <div style="margin-top:6px;font-size:12px;color:#94a3b8;">
+                ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}
+              </div>
+            </div>
+
+            <div style="text-align:right;">
+              <div style="color:${color};font-weight:700;">
+                ${trend}
+              </div>
+              <div style="font-size:12px;color:#94a3b8;">
+                Risk Score: ${riskScore}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("")
+    : `<div class="target-risk-item">No risk trend data found yet.</div>`;
+
+  modal.style.display = "flex";
+}
+
+function closeRiskTrendSnapshotModal() {
+  document.getElementById("riskTrendSnapshotModal").style.display = "none";
+}
+
+function openOwaspModal() {
+  const modal = document.getElementById("owaspModal");
+  const body = document.getElementById("owaspModalBody");
+
+  if (!modal || !body) return;
+
+  const uniqueOwaspMap = new Map();
+
+  [...fullScanHistoryData]
+    .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+    .forEach(scan => {
+      const key =
+        scan.target ||
+        scan.targetUrl ||
+        scan.domain ||
+        "Unknown";
+
+      if (!uniqueOwaspMap.has(key)) {
+        uniqueOwaspMap.set(key, scan);
+      }
+    });
+
+  const owaspMap = {};
+
+  Array.from(uniqueOwaspMap.values()).forEach(scan => {
+    const allFindings = [
+      ...(scan.findings || []),
+      ...(scan.website?.findings || []),
+      ...(scan.headerFindings || []),
+      ...(scan.website?.headerFindings || [])
+    ];
+
+    allFindings.forEach(f => {
+      const text = (
+  f.owasp ||
+  f.owaspCategory ||
+  f.category ||
+  f.title ||
+  f.name ||
+  f.issue ||
+  f.header ||
+  ""
+).toLowerCase();
+
+let category = "A05: Security Misconfiguration";
+
+if (text.includes("content-security-policy") || text.includes("x-frame") || text.includes("security header")) {
+  category = "A05: Security Misconfiguration";
+} else if (text.includes("cookie") || text.includes("secure") || text.includes("httponly")) {
+  category = "A02: Cryptographic Failures";
+} else if (text.includes("cors") || text.includes("access-control")) {
+  category = "A05: Security Misconfiguration";
+} else if (text.includes("sql") || text.includes("injection") || text.includes("xss")) {
+  category = "A03: Injection";
+} else if (text.includes("auth") || text.includes("login") || text.includes("session")) {
+  category = "A07: Identification and Authentication Failures";
+} else if (text.includes("redirect") || text.includes("access control")) {
+  category = "A01: Broken Access Control";
+} else if (text.includes("outdated") || text.includes("version") || text.includes("cve")) {
+  category = "A06: Vulnerable and Outdated Components";
+}
+
+      owaspMap[category] = (owaspMap[category] || 0) + 1;
+    });
+  });
+
+  const owaspEntries = Object.entries(owaspMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8);
+
+  body.innerHTML = owaspEntries.length
+    ? owaspEntries.map(([category, count]) => `
+        <div class="target-risk-item">
+          <strong>${category}</strong>
+          <span style="color:#c4b5fd;font-weight:700;">
+            ${count} findings
+          </span>
+        </div>
+      `).join("")
+    : `<div class="target-risk-item">No OWASP distribution data found yet.</div>`;
+
+  modal.style.display = "flex";
+}
+
+function closeOwaspModal() {
+  document.getElementById("owaspModal").style.display = "none";
+}
+
+function openCoverageModal() {
+  const modal = document.getElementById("coverageModal");
+  const body = document.getElementById("coverageModalBody");
+
+  if (!modal || !body) return;
+
+  const coverageMap = new Map();
+
+  dynamicDiscoveryData.forEach(scan => {
+    const key = scan.targetUrl || scan.target || "Unknown Target";
+
+    coverageMap.set(key, {
+      target: key,
+      pages: Number(scan.summary?.totalPages || 0),
+      forms: Number(scan.summary?.totalForms || 0),
+      apis: 0,
+      subdomains: 0,
+      scannedAt: scan.scannedAt
+    });
+  });
+
+  dynamicInputData.forEach(scan => {
+    const key = scan.targetUrl || scan.target || "Unknown Target";
+
+    const existing = coverageMap.get(key) || {
+      target: key,
+      pages: 0,
+      forms: 0,
+      apis: 0,
+      subdomains: 0,
+      scannedAt: scan.scannedAt
+    };
+
+    existing.forms += Number(scan.summary?.totalForms || 0);
+    existing.scannedAt = scan.scannedAt || existing.scannedAt;
+
+    coverageMap.set(key, existing);
+  });
+
+  dynamicApiData.forEach(scan => {
+    const key = scan.targetUrl || scan.target || "Unknown Target";
+
+    const existing = coverageMap.get(key) || {
+      target: key,
+      pages: 0,
+      forms: 0,
+      apis: 0,
+      subdomains: 0,
+      scannedAt: scan.scannedAt
+    };
+
+    existing.apis += Number(scan.summary?.totalApis || 0);
+    existing.scannedAt = scan.scannedAt || existing.scannedAt;
+
+    coverageMap.set(key, existing);
+  });
+
+  fullScanHistoryData.forEach(scan => {
+    const key = scan.target || scan.targetUrl || scan.domain || "Unknown Target";
+
+    const existing = coverageMap.get(key) || {
+      target: key,
+      pages: 0,
+      forms: 0,
+      apis: 0,
+      subdomains: 0,
+      scannedAt: scan.scannedAt
+    };
+
+    existing.subdomains += Number(scan.subdomains?.totalFound || 0);
+    existing.scannedAt = scan.scannedAt || existing.scannedAt;
+
+    coverageMap.set(key, existing);
+  });
+
+  const coverageScans = Array.from(coverageMap.values()).slice(0, 8);
+
+  body.innerHTML = coverageScans.length
+    ? coverageScans.map(scan => `
+      <div class="target-risk-item">
+        <div>
+          <strong>${scan.target}</strong>
+          <div style="margin-top:6px;font-size:12px;color:#94a3b8;">
+            ${scan.scannedAt ? new Date(scan.scannedAt).toLocaleString() : "N/A"}
+          </div>
+        </div>
+
+        <div style="text-align:right;font-size:13px;color:#cbd5e1;">
+          <div>📄 ${scan.pages} Pages</div>
+          <div>🧪 ${scan.forms} Forms</div>
+          <div>🔌 ${scan.apis} APIs</div>
+          <div>🌍 ${scan.subdomains} Subs</div>
+        </div>
+      </div>
+    `).join("")
+    : `<div class="target-risk-item">No scan coverage data found yet.</div>`;
+
+  modal.style.display = "flex";
+}
+
+function closeCoverageModal() {
+  document.getElementById("coverageModal").style.display =
+    "none";
+}
+
+function updateScanCoverage() {
+  let pages = 0;
+  let forms = 0;
+  let apis = 0;
+  let subdomains = 0;
+
+  dynamicDiscoveryData.forEach(scan => {
+    pages += Number(scan.summary?.totalPages || 0);
+    forms += Number(scan.summary?.totalForms || 0);
+  });
+
+  dynamicInputData.forEach(scan => {
+    forms += Number(scan.summary?.totalForms || 0);
+  });
+
+  dynamicApiData.forEach(scan => {
+    apis += Number(scan.summary?.totalApis || 0);
+  });
+
+  fullScanHistoryData.forEach(scan => {
+    subdomains += Number(scan.subdomains?.totalFound || 0);
+  });
+
+  document.getElementById("coveragePages").innerText = pages;
+  document.getElementById("coverageForms").innerText = forms;
+  document.getElementById("coverageApis").innerText = apis;
+  document.getElementById("coverageSubs").innerText = subdomains;
+
+  document.getElementById("coveragePagesBar").style.width = Math.min((pages / 200) * 100, 100) + "%";
+  document.getElementById("coverageFormsBar").style.width = Math.min((forms / 100) * 100, 100) + "%";
+  document.getElementById("coverageApisBar").style.width = Math.min((apis / 50) * 100, 100) + "%";
+  document.getElementById("coverageSubsBar").style.width = Math.min((subdomains / 100) * 100, 100) + "%";
+}
+
 loadFullScanHistory();
 loadDashboard();
 loadDnsLookups();
 loadPortScans();
 loadWhoisHistory();
 loadSubdomainHistory();
+
+loadDynamicDiscoveryHistory();
+loadDynamicInputHistory();
+loadDynamicAuthHistory();
+loadDynamicControlsHistory();
+loadDynamicApiHistory();
+loadDynamicVulnHistory();
+
 showUserRole();
+restoreHistoryTabs();
 
 setInterval(() => {
   loadFullScanHistory();
@@ -1709,9 +5077,20 @@ setInterval(() => {
   loadPortScans();
   loadWhoisHistory();
   loadSubdomainHistory();
+
+
+  loadDynamicDiscoveryHistory();
+  loadDynamicInputHistory();
+  loadDynamicAuthHistory();
+  loadDynamicControlsHistory();
+  loadDynamicApiHistory();
+  loadDynamicVulnHistory();
+
 }, 15000);
 
+
   </script>
+  
 
 </body>
 </html>

@@ -8,6 +8,7 @@ const PDFDocument = require("pdfkit");
 const dnsModule = require("dns");
 const { exec } = require("child_process");
 dnsModule.setServers(["8.8.8.8", "1.1.1.1"]);
+const PORT = process.env.PORT || 5000;
 const dns = dnsModule.promises;
 const net = require("net");
 require("dotenv").config();
@@ -156,6 +157,265 @@ const fullScanSchema = new mongoose.Schema({
   whois: Object,
   subdomains: Object
 });
+
+const daaScanSchema = new mongoose.Schema({
+  userId: String,
+  target: String,
+  domain: String,
+  crawlDepth: Number,
+
+  discovery: Object,
+
+  summary: {
+    pagesCrawled: Number,
+    internalLinks: Number,
+    externalLinks: Number,
+    formsFound: Number,
+    apiEndpoints: Number
+  },
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+const dynamicDiscoverySchema = new mongoose.Schema({
+  userId: String,
+  targetUrl: String,
+
+  pagesDiscovered: [String],
+  routesDiscovered: [String],
+
+  formsDiscovered: [
+    {
+      pageUrl: String,
+      action: String,
+      method: String,
+      inputs: {
+        type: [
+          {
+            name: String,
+            inputType: String
+          }
+        ],
+        default: []
+      }
+    }
+  ],
+
+  technologies: [String],
+  jsFiles: [String],
+
+  summary: {
+    totalPages: Number,
+    totalRoutes: Number,
+    totalForms: Number,
+    totalJsFiles: Number,
+    totalTechnologies: Number
+  },
+
+  riskLevel: String,
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+const DynamicDiscoveryScan = mongoose.model(
+  "DynamicDiscoveryScan",
+  dynamicDiscoverySchema
+);
+
+const dynamicInputAnalysisSchema = new mongoose.Schema({
+  userId: String,
+  targetUrl: String,
+
+  parameters: [
+    {
+      pageUrl: String,
+      parameter: String,
+      location: String,
+      risk: String
+    }
+  ],
+
+  forms: [
+    {
+      pageUrl: String,
+      action: String,
+      method: String,
+      inputs: [
+        {
+          name: String,
+          inputType: String,
+          risk: String
+        }
+      ]
+    }
+  ],
+
+  jsFiles: [String],
+
+  summary: {
+    totalParameters: Number,
+    totalForms: Number,
+    totalInputs: Number,
+    hiddenInputs: Number,
+    passwordInputs: Number,
+    fileInputs: Number,
+    jsFiles: Number
+  },
+
+  riskLevel: String,
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+const DynamicInputAnalysis = mongoose.model(
+  "DynamicInputAnalysis",
+  dynamicInputAnalysisSchema
+);
+
+const dynamicAuthAssessmentSchema = new mongoose.Schema({
+  userId: String,
+  targetUrl: String,
+
+  loginForms: Array,
+  passwordFields: Number,
+  hiddenFields: Number,
+  cookieSecurity: Array,
+  authFindings: Array,
+
+  summary: {
+    loginForms: Number,
+    passwordFields: Number,
+    hiddenFields: Number,
+    cookieIssues: Number,
+    totalFindings: Number
+  },
+
+  riskLevel: String,
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+const DynamicAuthAssessment = mongoose.model(
+  "DynamicAuthAssessment",
+  dynamicAuthAssessmentSchema
+);
+
+const dynamicSecurityControlsSchema = new mongoose.Schema({
+  userId: String,
+  targetUrl: String,
+
+  httpsEnabled: Boolean,
+  statusCode: Number,
+
+  headers: Object,
+  headerChecks: Array,
+  cookieSecurity: Array,
+  corsReview: Object,
+  controlFindings: Array,
+
+  summary: {
+    totalControls: Number,
+    passedControls: Number,
+    failedControls: Number,
+    cookieIssues: Number,
+    totalFindings: Number
+  },
+
+  riskLevel: String,
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+const DynamicSecurityControls = mongoose.model(
+  "DynamicSecurityControls",
+  dynamicSecurityControlsSchema
+);
+
+const dynamicApiSecuritySchema = new mongoose.Schema({
+  userId: String,
+  targetUrl: String,
+
+  discoveredApis: Array,
+  swaggerEndpoints: Array,
+  jsonEndpoints: Array,
+  corsReview: Object,
+  methods: Array,
+  apiFindings: Array,
+
+  summary: {
+    totalApis: Number,
+    swaggerFound: Number,
+    jsonEndpoints: Number,
+    riskyCors: Number,
+    totalFindings: Number
+  },
+
+  riskLevel: String,
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+const DynamicApiSecurity = mongoose.model(
+  "DynamicApiSecurity",
+  dynamicApiSecuritySchema
+);
+
+const dynamicVulnerabilityAssessmentSchema = new mongoose.Schema({
+  userId: String,
+  targetUrl: String,
+  mode: String,
+
+  statusCode: Number,
+  reflectedParameters: Array,
+  sqlErrorIndicators: Array,
+  openRedirectIndicators: Array,
+  sensitiveFiles: Array,
+  uploadRisks: Array,
+  jsSecretIndicators: Array,
+  dangerousMethods: Array,
+  vulnerabilityFindings: Array,
+
+  summary: {
+    reflectedParameters: Number,
+    sqlErrors: Number,
+    openRedirects: Number,
+    sensitiveFiles: Number,
+    uploadRisks: Number,
+    jsSecrets: Number,
+    dangerousMethods: Number,
+    totalFindings: Number
+  },
+
+  riskLevel: String,
+
+  scannedAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+const DynamicVulnerabilityAssessment = mongoose.model(
+  "DynamicVulnerabilityAssessment",
+  dynamicVulnerabilityAssessmentSchema
+);
+
+
+
+
+
+const DAAScan = mongoose.model("DAAScan", daaScanSchema);
 const FullScan = mongoose.model("FullScan", fullScanSchema);
 const Scan = mongoose.model("Scan", scanSchema);
 const app = express();
@@ -282,6 +542,106 @@ function detectVulnerabilities(headers, url, html) {
   }
 
   return findings;
+}
+
+async function crawlWebsite(startUrl, maxPages = 10) {
+  const visited = new Set();
+  const queue = [startUrl];
+
+  const internalLinks = [];
+  const externalLinks = [];
+  const forms = [];
+  const apiEndpoints = [];
+
+  const baseHost = new URL(startUrl).hostname;
+
+  while (queue.length > 0 && visited.size < maxPages) {
+    const currentUrl = queue.shift();
+
+    if (visited.has(currentUrl)) continue;
+    visited.add(currentUrl);
+
+    try {
+      const response = await axios.get(currentUrl, {
+        timeout: 10000,
+        maxRedirects: 3,
+        validateStatus: () => true,
+        headers: {
+          "User-Agent": "SecurityPlatformCrawler/1.0"
+        }
+      });
+
+      const html = response.data || "";
+      const $ = cheerio.load(html);
+
+      $("a").each((i, el) => {
+        const href = $(el).attr("href");
+        if (!href) return;
+
+        try {
+          const absoluteUrl = new URL(href, currentUrl).href;
+          const linkHost = new URL(absoluteUrl).hostname;
+
+          if (linkHost === baseHost) {
+            if (!internalLinks.includes(absoluteUrl)) {
+              internalLinks.push(absoluteUrl);
+            }
+
+            if (!visited.has(absoluteUrl) && queue.length < maxPages) {
+              queue.push(absoluteUrl);
+            }
+
+            if (
+              absoluteUrl.includes("/api/") ||
+              absoluteUrl.includes("/graphql") ||
+              absoluteUrl.includes("/swagger") ||
+              absoluteUrl.includes("/openapi")
+            ) {
+              apiEndpoints.push(absoluteUrl);
+            }
+
+          } else {
+            if (!externalLinks.includes(absoluteUrl)) {
+              externalLinks.push(absoluteUrl);
+            }
+          }
+        } catch {}
+      });
+
+      $("form").each((i, form) => {
+        forms.push({
+          page: currentUrl,
+          action: $(form).attr("action") || currentUrl,
+          method: ($(form).attr("method") || "GET").toUpperCase(),
+          inputs: $(form)
+            .find("input")
+            .map((j, input) => ({
+              name: $(input).attr("name") || "unnamed",
+              type: $(input).attr("type") || "text"
+            }))
+            .get()
+        });
+      });
+
+    } catch (error) {
+      console.log("Crawler skipped:", currentUrl, error.message);
+    }
+  }
+
+  return {
+    crawledPages: [...visited],
+    internalLinks: [...new Set(internalLinks)].slice(0, 50),
+    externalLinks: [...new Set(externalLinks)].slice(0, 50),
+    forms: forms.slice(0, 25),
+    apiEndpoints: [...new Set(apiEndpoints)].slice(0, 25),
+    summary: {
+      totalPagesCrawled: visited.size,
+      internalLinks: internalLinks.length,
+      externalLinks: externalLinks.length,
+      formsFound: forms.length,
+      apiEndpoints: apiEndpoints.length
+    }
+  };
 }
 
 async function runDnsLookupModule(targetUrl) {
@@ -442,6 +802,7 @@ function runNmapFullScan(target) {
     });
   });
 }
+
 async function searchNvdCves(service, version, port) {
   try {
     const keyword = `${service} ${version}`.replace("Version not detected", "").trim();
@@ -662,7 +1023,973 @@ function getRealisticCveForService(service, version, port) {
         cveRecommendation:
           "Review service version manually and verify against NVD/CVE databases."
       };
+}
+
+async function runDynamicDiscovery(targetUrl) {
+  const visited = new Set();
+  const pages = [];
+  const routes = new Set();
+  const forms = [];
+  const technologies = new Set();
+  const jsFiles = new Set();
+
+  const baseUrl = new URL(targetUrl);
+  const queue = [targetUrl];
+
+  while (queue.length > 0 && visited.size < 15) {
+    const currentUrl = queue.shift();
+
+    if (visited.has(currentUrl)) continue;
+    visited.add(currentUrl);
+
+    try {
+      const response = await axios.get(currentUrl, {
+        timeout: 10000,
+        headers: {
+          "User-Agent": "SecurityAssessmentBot/1.0"
+        }
+      });
+
+      const html = response.data;
+      const $ = cheerio.load(html);
+
+      pages.push(currentUrl);
+
+      const headers = response.headers;
+
+      if (headers["server"]) technologies.add(headers["server"]);
+      if (headers["x-powered-by"]) technologies.add(headers["x-powered-by"]);
+
+      if (html.includes("wp-content")) technologies.add("WordPress");
+      if (html.includes("react")) technologies.add("React");
+      if (html.includes("angular")) technologies.add("Angular");
+      if (html.includes("vue")) technologies.add("Vue.js");
+      if (html.includes("jquery")) technologies.add("jQuery");
+
+      $("script[src]").each((i, el) => {
+        const src = $(el).attr("src");
+
+        if (src) {
+          try {
+            const fullJsUrl = new URL(src, currentUrl).href;
+            jsFiles.add(fullJsUrl);
+          } catch {}
+        }
+      });
+
+      $("a[href]").each((i, el) => {
+        const href = $(el).attr("href");
+
+        if (!href) return;
+
+        try {
+          const fullUrl = new URL(href, currentUrl);
+
+          if (fullUrl.hostname === baseUrl.hostname) {
+            const cleanUrl = fullUrl.origin + fullUrl.pathname;
+
+            routes.add(fullUrl.pathname);
+
+            if (!visited.has(cleanUrl) && !queue.includes(cleanUrl)) {
+              queue.push(cleanUrl);
+            }
+          }
+        } catch {}
+      });
+
+      $("form").each((i, form) => {
+        const action = $(form).attr("action") || currentUrl;
+        const method = ($(form).attr("method") || "GET").toUpperCase();
+
+        const inputs = [];
+
+        $(form)
+          .find("input, textarea, select")
+          .each((j, input) => {
+            const labelText =
+            $(input).closest("label").text().trim() ||
+            $(input).parent().find("label").first().text().trim();
+
+          const selectOption =
+            $(input).find("option").first().text().trim();
+
+          inputs.push({
+            name:
+              $(input).attr("name") ||
+              $(input).attr("id") ||
+              $(input).attr("placeholder") ||
+              $(input).attr("aria-label") ||
+              labelText ||
+              selectOption ||
+              "unknown-input",
+
+            inputType:
+              $(input).attr("type") ||
+              input.tagName ||
+              "text"
+          });
+          });
+
+        forms.push({
+          pageUrl: currentUrl,
+          action,
+          method,
+          inputs
+        });
+      });
+    } catch (error) {
+      continue;
+    }
   }
+
+  let riskLevel = "Low";
+
+  if (forms.length > 5 || jsFiles.size > 10) {
+    riskLevel = "Medium";
+  }
+
+  if (forms.length > 10 || routes.size > 30) {
+    riskLevel = "High";
+  }
+
+  return {
+    pagesDiscovered: pages,
+    routesDiscovered: Array.from(routes),
+    formsDiscovered: forms,
+    technologies: Array.from(technologies),
+    jsFiles: Array.from(jsFiles),
+    summary: {
+      totalPages: pages.length,
+      totalRoutes: routes.size,
+      totalForms: forms.length,
+      totalJsFiles: jsFiles.size,
+      totalTechnologies: technologies.size
+    },
+    riskLevel
+  };
+}
+
+async function runDynamicInputAnalysis(targetUrl) {
+  const discovery = await runDynamicDiscovery(targetUrl);
+
+  const parameters = [];
+  const analyzedForms = [];
+
+  for (const pageUrl of discovery.pagesDiscovered || []) {
+    try {
+      const urlObj = new URL(pageUrl);
+
+      urlObj.searchParams.forEach((value, key) => {
+        parameters.push({
+          pageUrl,
+          parameter: key,
+          location: "URL Query",
+          risk: "Medium"
+        });
+      });
+    } catch {}
+  }
+
+  for (const form of discovery.formsDiscovered || []) {
+    const analyzedInputs = [];
+
+    for (const input of form.inputs || []) {
+      let risk = "Low";
+
+      const inputType = input.inputType || "text";
+      const inputName = input.name || "unnamed";
+
+      if (inputType === "hidden") risk = "Medium";
+      if (inputType === "password") risk = "High";
+      if (inputType === "file") risk = "High";
+
+      if (
+        inputName.toLowerCase().includes("token") ||
+        inputName.toLowerCase().includes("csrf")
+      ) {
+        risk = "Medium";
+      }
+
+      analyzedInputs.push({
+        name:
+        inputName !== "unnamed"
+          ? inputName
+          : input.id || input.placeholder || input.inputType || "unnamed-field",
+        inputType,
+        risk
+      });
+
+      parameters.push({
+        pageUrl: form.pageUrl,
+        parameter: inputName,
+        location: form.method || "FORM",
+        risk
+      });
+    }
+
+    analyzedForms.push({
+      pageUrl: form.pageUrl,
+      action: form.action,
+      method: form.method,
+      inputs: analyzedInputs
+    });
+  }
+
+  const totalInputs = analyzedForms.reduce(
+    (count, form) => count + form.inputs.length,
+    0
+  );
+
+  const hiddenInputs = analyzedForms.reduce(
+    (count, form) =>
+      count + form.inputs.filter(input => input.inputType === "hidden").length,
+    0
+  );
+
+  const passwordInputs = analyzedForms.reduce(
+    (count, form) =>
+      count + form.inputs.filter(input => input.inputType === "password").length,
+    0
+  );
+
+  const fileInputs = analyzedForms.reduce(
+    (count, form) =>
+      count + form.inputs.filter(input => input.inputType === "file").length,
+    0
+  );
+
+  let riskLevel = "Low";
+
+  if (passwordInputs > 0 || hiddenInputs > 3) {
+    riskLevel = "Medium";
+  }
+
+  if (fileInputs > 0 || parameters.length > 20) {
+    riskLevel = "High";
+  }
+
+  return {
+    targetUrl,
+    parameters,
+    forms: analyzedForms,
+    jsFiles: discovery.jsFiles || [],
+    summary: {
+      totalParameters: parameters.length,
+      totalForms: analyzedForms.length,
+      totalInputs,
+      hiddenInputs,
+      passwordInputs,
+      fileInputs,
+      jsFiles: discovery.jsFiles?.length || 0
+    },
+    riskLevel
+  };
+}
+
+async function runDynamicAuthAssessment(targetUrl) {
+  const response = await axios.get(targetUrl, {
+    timeout: 12000,
+    maxRedirects: 5,
+    validateStatus: () => true,
+    headers: {
+      "User-Agent": "SecurityPlatformDynamicAuthScanner/1.0"
+    }
+  });
+
+  const html = response.data || "";
+  const $ = cheerio.load(html);
+
+  const loginForms = [];
+  let passwordFields = 0;
+  let hiddenFields = 0;
+  const authFindings = [];
+
+  $("form").each((i, form) => {
+    const inputs = [];
+
+    $(form).find("input").each((j, input) => {
+      const type = ($(input).attr("type") || "text").toLowerCase();
+      const name = $(input).attr("name") || $(input).attr("id") || "unnamed";
+
+      if (type === "password") passwordFields++;
+      if (type === "hidden") hiddenFields++;
+
+      inputs.push({
+        name,
+        inputType: type
+      });
+    });
+
+    const hasPassword = inputs.some(input => input.inputType === "password");
+
+    if (hasPassword) {
+      loginForms.push({
+        action: $(form).attr("action") || targetUrl,
+        method: ($(form).attr("method") || "GET").toUpperCase(),
+        inputs
+      });
+    }
+  });
+
+  const cookies = response.headers["set-cookie"] || [];
+  const cookieSecurity = analyzeCookies(cookies);
+
+  if (!loginForms.length) {
+    authFindings.push({
+      title: "No Login Form Detected",
+      severity: "Info",
+      description: "No password-based login form was detected on the target page.",
+      recommendation: "Verify authentication manually if the login page exists elsewhere."
+    });
+  }
+
+  loginForms.forEach(form => {
+    if (form.method === "GET") {
+      authFindings.push({
+        title: "Login Form Uses GET Method",
+        severity: "High",
+        description: "Credentials may be exposed in URL query strings.",
+        recommendation: "Use POST method for authentication forms."
+      });
+    }
+  });
+
+  if (passwordFields > 0 && !targetUrl.startsWith("https://")) {
+    authFindings.push({
+      title: "Password Field Over Non-HTTPS",
+      severity: "Critical",
+      description: "Password input detected on a non-HTTPS page.",
+      recommendation: "Force HTTPS for all authentication pages."
+    });
+  }
+
+  cookieSecurity.forEach(cookie => {
+    if (!cookie.httpOnly || !cookie.secure) {
+      authFindings.push({
+        title: "Weak Authentication Cookie Flags",
+        severity: "Medium",
+        description: "One or more cookies are missing HttpOnly or Secure flags.",
+        recommendation: "Set HttpOnly, Secure, and SameSite attributes on authentication cookies."
+      });
+    }
+  });
+
+  let riskLevel = "Low";
+
+  if (authFindings.some(f => f.severity === "Medium")) riskLevel = "Medium";
+  if (authFindings.some(f => f.severity === "High")) riskLevel = "High";
+  if (authFindings.some(f => f.severity === "Critical")) riskLevel = "Critical";
+
+  return {
+    targetUrl,
+    loginForms,
+    passwordFields,
+    hiddenFields,
+    cookieSecurity,
+    authFindings,
+    summary: {
+      loginForms: loginForms.length,
+      passwordFields,
+      hiddenFields,
+      cookieIssues: cookieSecurity.filter(c => !c.httpOnly || !c.secure).length,
+      totalFindings: authFindings.length
+    },
+    riskLevel
+  };
+}
+
+async function runDynamicSecurityControls(targetUrl) {
+  const response = await axios.get(targetUrl, {
+    timeout: 12000,
+    maxRedirects: 5,
+    validateStatus: () => true,
+    headers: {
+      "User-Agent": "SecurityPlatformControlsScanner/1.0"
+    }
+  });
+
+  const headers = response.headers || {};
+  const cookies = headers["set-cookie"] || [];
+
+  const headerChecks = checkSecurityHeaders(headers);
+  const cookieSecurity = analyzeCookies(cookies);
+
+  const controlFindings = [];
+
+  headerChecks.forEach(item => {
+    if (item.status === "Missing") {
+      controlFindings.push({
+        title: `Missing ${item.name}`,
+        severity: item.severity || "Medium",
+        description: `${item.name} security header is not configured.`,
+        recommendation: `Configure ${item.name} header to improve browser-side protection.`
+      });
+    }
+  });
+
+  const httpsEnabled = targetUrl.startsWith("https://");
+
+  if (!httpsEnabled) {
+    controlFindings.push({
+      title: "HTTPS Not Enforced",
+      severity: "High",
+      description: "Target is using HTTP instead of HTTPS.",
+      recommendation: "Redirect all HTTP traffic to HTTPS and use valid TLS certificates."
+    });
+  }
+
+  const corsReview = {
+    accessControlAllowOrigin:
+      headers["access-control-allow-origin"] || "Not Configured",
+    accessControlAllowCredentials:
+      headers["access-control-allow-credentials"] || "Not Configured",
+    risk: "Low"
+  };
+
+  if (
+    headers["access-control-allow-origin"] === "*" &&
+    headers["access-control-allow-credentials"] === "true"
+  ) {
+    corsReview.risk = "High";
+
+    controlFindings.push({
+      title: "Unsafe CORS Configuration",
+      severity: "High",
+      description: "CORS allows wildcard origin with credentials.",
+      recommendation: "Avoid wildcard origins when credentials are enabled."
+    });
+  } else if (headers["access-control-allow-origin"] === "*") {
+    corsReview.risk = "Medium";
+
+    controlFindings.push({
+      title: "Wildcard CORS Origin",
+      severity: "Medium",
+      description: "CORS allows requests from any origin.",
+      recommendation: "Restrict allowed origins to trusted domains only."
+    });
+  }
+
+  cookieSecurity.forEach(cookie => {
+    if (!cookie.httpOnly || !cookie.secure || !cookie.sameSite) {
+      controlFindings.push({
+        title: "Weak Cookie Security Attributes",
+        severity: "Medium",
+        description: "Cookie is missing HttpOnly, Secure, or SameSite attribute.",
+        recommendation: "Set HttpOnly, Secure, and SameSite attributes for sensitive cookies."
+      });
+    }
+  });
+
+  const failedControls = headerChecks.filter(h => h.status === "Missing").length;
+  const passedControls = headerChecks.filter(h => h.status === "Present").length;
+  const cookieIssues = cookieSecurity.filter(
+    c => !c.httpOnly || !c.secure || !c.sameSite
+  ).length;
+
+  let riskLevel = "Low";
+
+  if (controlFindings.some(f => f.severity === "Medium")) riskLevel = "Medium";
+  if (controlFindings.some(f => f.severity === "High")) riskLevel = "High";
+  if (controlFindings.some(f => f.severity === "Critical")) riskLevel = "Critical";
+
+  return {
+    targetUrl,
+    httpsEnabled,
+    statusCode: response.status,
+    headers,
+    headerChecks,
+    cookieSecurity,
+    corsReview,
+    controlFindings,
+    summary: {
+      totalControls: headerChecks.length,
+      passedControls,
+      failedControls,
+      cookieIssues,
+      totalFindings: controlFindings.length
+    },
+    riskLevel
+  };
+}
+
+async function runDynamicApiSecurity(targetUrl) {
+  const response = await axios.get(targetUrl, {
+    timeout: 12000,
+    maxRedirects: 5,
+    validateStatus: () => true,
+    headers: {
+      "User-Agent": "SecurityPlatformApiScanner/1.0"
+    }
+  });
+
+  const html = response.data || "";
+  const headers = response.headers || {};
+  const $ = cheerio.load(html);
+
+  const discoveredApis = new Set();
+  const swaggerEndpoints = [];
+  const jsonEndpoints = [];
+  const apiFindings = [];
+
+  const apiKeywords = [
+    "/api/",
+    "/graphql",
+    "/v1/",
+    "/v2/",
+    "/rest/",
+    "/swagger",
+    "/openapi",
+    "/docs"
+  ];
+
+  $("a[href], script[src]").each((i, el) => {
+    const value = $(el).attr("href") || $(el).attr("src");
+    if (!value) return;
+
+    try {
+      const fullUrl = new URL(value, targetUrl).href;
+
+      if (apiKeywords.some(keyword => fullUrl.toLowerCase().includes(keyword))) {
+        discoveredApis.add(fullUrl);
+      }
+
+      if (
+        fullUrl.toLowerCase().includes("swagger") ||
+        fullUrl.toLowerCase().includes("openapi")
+      ) {
+        swaggerEndpoints.push(fullUrl);
+      }
+    } catch {}
+  });
+
+  const commonApiPaths = [
+    "/api",
+    "/api/v1",
+    "/api/v2",
+    "/graphql",
+    "/swagger.json",
+    "/openapi.json",
+    "/api-docs",
+    "/docs",
+    "/swagger-ui"
+  ];
+
+  for (const path of commonApiPaths) {
+    try {
+      const testUrl = new URL(path, targetUrl).href;
+
+      const apiRes = await axios.get(testUrl, {
+        timeout: 5000,
+        validateStatus: () => true,
+        headers: {
+          "User-Agent": "SecurityPlatformApiScanner/1.0"
+        }
+      });
+
+      const contentType = apiRes.headers["content-type"] || "";
+
+      if (apiRes.status < 400) {
+        discoveredApis.add(testUrl);
+
+        if (contentType.includes("application/json")) {
+          jsonEndpoints.push(testUrl);
+        }
+
+        if (
+          testUrl.includes("swagger") ||
+          testUrl.includes("openapi") ||
+          JSON.stringify(apiRes.data).toLowerCase().includes("openapi")
+        ) {
+          swaggerEndpoints.push(testUrl);
+        }
+      }
+    } catch {}
+  }
+
+  const corsReview = {
+    accessControlAllowOrigin:
+      headers["access-control-allow-origin"] || "Not Configured",
+    accessControlAllowCredentials:
+      headers["access-control-allow-credentials"] || "Not Configured",
+    risk: "Low"
+  };
+
+  if (headers["access-control-allow-origin"] === "*") {
+    corsReview.risk = "Medium";
+
+    apiFindings.push({
+      title: "Wildcard CORS Origin",
+      severity: "Medium",
+      description: "API or application allows requests from any origin.",
+      recommendation: "Restrict CORS origins to trusted domains only."
+    });
+  }
+
+  if (
+    headers["access-control-allow-origin"] === "*" &&
+    headers["access-control-allow-credentials"] === "true"
+  ) {
+    corsReview.risk = "High";
+
+    apiFindings.push({
+      title: "Unsafe CORS With Credentials",
+      severity: "High",
+      description: "Wildcard CORS is enabled with credentials.",
+      recommendation: "Never use wildcard origin when credentials are allowed."
+    });
+  }
+
+  if (swaggerEndpoints.length > 0) {
+    apiFindings.push({
+      title: "Public API Documentation Detected",
+      severity: "Medium",
+      description: "Swagger/OpenAPI documentation appears publicly accessible.",
+      recommendation: "Restrict API documentation in production environments."
+    });
+  }
+
+  if (jsonEndpoints.length > 0) {
+    apiFindings.push({
+      title: "Public JSON Endpoint Detected",
+      severity: "Low",
+      description: "Public JSON API endpoints were discovered.",
+      recommendation: "Verify that exposed JSON data does not contain sensitive information."
+    });
+  }
+
+  if (discoveredApis.size === 0) {
+    apiFindings.push({
+      title: "No API Endpoints Detected",
+      severity: "Info",
+      description: "No obvious API endpoints were discovered from passive checks.",
+      recommendation: "Run deeper authenticated testing if APIs exist behind login."
+    });
+  }
+
+  const methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
+
+  let riskLevel = "Low";
+  if (apiFindings.some(f => f.severity === "Medium")) riskLevel = "Medium";
+  if (apiFindings.some(f => f.severity === "High")) riskLevel = "High";
+  if (apiFindings.some(f => f.severity === "Critical")) riskLevel = "Critical";
+
+  return {
+    targetUrl,
+    discoveredApis: Array.from(discoveredApis),
+    swaggerEndpoints: [...new Set(swaggerEndpoints)],
+    jsonEndpoints: [...new Set(jsonEndpoints)],
+    corsReview,
+    methods,
+    apiFindings,
+    summary: {
+      totalApis: discoveredApis.size,
+      swaggerFound: [...new Set(swaggerEndpoints)].length,
+      jsonEndpoints: [...new Set(jsonEndpoints)].length,
+      riskyCors: corsReview.risk === "Low" ? 0 : 1,
+      totalFindings: apiFindings.length
+    },
+    riskLevel
+  };
+}
+
+async function runDynamicVulnerabilityAssessment(targetUrl, mode = "standard") {
+  const response = await axios.get(targetUrl, {
+    timeout: 15000,
+    maxRedirects: 5,
+    validateStatus: () => true,
+    headers: {
+      "User-Agent": "SecurityPlatformDynamicVulnScanner/1.0"
+    }
+  });
+
+  const html = response.data || "";
+  const headers = response.headers || {};
+  const $ = cheerio.load(html);
+
+  const reflectedParameters = [];
+  const sqlErrorIndicators = [];
+  const openRedirectIndicators = [];
+  const sensitiveFiles = [];
+  const uploadRisks = [];
+  const jsSecretIndicators = [];
+  const dangerousMethods = [];
+  const vulnerabilityFindings = [];
+
+  const finalUrl = new URL(targetUrl);
+
+  // 1. Parameter risk indicators
+  const riskyParams = [
+    "q", "search", "query", "id", "user", "redirect", "url",
+    "next", "return", "file", "path", "page", "callback"
+  ];
+
+  riskyParams.forEach(param => {
+    if (finalUrl.searchParams.has(param)) {
+      reflectedParameters.push({
+        parameter: param,
+        value: finalUrl.searchParams.get(param),
+        risk: ["redirect", "url", "next", "return"].includes(param)
+          ? "Open Redirect Risk"
+          : "Input Reflection Risk"
+      });
+    }
+  });
+
+  // 2. SQL error exposure
+  const sqlErrors = [
+    "you have an error in your sql syntax",
+    "mysql_fetch",
+    "ora-01756",
+    "sql server",
+    "postgresql",
+    "sqlite error",
+    "syntax error at or near",
+    "unclosed quotation mark",
+    "warning: mysql",
+    "microsoft ole db"
+  ];
+
+  sqlErrors.forEach(pattern => {
+    if (html.toLowerCase().includes(pattern)) {
+      sqlErrorIndicators.push(pattern);
+    }
+  });
+
+  // 3. Open redirect indicators
+  $("a[href]").each((i, el) => {
+    const href = $(el).attr("href") || "";
+
+    if (
+      href.includes("redirect=") ||
+      href.includes("returnUrl=") ||
+      href.includes("next=") ||
+      href.includes("url=")
+    ) {
+      openRedirectIndicators.push(href);
+    }
+  });
+
+  // 4. Upload risk
+  $("input[type='file']").each((i, input) => {
+    uploadRisks.push({
+      name: $(input).attr("name") || "unnamed",
+      formAction: $(input).closest("form").attr("action") || "N/A"
+    });
+  });
+
+  // 5. JavaScript secret indicators
+  const scripts = [];
+  $("script[src]").each((i, script) => {
+    const src = $(script).attr("src");
+    if (src) scripts.push(new URL(src, targetUrl).href);
+  });
+
+  const secretPatterns = [
+    "api_key",
+    "apikey",
+    "access_token",
+    "secret",
+    "client_secret",
+    "bearer ",
+    "authorization",
+    "firebase",
+    "aws_access_key"
+  ];
+
+  const maxScripts =
+    mode === "deep" ? 10 :
+    mode === "standard" ? 5 :
+    2;
+
+  for (const scriptUrl of scripts.slice(0, maxScripts)) {
+    try {
+      const jsRes = await axios.get(scriptUrl, {
+        timeout: 7000,
+        validateStatus: () => true
+      });
+
+      const jsText = String(jsRes.data || "").toLowerCase();
+
+      secretPatterns.forEach(pattern => {
+        if (jsText.includes(pattern)) {
+          jsSecretIndicators.push({
+            script: scriptUrl,
+            indicator: pattern
+          });
+        }
+      });
+    } catch {}
+  }
+
+  // 6. Sensitive file checks
+  const sensitivePaths = [
+    "/.env",
+    "/backup.zip",
+    "/backup.tar.gz",
+    "/config.json",
+    "/database.sql",
+    "/phpinfo.php",
+    "/debug",
+    "/server-status",
+    "/.git/config"
+  ];
+
+  const maxSensitiveChecks =
+    mode === "deep" ? sensitivePaths.length :
+    mode === "standard" ? 6 :
+    3;
+
+  for (const path of sensitivePaths.slice(0, maxSensitiveChecks)) {
+    try {
+      const testUrl = new URL(path, targetUrl).href;
+
+      const fileRes = await axios.get(testUrl, {
+        timeout: 5000,
+        validateStatus: () => true,
+        headers: {
+          "User-Agent": "SecurityPlatformDynamicVulnScanner/1.0"
+        }
+      });
+
+      if (fileRes.status === 200) {
+        const body = String(fileRes.data || "").toLowerCase();
+
+        if (
+          body.includes("password") ||
+          body.includes("database") ||
+          body.includes("secret") ||
+          body.includes("debug") ||
+          body.includes("[core]") ||
+          body.length > 20
+        ) {
+          sensitiveFiles.push({
+            url: testUrl,
+            status: fileRes.status
+          });
+        }
+      }
+    } catch {}
+  }
+
+  // 7. Dangerous HTTP methods
+  try {
+    const optionsRes = await axios.options(targetUrl, {
+      timeout: 7000,
+      validateStatus: () => true
+    });
+
+    const allow = optionsRes.headers["allow"] || "";
+
+    ["PUT", "DELETE", "TRACE", "PATCH"].forEach(method => {
+      if (allow.includes(method)) {
+        dangerousMethods.push(method);
+      }
+    });
+  } catch {}
+
+  // Findings mapping
+  if (reflectedParameters.length) {
+    vulnerabilityFindings.push({
+      title: "Risky Input Parameters Detected",
+      severity: "Medium",
+      owasp: "A03: Injection",
+      evidence: `${reflectedParameters.length} risky parameters found.`,
+      recommendation: "Validate, sanitize, and encode all user-controlled input."
+    });
+  }
+
+  if (sqlErrorIndicators.length) {
+    vulnerabilityFindings.push({
+      title: "SQL Error Disclosure Detected",
+      severity: "High",
+      owasp: "A03: Injection",
+      evidence: sqlErrorIndicators.join(", "),
+      recommendation: "Disable detailed database errors and use parameterized queries."
+    });
+  }
+
+  if (openRedirectIndicators.length) {
+    vulnerabilityFindings.push({
+      title: "Open Redirect Indicators Found",
+      severity: "Medium",
+      owasp: "A01: Broken Access Control",
+      evidence: `${openRedirectIndicators.length} redirect-like links detected.`,
+      recommendation: "Allowlist redirect destinations and avoid trusting user-supplied URLs."
+    });
+  }
+
+  if (sensitiveFiles.length) {
+    vulnerabilityFindings.push({
+      title: "Sensitive File Exposure",
+      severity: "Critical",
+      owasp: "A05: Security Misconfiguration",
+      evidence: `${sensitiveFiles.length} sensitive paths returned accessible responses.`,
+      recommendation: "Remove sensitive files from web root and block access using server rules."
+    });
+  }
+
+  if (uploadRisks.length) {
+    vulnerabilityFindings.push({
+      title: "File Upload Surface Detected",
+      severity: "High",
+      owasp: "A08: Software and Data Integrity Failures",
+      evidence: `${uploadRisks.length} upload inputs detected.`,
+      recommendation: "Validate file type, size, extension, content, and store uploads outside web root."
+    });
+  }
+
+  if (jsSecretIndicators.length) {
+    vulnerabilityFindings.push({
+      title: "Possible JavaScript Secret Exposure",
+      severity: "High",
+      owasp: "A02: Cryptographic Failures",
+      evidence: `${jsSecretIndicators.length} secret-like indicators found in JavaScript.`,
+      recommendation: "Remove secrets from client-side JavaScript and rotate exposed keys."
+    });
+  }
+
+  if (dangerousMethods.length) {
+    vulnerabilityFindings.push({
+      title: "Dangerous HTTP Methods Enabled",
+      severity: "Medium",
+      owasp: "A05: Security Misconfiguration",
+      evidence: dangerousMethods.join(", "),
+      recommendation: "Disable unnecessary HTTP methods such as PUT, DELETE, TRACE, and PATCH."
+    });
+  }
+
+  let riskLevel = "Low";
+
+  if (vulnerabilityFindings.some(f => f.severity === "Medium")) riskLevel = "Medium";
+  if (vulnerabilityFindings.some(f => f.severity === "High")) riskLevel = "High";
+  if (vulnerabilityFindings.some(f => f.severity === "Critical")) riskLevel = "Critical";
+
+  return {
+    targetUrl,
+    mode,
+    statusCode: response.status,
+    reflectedParameters,
+    sqlErrorIndicators,
+    openRedirectIndicators,
+    sensitiveFiles,
+    uploadRisks,
+    jsSecretIndicators,
+    dangerousMethods,
+    vulnerabilityFindings,
+    summary: {
+      reflectedParameters: reflectedParameters.length,
+      sqlErrors: sqlErrorIndicators.length,
+      openRedirects: openRedirectIndicators.length,
+      sensitiveFiles: sensitiveFiles.length,
+      uploadRisks: uploadRisks.length,
+      jsSecrets: jsSecretIndicators.length,
+      dangerousMethods: dangerousMethods.length,
+      totalFindings: vulnerabilityFindings.length
+    },
+    riskLevel
+  };
+}
+
 
 
 app.post("/register", async (req, res) => {
@@ -950,6 +2277,7 @@ app.post("/scan", authMiddleware, async (req, res) => {
     technologies.allDetected = [...new Set(technologies.allDetected)];
 
     const links = [];
+   
     $("a").each((i, el) => {
       const href = $(el).attr("href");
       if (href && links.length < 20) links.push(href);
@@ -1393,6 +2721,47 @@ app.post("/subdomain-discovery", authMiddleware,async (req, res) => {
     res.json(savedScan);
   }
 });
+app.post("/daa-scan", authMiddleware, async (req, res) => {
+  try {
+    const { url, crawlDepth } = req.body;
+
+    if (!url) {
+      return res.status(400).json({ message: "Target URL is required" });
+    }
+
+    const targetUrl = normalizeUrl(url);
+    const domain = new URL(targetUrl).hostname.replace(/^www\./, "");
+
+    const depth = Number(crawlDepth) || 10;
+
+    const discovery = await crawlWebsite(targetUrl, depth);
+
+    const savedScan = await DAAScan.create({
+      userId: req.userId,
+      target: targetUrl,
+      domain,
+      crawlDepth: depth,
+      discovery,
+      summary: {
+        pagesCrawled: discovery.summary?.totalPagesCrawled || 0,
+        internalLinks: discovery.summary?.internalLinks || 0,
+        externalLinks: discovery.summary?.externalLinks || 0,
+        formsFound: discovery.summary?.formsFound || 0,
+        apiEndpoints: discovery.summary?.apiEndpoints || 0
+      },
+      scannedAt: new Date()
+    });
+
+    res.json(savedScan);
+
+  } catch (error) {
+    console.error("DAA scan error:", error);
+    res.status(500).json({
+      message: "Dynamic Application Assessment failed",
+      error: error.message
+    });
+  }
+});
 app.post("/full-scan",authMiddleware, async (req, res) => {
   try {
     const input = req.body.url;
@@ -1715,6 +3084,7 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
         cookieFindings,
         findings,
         links,
+        
         summary: {
           totalFindings: findings.length,
           critical: findings.filter(f => f.severity === "Critical").length,
@@ -1749,6 +3119,214 @@ app.post("/full-scan",authMiddleware, async (req, res) => {
     });
   }
 });
+app.post("/dynamic-discovery-scan", authMiddleware, async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
+
+    const { targetUrl } = req.body;
+
+    if (!targetUrl) {
+      return res.status(400).json({
+        message: "Target URL is required"
+      });
+    }
+
+    const finalUrl = targetUrl.startsWith("http")
+      ? targetUrl
+      : "https://" + targetUrl;
+
+    console.log("FINAL URL:", finalUrl);
+
+    const result = await runDynamicDiscovery(finalUrl);
+
+    console.log("DISCOVERY RESULT:", result);
+
+    const savedScan = await DynamicDiscoveryScan.create({
+      userId: req.userId,
+      targetUrl: finalUrl,
+      ...result
+    });
+
+    console.log("SCAN SAVED");
+
+    res.json(savedScan);
+
+  } catch (error) {
+
+    console.log("DYNAMIC ERROR:", error);
+
+    res.status(500).json({
+      message: "Dynamic discovery scan failed",
+      error: error.message
+    });
+  }
+});
+app.post("/dynamic-input-analysis", authMiddleware, async (req, res) => {
+  try {
+    const { targetUrl } = req.body;
+
+    if (!targetUrl) {
+      return res.status(400).json({
+        message: "Target URL is required"
+      });
+    }
+
+    const finalUrl = targetUrl.startsWith("http")
+      ? targetUrl
+      : "https://" + targetUrl;
+
+    const result = await runDynamicInputAnalysis(finalUrl);
+
+    const savedAnalysis = await DynamicInputAnalysis.create({
+      userId: req.userId,
+      ...result
+    });
+
+    res.json(savedAnalysis);
+
+  } catch (error) {
+    console.error("Input analysis error:", error);
+
+    res.status(500).json({
+      message: "Dynamic input analysis failed",
+      error: error.message
+    });
+  }
+});
+app.post("/dynamic-auth-assessment", authMiddleware, async (req, res) => {
+  try {
+    const { targetUrl } = req.body;
+
+    if (!targetUrl) {
+      return res.status(400).json({
+        message: "Target URL is required"
+      });
+    }
+
+    const finalUrl = targetUrl.startsWith("http")
+      ? targetUrl
+      : "https://" + targetUrl;
+
+    const result = await runDynamicAuthAssessment(finalUrl);
+
+    const savedAuthScan = await DynamicAuthAssessment.create({
+      userId: req.userId,
+      ...result
+    });
+
+    res.json(savedAuthScan);
+
+  } catch (error) {
+    console.error("Authentication assessment error:", error);
+
+    res.status(500).json({
+      message: "Authentication assessment failed",
+      error: error.message
+    });
+  }
+});
+app.post("/dynamic-security-controls", authMiddleware, async (req, res) => {
+  try {
+    const { targetUrl } = req.body;
+
+    if (!targetUrl) {
+      return res.status(400).json({
+        message: "Target URL is required"
+      });
+    }
+
+    const finalUrl = targetUrl.startsWith("http")
+      ? targetUrl
+      : "https://" + targetUrl;
+
+    const result = await runDynamicSecurityControls(finalUrl);
+
+    const savedControls = await DynamicSecurityControls.create({
+      userId: req.userId,
+      ...result
+    });
+
+    res.json(savedControls);
+
+  } catch (error) {
+    console.error("Security controls assessment error:", error);
+
+    res.status(500).json({
+      message: "Security controls assessment failed",
+      error: error.message
+    });
+  }
+});
+app.post("/dynamic-api-security", authMiddleware, async (req, res) => {
+  try {
+    const { targetUrl } = req.body;
+
+    if (!targetUrl) {
+      return res.status(400).json({
+        message: "Target URL is required"
+      });
+    }
+
+    const finalUrl = targetUrl.startsWith("http")
+      ? targetUrl
+      : "https://" + targetUrl;
+
+    const result = await runDynamicApiSecurity(finalUrl);
+
+    const savedApiScan = await DynamicApiSecurity.create({
+      userId: req.userId,
+      ...result
+    });
+
+    res.json(savedApiScan);
+
+  } catch (error) {
+    console.error("API security assessment error:", error);
+
+    res.status(500).json({
+      message: "API security assessment failed",
+      error: error.message
+    });
+  }
+});
+app.post("/dynamic-vulnerability-assessment", authMiddleware, async (req, res) => {
+  try {
+    const { targetUrl, mode } = req.body;
+
+    if (!targetUrl) {
+      return res.status(400).json({
+        message: "Target URL is required"
+      });
+    }
+
+    const finalUrl = targetUrl.startsWith("http")
+      ? targetUrl
+      : "https://" + targetUrl;
+
+    const result = await runDynamicVulnerabilityAssessment(
+      finalUrl,
+      mode || "standard"
+    );
+
+    const savedVulnScan = await DynamicVulnerabilityAssessment.create({
+      userId: req.userId,
+      ...result
+    });
+
+    res.json(savedVulnScan);
+
+  } catch (error) {
+    console.error("Dynamic vulnerability assessment error:", error);
+
+    res.status(500).json({
+      message: "Dynamic vulnerability assessment failed",
+      error: error.message
+    });
+  }
+});
+
+
+
 
 app.get("/scans", authMiddleware, async (req, res) => {
 
@@ -1804,16 +3382,111 @@ app.get("/full-scans", authMiddleware, async (req, res) => {
 
   res.json(data);
 });
-
 app.get("/admin/all-scans", authMiddleware, adminMiddleware, async (req, res) => {
   const scans = await Scan.find().sort({ scannedAt: -1 });
   res.json(scans);
 });
-
 app.get("/admin/users", authMiddleware, adminMiddleware, async (req, res) => {
   const users = await User.find().select("_id name email role").sort({ name: 1 });
   res.json(users);
 });
+app.get("/daa-scans", authMiddleware, async (req, res) => {
+  try {
+    const data = req.userRole === "admin"
+      ? await DAAScan.find().sort({ scannedAt: -1 })
+      : await DAAScan.find({ userId: req.userId }).sort({ scannedAt: -1 });
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to load DAA history" });
+  }
+});
+app.get("/dynamic-input-analysis-history", authMiddleware, async (req, res) => {
+  try {
+    const data =
+      req.userRole === "admin"
+        ? await DynamicInputAnalysis.find().sort({ scannedAt: -1 })
+        : await DynamicInputAnalysis.find({ userId: req.userId }).sort({
+            scannedAt: -1
+          });
+
+    res.json(data);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to load input analysis history"
+    });
+  }
+});
+app.get("/dynamic-auth-history", authMiddleware, async (req, res) => {
+  try {
+    const data =
+      req.userRole === "admin"
+        ? await DynamicAuthAssessment.find().sort({ scannedAt: -1 })
+        : await DynamicAuthAssessment.find({ userId: req.userId }).sort({
+            scannedAt: -1
+          });
+
+    res.json(data);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to load authentication assessment history"
+    });
+  }
+});
+app.get("/dynamic-security-controls-history", authMiddleware, async (req, res) => {
+  try {
+    const data =
+      req.userRole === "admin"
+        ? await DynamicSecurityControls.find().sort({ scannedAt: -1 })
+        : await DynamicSecurityControls.find({ userId: req.userId }).sort({
+            scannedAt: -1
+          });
+
+    res.json(data);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to load security controls history"
+    });
+  }
+});
+app.get("/dynamic-api-security-history", authMiddleware, async (req, res) => {
+  try {
+    const data =
+      req.userRole === "admin"
+        ? await DynamicApiSecurity.find().sort({ scannedAt: -1 })
+        : await DynamicApiSecurity.find({ userId: req.userId }).sort({
+            scannedAt: -1
+          });
+
+    res.json(data);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to load API security history"
+    });
+  }
+});
+app.get("/dynamic-vulnerability-history", authMiddleware, async (req, res) => {
+  try {
+    const data =
+      req.userRole === "admin"
+        ? await DynamicVulnerabilityAssessment.find().sort({ scannedAt: -1 })
+        : await DynamicVulnerabilityAssessment.find({ userId: req.userId }).sort({
+            scannedAt: -1
+          });
+
+    res.json(data);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to load dynamic vulnerability history"
+    });
+  }
+});
+
 
 
 app.get("/export-pdf", async (req, res) => {
@@ -2596,9 +4269,26 @@ app.get("/export-full-scan-pdf", async (req, res) => {
     res.status(500).send("Failed to generate full scan PDF");
   }
 });
+app.get("/dynamic-discovery-history", authMiddleware, async (req, res) => {
+  try {
+    const data =
+      req.userRole === "admin"
+        ? await DynamicDiscoveryScan.find().sort({ scannedAt: -1 })
+        : await DynamicDiscoveryScan.find({ userId: req.userId }).sort({
+            scannedAt: -1
+          });
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to load dynamic discovery history",
+      error: error.message
+    });
+  }
+});
 
 
-const PORT = process.env.PORT || 5000;
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

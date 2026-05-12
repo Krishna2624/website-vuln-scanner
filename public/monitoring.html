@@ -216,12 +216,13 @@
 
       <thead>
         <tr>
-          <th>Asset</th>
-          <th>Risk Score</th>
-          <th>Risk Level</th>
-          <th>Last Scan</th>
-          <th>Status</th>
-          <th>Alert</th>
+        <th>Asset</th>
+        <th>Previous Risk</th>
+        <th>Current Risk</th>
+        <th>Change</th>
+        <th>Last Scan</th>
+        <th>Status</th>
+        <th>Alert</th>
         </tr>
       </thead>
 
@@ -243,10 +244,17 @@ async function loadMonitoring() {
       }
     });
 
-    const scans = await res.json();
+    let scans = await res.json();
+
+    scans = scans.filter(scan =>
+    scan.riskScore !== undefined &&
+    scan.riskLevel !== undefined
+    );
+
+    const uniqueDomains = [...new Set(scans.map(s => s.domain))];
 
     document.getElementById("totalAssets").innerText =
-      scans.length;
+    uniqueDomains.length;
 
     document.getElementById("criticalAssets").innerText =
       scans.filter(s => s.riskLevel === "Critical").length;
@@ -259,52 +267,98 @@ async function loadMonitoring() {
 
     const table = document.getElementById("monitoringTable");
 
-    table.innerHTML = scans.map(scan => {
+    const grouped = {};
 
-      const riskClass =
-        scan.riskLevel === "Critical"
-          ? "critical"
-          : scan.riskLevel === "High"
-          ? "high"
-          : scan.riskLevel === "Medium"
-          ? "medium"
-          : "low";
+        scans.forEach(scan => {
+        if (!grouped[scan.domain]) {
+            grouped[scan.domain] = [];
+        }
+        grouped[scan.domain].push(scan);
+        });
 
-      return `
-        <tr>
+        const monitoredAssets = Object.keys(grouped);
 
-          <td>${scan.domain}</td>
+        table.innerHTML = monitoredAssets.map(domain => {
+        const assetScans = grouped[domain].sort(
+            (a, b) => new Date(b.scannedAt) - new Date(a.scannedAt)
+        );
 
-          <td>${scan.riskScore}/100</td>
+        const current = assetScans[0];
+        const previous = assetScans[1];
 
-          <td>
-            <span class="badge ${riskClass}">
-              ${scan.riskLevel}
-            </span>
-          </td>
+        const currentScore = current.riskScore;
+        const previousScore = previous ? previous.riskScore : currentScore;
 
-          <td>
-            ${new Date(scan.scannedAt).toLocaleString()}
-          </td>
+        const change = currentScore - previousScore;
 
-          <td>
-            <span class="badge stable">
-              Monitoring Active
-            </span>
-          </td>
+        const level = current.riskLevel;
 
-          <td>
-            ${
-              scan.riskLevel === "Critical" ||
-              scan.riskLevel === "High"
-                ? `<span class="badge critical">Attention Required</span>`
-                : `<span class="badge low">Stable</span>`
-            }
-          </td>
+        const riskClass =
+            level === "Critical"
+            ? "critical"
+            : level === "High"
+            ? "high"
+            : level === "Medium"
+            ? "medium"
+            : "low";
 
-        </tr>
-      `;
-    }).join("");
+        let trendText = "Stable Risk Posture";
+        let trendClass = "stable";
+
+        if (change > 0) {
+            trendText = `Risk Increased +${change}`;
+            trendClass = "critical";
+        }
+        else if (change < 0) {
+            trendText = `Risk Reduced ${Math.abs(change)}`;
+            trendClass = "low";
+        }
+
+        const alertRequired =
+            level === "Critical" ||
+            level === "High" ||
+            change < 0;
+
+        return `
+            <tr>
+            <td>${domain}</td>
+
+            <td>${previousScore}/100</td>
+
+            <td>
+                ${currentScore}/100
+                <br>
+                <span class="badge ${riskClass}">
+                ${level}
+                </span>
+            </td>
+
+            <td>
+                <span class="badge ${trendClass}">
+                ${trendText}
+                </span>
+            </td>
+
+            <td>
+                ${new Date(current.scannedAt).toLocaleString()}
+            </td>
+
+            <td>
+                <span class="badge stable">
+                Monitoring Active
+                </span>
+            </td>
+
+            <td>
+                ${
+                alertRequired
+                    ? `<span class="badge critical">Attention Required</span>`
+                    : `<span class="badge low">Stable</span>`
+                }
+            </td>
+            </tr>
+        `;
+        }).join("");
 
   } catch(error){
     console.error(error);

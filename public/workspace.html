@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Security Workspace</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.16), transparent 30%),
+        linear-gradient(180deg, #101827 0%, #131c2e 45%, #172235 100%);
+      color: white;
+      padding: 32px;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      max-width: 1500px;
+      margin: 0 auto 36px;
+      padding: 20px 28px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      border-radius: 24px;
+
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+
+      border: 1px solid rgba(255,255,255,0.16);
+
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+
+      box-shadow:
+        0 22px 50px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+    }
+
+    .navbar h1 {
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .navbar button {
+      border: none;
+      padding: 11px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+    }
+
+    .workspace-header {
+      max-width: 1500px;
+      margin: 0 auto 34px;
+      padding: 34px;
+
+      border-radius: 30px;
+
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+
+      border: 1px solid rgba(255,255,255,0.16);
+
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+
+      box-shadow:
+        0 22px 50px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+
+      position: relative;
+      overflow: hidden;
+    }
+
+    .workspace-header::before {
+      content: "";
+      position: absolute;
+      top: -45%;
+      left: -70%;
+      width: 180%;
+      height: 180%;
+
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.16),
+        transparent
+      );
+
+      transform: rotate(25deg);
+      opacity: 0;
+      transition: 0.6s;
+      pointer-events: none;
+    }
+
+    .workspace-header:hover::before {
+      opacity: 1;
+      left: 100%;
+    }
+
+    .workspace-header h2 {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+
+        margin-bottom: 10px;
+
+        color: #f8fafc;
+
+        line-height: 1.2;
+    }
+
+    .workspace-header p {
+      color: #cbd5e1;
+      font-size: 16px;
+      max-width: 850px;
+      line-height: 1.7;
+    }
+
+    .workspace-grid {
+      max-width: 1500px;
+      margin: 0 auto;
+
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .workspace-card {
+      min-height: 340px;
+      padding: 34px;
+
+      border-radius: 30px;
+
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+
+      border: 1px solid rgba(255,255,255,0.16);
+
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+
+      box-shadow:
+        0 22px 50px rgba(0,0,0,0.30),
+        inset 0 1px 0 rgba(255,255,255,0.10);
+
+      position: relative;
+      overflow: hidden;
+
+      transition: 0.3s ease;
+      cursor: pointer;
+    }
+
+    .workspace-card::before {
+      content: "";
+      position: absolute;
+      top: -45%;
+      left: -70%;
+      width: 180%;
+      height: 180%;
+
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.16),
+        transparent
+      );
+
+      transform: rotate(25deg);
+      opacity: 0;
+      transition: 0.6s;
+      pointer-events: none;
+    }
+
+    .workspace-card:hover::before {
+      opacity: 1;
+      left: 100%;
+    }
+
+    .workspace-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(168,85,247,0.38);
+      box-shadow:
+        0 30px 65px rgba(0,0,0,0.34),
+        0 0 30px rgba(168,85,247,0.10);
+    }
+
+    .card-icon {
+      width: 70px;
+      height: 70px;
+
+      border-radius: 22px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 30px;
+
+      margin-bottom: 28px;
+
+      background:
+        linear-gradient(135deg, rgba(124,58,237,0.20), rgba(59,130,246,0.14));
+
+      border: 1px solid rgba(255,255,255,0.16);
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 10px 25px rgba(0,0,0,0.18);
+    }
+
+    .workspace-card h3 {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      color: #c084fc;
+    }
+
+    .workspace-card p {
+      color: #cbd5e1;
+      line-height: 1.7;
+      font-size: 15px;
+      margin-bottom: 26px;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .feature-list span {
+      padding: 12px 14px;
+      border-radius: 14px;
+
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.09);
+
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+
+    .launch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+
+      padding: 13px 20px;
+      border-radius: 14px;
+
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    @media(max-width: 900px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .workspace-header h2 {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>Security Platform</h1>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="workspace-header">
+    <h2>Security Operations Workspace</h2>
+    <p>
+      Select an assessment workspace to continue. Vulnerability Assessment focuses on automated scanning,
+      asset discovery, and risk intelligence, while Penetration Testing manages manual security testing,
+      evidence, exploitation workflow, and final reporting.
+    </p>
+  </div>
+
+  <div class="workspace-grid">
+
+    <div class="workspace-card" onclick="openVA()">
+      <div class="card-icon">🛡️</div>
+
+      <h3>Vulnerability Assessment</h3>
+
+      <p>
+        Automated security scanning workspace for web vulnerabilities, DNS, WHOIS, ports,
+        subdomains, assets, risk intelligence, and executive reporting.
+      </p>
+
+      <div class="feature-list">
+        <span>Automated Web Vulnerability Scanning</span>
+        <span>Attack Surface & Asset Intelligence</span>
+        <span>Risk Scoring and Report Generation</span>
+      </div>
+
+      <div class="launch-btn">Open VA Workspace →</div>
+    </div>
+
+    <div class="workspace-card" onclick="openPT()">
+      <div class="card-icon">⚔️</div>
+
+      <h3>Penetration Testing</h3>
+
+      <p>
+        Manual testing workspace for engagement planning, scope management, recon notes,
+        exploitation tracking, evidence collection, findings, and final PT reporting.
+      </p>
+
+      <div class="feature-list">
+        <span>Engagement & Scope Management</span>
+        <span>Manual Testing Workflow Tracking</span>
+        <span>Evidence Vault and PT Reports</span>
+      </div>
+
+      <div class="launch-btn">Open PT Workspace →</div>
+    </div>
+
+  </div>
+
+  <script>
+    function protectPage() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        window.location.href = "auth.html";
+      }
+    }
+
+    function openVA() {
+      window.location.href = "dashboard.html";
+    }
+
+    function openPT() {
+      window.location.href = "pt-dashboard.html";
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "auth.html";
+    }
+
+    protectPage();
+  </script>
+
+</body>
+</html>

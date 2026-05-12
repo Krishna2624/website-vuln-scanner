@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Application Assessment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827);
+      color: white;
+      padding: 30px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 30px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 12px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.08);
+      color: #93c5fd;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 26px;
+      padding: 30px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+      margin-bottom: 25px;
+    }
+
+    .hero-title {
+      font-size: 36px;
+      color: #93c5fd;
+      margin-bottom: 10px;
+    }
+
+    .hero-sub {
+      color: #cbd5e1;
+      line-height: 1.8;
+      margin-bottom: 25px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    input, select {
+      flex: 1;
+      min-width: 250px;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      outline: none;
+    }
+
+    option {
+      color: black;
+    }
+
+    button {
+      padding: 15px 24px;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      font-weight: 700;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .metric {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 22x;
+      text-align: center;
+    }
+
+    .metric h2 {
+      color: #93c5fd;
+      font-size: 34px;
+    }
+
+    .metric p {
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+    }
+
+    th, td {
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      text-align: left;
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+
+    th {
+      color: #93c5fd;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .status {
+      margin-top: 18px;
+      color: #cbd5e1;
+    }
+
+    .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+}
+
+.navbar h1 {
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: nowrap;
+}
+
+.nav-links a {
+  white-space: nowrap;
+}
+.dynamic-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.dynamic-tab {
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.dynamic-tab.active {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+.dynamic-section {
+  display: none;
+}
+
+.dynamic-section.active {
+  display: block;
+}
+.dynamic-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+.dynamic-tab {
+  padding: 14px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.dynamic-tab.active {
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+}
+
+.dynamic-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.dynamic-section {
+  display: none;
+}
+
+.dynamic-section.active {
+  display: block;
+}
+
+.glass-card {
+  max-width: 100%;
+  text-align: center;
+}
+.glimpse-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:18px;
+  margin-top:35px;
+}
+
+.glimpse-card {
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:20px;
+  padding:22px;
+  text-align:center;
+  transition:0.3s;
+}
+
+.glimpse-card:hover {
+  transform:translateY(-4px);
+  border-color:rgba(147,197,253,0.45);
+}
+
+.glimpse-card h3 {
+  font-size:16px;
+  margin-bottom:8px;
+  color:#93c5fd;
+}
+
+.glimpse-card p {
+  font-size:13px;
+  color:#cbd5e1;
+  line-height:1.6;
+}
+.dynamic-top-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-bottom: 55px;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="dynamic-top-actions">
+  <button onclick="window.location.href='index.html?direct=surface'" style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 20px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  transition:0.3s;
+  backdrop-filter:blur(12px);
+"
+onmouseover="this.style.background='rgba(37,99,235,0.22)'"
+onmouseout="this.style.background='rgba(255,255,255,0.08)'"
+>
+
+  <span style="
+    width:34px;
+    height:34px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#2563eb,#7c3aed);
+    font-size:18px;
+    box-shadow:0 6px 18px rgba(37,99,235,0.35);
+  ">
+    🛡️
+  </span>
+
+  <div style="display:flex; flex-direction:column; align-items:flex-start;">
+    <span style="font-size:14px; line-height:1;">
+      Switch to
+    </span>
+
+    <span style="
+      font-size:15px;
+      color:#93c5fd;
+      line-height:1.2;
+    ">
+      Surface Assessment
+    </span>
+  </div>
+
+</button>
+
+  <button onclick="window.location.href='dashboard.html'" style="
+    padding:12px 18px;
+    border-radius:14px;
+    border:none;
+    background:linear-gradient(90deg,#2563eb,#7c3aed);
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+  ">
+    Dashboard
+  </button>
+</div>
+
+ <div class="dynamic-wrapper">
+
+  <div class="dynamic-tabs">
+    <button class="dynamic-tab active" onclick="showDynamicSection('discoveryModule', this)">Discovery</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('inputAnalysisModule', this)">Input Analysis</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('authModule', this)">Authentication</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('controlsModule', this)">Security Controls</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('vulnModule', this)">Vulnerabilities</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('apiModule', this)">API Security</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('riskModule', this)">Risk Intelligence</button>
+    <button class="dynamic-tab" onclick="showDynamicSection('reportingModule', this)">Reporting</button>
+  </div>
+
+  <div id="discoveryModule" class="dynamic-section active">
+    <div class="glass-card">
+      <div class="hero-title">Web Application Discovery Engine</div>
+
+      <div class="hero-sub">
+        Discover application routes, internal links, external references, forms, and potential API endpoints.
+      </div>
+
+      <div class="input-row">
+        <input id="daaTarget" placeholder="https://example.com">
+        <select id="crawlDepth">
+          <option value="5">Light Crawl - 5 pages</option>
+          <option value="10" selected>Standard Crawl - 10 pages</option>
+          <option value="20">Deep Crawl - 20 pages</option>
+        </select>
+        <button onclick="startDAAScan()">Start Assessment</button>
+      </div>
+
+      <div id="daaStatus" class="status">Ready to run Dynamic Application Assessment.</div>
+      <div class="glimpse-grid">
+  <div class="glimpse-card">
+    <h3>Deep Crawling</h3>
+    <p>Discovers internal pages and navigation paths across the application.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Route Discovery</h3>
+    <p>Maps visible routes, endpoints, and URL paths from application links.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Form Discovery</h3>
+    <p>Identifies forms, methods, actions, inputs, and hidden fields.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Technology Fingerprinting</h3>
+    <p>Detects visible technologies from headers, scripts, and page patterns.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>JavaScript Collection</h3>
+    <p>Collects linked JavaScript files for future endpoint and client-side analysis.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Discovery Summary</h3>
+    <p>Generates counts for pages, routes, forms, scripts, and technologies.</p>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div id="inputAnalysisModule" class="dynamic-section">
+    <div class="glass-card">
+      <div class="hero-title">Input Analysis Engine</div>
+
+      <div class="hero-sub">
+        Analyze forms, hidden fields, password inputs, file upload surfaces, parameters, and JavaScript resources.
+      </div>
+
+      <div class="input-row">
+        <input id="inputAnalysisTarget" placeholder="https://example.com">
+        <button onclick="startInputAnalysis()">Start Input Analysis</button>
+      </div>
+
+      <div id="inputAnalysisStatus" class="status">Ready to run Input Analysis.</div>
+      <div class="glimpse-grid">
+  <div class="glimpse-card">
+    <h3>Parameter Analysis</h3>
+    <p>Identifies query parameters and form parameters across pages.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Hidden Field Detection</h3>
+    <p>Detects hidden fields such as CSRF tokens and internal values.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Password Input Review</h3>
+    <p>Identifies password fields and authentication-related input areas.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>File Upload Surface</h3>
+    <p>Finds upload fields that require deeper security validation later.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>Form Risk Mapping</h3>
+    <p>Maps form actions, methods, input types, and basic risk levels.</p>
+  </div>
+
+  <div class="glimpse-card">
+    <h3>JavaScript Resources</h3>
+    <p>Collects scripts for later client-side and endpoint analysis.</p>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div id="authModule" class="dynamic-section">
+
+      <div class="glass-card">
+
+        <div class="hero-title">
+          Authentication Assessment Engine
+        </div>
+
+        <div class="hero-sub">
+          Analyze login forms, password fields, hidden inputs,
+          cookie security, authentication methods, and session risks.
+        </div>
+
+        <div class="input-row">
+          <input
+            id="authAssessmentTarget"
+            placeholder="https://example.com"
+          >
+
+          <button onclick="startAuthAssessment()">
+            Start Authentication Assessment
+          </button>
+        </div>
+
+        <div id="authAssessmentStatus" class="status">
+          Ready to run Authentication Assessment.
+        </div>
+
+        <div class="glimpse-grid">
+
+          <div class="glimpse-card">
+            <h3>Login Form Discovery</h3>
+            <p>
+              Detects authentication forms and credential input areas.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Password Field Review</h3>
+            <p>
+              Identifies password fields and insecure authentication forms.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Cookie Security</h3>
+            <p>
+              Reviews HttpOnly, Secure, and SameSite protections.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Hidden Input Analysis</h3>
+            <p>
+              Detects hidden fields such as CSRF tokens and session identifiers.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Session Risk Mapping</h3>
+            <p>
+              Highlights weak session handling and authentication exposure.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Authentication Findings</h3>
+            <p>
+              Generates authentication-related findings and risk levels.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  <div id="controlsModule" class="dynamic-section">
+
+      <div class="glass-card">
+
+        <div class="hero-title">
+          Security Controls Assessment
+        </div>
+
+        <div class="hero-sub">
+          Analyze security headers, HTTPS enforcement,
+          CSP policies, cookie protections,
+          TLS configuration, clickjacking protection,
+          and browser security controls.
+        </div>
+
+        <div class="input-row">
+
+          <input
+            id="securityControlsTarget"
+            placeholder="https://example.com"
+          >
+
+          <button onclick="startSecurityControlsAssessment()">
+            Start Security Controls Assessment
+          </button>
+
+        </div>
+
+        <div id="securityControlsStatus" class="status">
+          Ready to run Security Controls Assessment.
+        </div>
+
+        <div class="glimpse-grid">
+
+          <div class="glimpse-card">
+            <h3>Security Headers</h3>
+            <p>
+              Reviews CSP, HSTS, X-Frame-Options,
+              Referrer-Policy, and Permissions-Policy.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>HTTPS Enforcement</h3>
+            <p>
+              Detects insecure HTTP usage and missing TLS protections.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Cookie Protections</h3>
+            <p>
+              Reviews Secure, HttpOnly, and SameSite cookie attributes.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Clickjacking Defense</h3>
+            <p>
+              Checks frame embedding restrictions and anti-clickjacking headers.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>CORS Configuration</h3>
+            <p>
+              Detects potentially unsafe CORS policies and wildcard origins.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Security Findings</h3>
+            <p>
+              Generates security control findings with severity mapping.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  <div id="vulnModule" class="dynamic-section">
+      <div class="glass-card">
+
+        <div class="hero-title">
+          Advanced Vulnerability Assessment
+        </div>
+
+        <div class="hero-sub">
+          Perform advanced dynamic vulnerability analysis including
+          XSS indicators, SQL error exposure, open redirects,
+          sensitive file exposure, upload risks, JavaScript secrets,
+          insecure methods, and OWASP-based security findings.
+        </div>
+
+        <div class="input-row">
+
+          <input
+            id="vulnerabilityTarget"
+            placeholder="https://example.com"
+          >
+
+          <select id="vulnerabilityMode">
+            <option value="light">Light Assessment</option>
+            <option value="standard" selected>
+              Standard Assessment
+            </option>
+            <option value="deep">
+              Deep Assessment
+            </option>
+          </select>
+
+          <button onclick="startVulnerabilityAssessment()">
+            Start Vulnerability Assessment
+          </button>
+
+        </div>
+
+        <div id="vulnerabilityStatus" class="status">
+          Ready to run Vulnerability Assessment.
+        </div>
+
+        <div class="glimpse-grid">
+
+          <div class="glimpse-card">
+            <h3>XSS Risk Detection</h3>
+            <p>
+              Detects reflected input patterns and unsafe rendering indicators.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>SQL Error Exposure</h3>
+            <p>
+              Reviews responses for database error leakage patterns.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Open Redirect Review</h3>
+            <p>
+              Detects redirect parameters and unsafe redirect behavior.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>Sensitive File Discovery</h3>
+            <p>
+              Looks for exposed backup, debug, environment,
+              and configuration files.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>JavaScript Secret Detection</h3>
+            <p>
+              Reviews JavaScript for possible API keys,
+              tokens, and sensitive patterns.
+            </p>
+          </div>
+
+          <div class="glimpse-card">
+            <h3>OWASP Risk Mapping</h3>
+            <p>
+              Generates OWASP-aligned findings and severity classification.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  <div id="apiModule" class="dynamic-section">
+
+    <div class="glass-card">
+
+      <div class="hero-title">
+        API Security Assessment
+      </div>
+
+      <div class="hero-sub">
+        Discover exposed APIs, Swagger/OpenAPI endpoints,
+        authentication mechanisms, CORS policies,
+        sensitive JSON exposure, and insecure API behaviors.
+      </div>
+
+      <div class="input-row">
+
+        <input
+          id="apiSecurityTarget"
+          placeholder="https://example.com"
+        >
+
+        <button onclick="startApiSecurityAssessment()">
+          Start API Security Assessment
+        </button>
+
+      </div>
+
+      <div id="apiSecurityStatus" class="status">
+        Ready to run API Security Assessment.
+      </div>
+
+      <div class="glimpse-grid">
+
+        <div class="glimpse-card">
+          <h3>API Discovery</h3>
+          <p>
+            Detects REST endpoints, JSON routes,
+            Swagger files, and OpenAPI references.
+          </p>
+        </div>
+
+        <div class="glimpse-card">
+          <h3>Authentication Review</h3>
+          <p>
+            Identifies bearer tokens, API keys,
+            authentication headers, and auth exposure.
+          </p>
+        </div>
+
+        <div class="glimpse-card">
+          <h3>CORS Validation</h3>
+          <p>
+            Reviews API cross-origin policies and wildcard origins.
+          </p>
+        </div>
+
+        <div class="glimpse-card">
+          <h3>Method Analysis</h3>
+          <p>
+            Reviews supported HTTP methods including GET, POST,
+            PUT, DELETE, and OPTIONS.
+          </p>
+        </div>
+
+        <div class="glimpse-card">
+          <h3>JSON Exposure</h3>
+          <p>
+            Detects publicly exposed JSON responses and data leakage.
+          </p>
+        </div>
+
+        <div class="glimpse-card">
+          <h3>API Findings</h3>
+          <p>
+            Generates API security findings and risk severity mapping.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="riskModule" class="dynamic-section">
+    <div class="glass-card">
+      <div class="hero-title">Risk Intelligence</div>
+      <div class="hero-sub">Coming later: risk scoring, evidence collection, business impact, and attack path mapping.</div>
+    </div>
+  </div>
+
+  <div id="reportingModule" class="dynamic-section">
+    <div class="glass-card">
+      <div class="hero-title">Reporting</div>
+      <div class="hero-sub">Coming later: unified reports, remediation guidance, retesting, and PDF exports.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function protectPage() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "auth.html";
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "auth.html";
+}
+
+protectPage();
+
+async function startDAAScan() {
+  const target = document.getElementById("daaTarget").value.trim();
+  const crawlDepth = document.getElementById("crawlDepth").value;
+  const status = document.getElementById("daaStatus");
+
+  if (!target) {
+    alert("Please enter a target URL");
+    return;
+  }
+
+  status.innerText = "Running Dynamic Application Assessment. Crawling application routes...";
+
+  try {
+    const res = await fetch("/dynamic-discovery-scan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+      body: JSON.stringify({
+        targetUrl: target,
+        crawlDepth
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || data.error || "Dynamic discovery scan failed");
+    }
+
+    localStorage.setItem(
+      "latestDynamicReport",
+      JSON.stringify({
+        reportType: "Discovery",
+        data
+      })
+    );
+
+    status.innerText = "Dynamic Application Assessment completed.";
+   window.location.href = "dynamic-report.html";
+
+  } catch (error) {
+    status.innerText = "Assessment failed: " + error.message;
+  }
+}
+
+async function startInputAnalysis() {
+
+  const target = document.getElementById("inputAnalysisTarget").value.trim();
+
+  const status = document.getElementById("inputAnalysisStatus");
+
+  if (!target) {
+    alert("Please enter a target URL");
+    return;
+  }
+
+  status.innerText =
+    "Running Input Analysis. Analyzing forms and parameters...";
+
+  try {
+
+    const res = await fetch("/dynamic-input-analysis", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+
+      body: JSON.stringify({
+        targetUrl: target
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Input analysis failed"
+      );
+    }
+
+    localStorage.setItem(
+      "latestDynamicReport",
+      JSON.stringify({
+        reportType: "Input Analysis",
+        data
+      })
+    );
+
+    status.innerText = "Input Analysis completed.";
+
+    window.location.href = "dynamic-report.html";
+
+  } catch (error) {
+
+    status.innerText =
+      "Input Analysis failed: " + error.message;
+  }
+}
+
+async function startAuthAssessment() {
+
+  const target =
+    document.getElementById("authAssessmentTarget").value.trim();
+
+  const status =
+    document.getElementById("authAssessmentStatus");
+
+  if (!target) {
+    alert("Please enter a target URL");
+    return;
+  }
+
+  status.innerText =
+    "Running Authentication Assessment...";
+
+  try {
+
+    const res = await fetch("/dynamic-auth-assessment", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+
+      body: JSON.stringify({
+        targetUrl: target
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Authentication assessment failed"
+      );
+    }
+
+    localStorage.setItem(
+      "latestDynamicReport",
+      JSON.stringify({
+        reportType: "Authentication Assessment",
+        data
+      })
+    );
+
+    status.innerText =
+      "Authentication Assessment completed.";
+
+    window.location.href = "dynamic-report.html";
+
+  } catch (error) {
+
+    status.innerText =
+      "Authentication Assessment failed: " + error.message;
+  }
+}
+
+async function startSecurityControlsAssessment() {
+
+  const target =
+    document.getElementById("securityControlsTarget").value.trim();
+
+  const status =
+    document.getElementById("securityControlsStatus");
+
+  if (!target) {
+    alert("Please enter a target URL");
+    return;
+  }
+
+  status.innerText =
+    "Running Security Controls Assessment...";
+
+  try {
+
+    const res = await fetch("/dynamic-security-controls", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+
+      body: JSON.stringify({
+        targetUrl: target
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Security Controls assessment failed"
+      );
+    }
+
+    localStorage.setItem(
+      "latestDynamicReport",
+      JSON.stringify({
+        reportType: "Security Controls",
+        data
+      })
+    );
+
+    status.innerText =
+      "Security Controls Assessment completed.";
+
+    window.location.href = "dynamic-report.html";
+
+  } catch (error) {
+
+    status.innerText =
+      "Security Controls Assessment failed: " + error.message;
+  }
+}
+
+async function startApiSecurityAssessment() {
+
+  const target =
+    document.getElementById("apiSecurityTarget").value.trim();
+
+  const status =
+    document.getElementById("apiSecurityStatus");
+
+  if (!target) {
+    alert("Please enter a target URL");
+    return;
+  }
+
+  status.innerText =
+    "Running API Security Assessment...";
+
+  try {
+
+    const res = await fetch("/dynamic-api-security", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+
+      body: JSON.stringify({
+        targetUrl: target
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        "API Security assessment failed"
+      );
+    }
+
+    localStorage.setItem(
+      "latestDynamicReport",
+      JSON.stringify({
+        reportType: "API Security",
+        data
+      })
+    );
+
+    status.innerText =
+      "API Security Assessment completed.";
+
+    window.location.href = "dynamic-report.html";
+
+  } catch (error) {
+
+    status.innerText =
+      "API Security Assessment failed: " + error.message;
+  }
+}
+
+async function startVulnerabilityAssessment() {
+
+  const target =
+    document.getElementById("vulnerabilityTarget").value.trim();
+
+  const mode =
+    document.getElementById("vulnerabilityMode").value;
+
+  const status =
+    document.getElementById("vulnerabilityStatus");
+
+  if (!target) {
+    alert("Please enter a target URL");
+    return;
+  }
+
+  status.innerText =
+    "Running Vulnerability Assessment...";
+
+  try {
+
+    const res = await fetch("/dynamic-vulnerability-assessment", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+
+      body: JSON.stringify({
+        targetUrl: target,
+        mode
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Vulnerability assessment failed"
+      );
+    }
+
+    localStorage.setItem(
+      "latestDynamicReport",
+      JSON.stringify({
+        reportType: "Vulnerability Assessment",
+        data
+      })
+    );
+
+    status.innerText =
+      "Vulnerability Assessment completed.";
+
+    window.location.href = "dynamic-report.html";
+
+  } catch (error) {
+
+    status.innerText =
+      "Vulnerability Assessment failed: " + error.message;
+  }
+}
+
+function renderDAAResults(scan) {
+  const discovery = scan.discovery || {};
+  const summary = scan.summary || {};
+
+  document.getElementById("daaResults").innerHTML = `
+    <div class="glass-card">
+      <h2 style="color:#93c5fd;">Discovery Summary</h2>
+
+      <div class="metrics">
+        <div class="metric"><h2>${summary.pagesCrawled || 0}</h2><p>Pages Crawled</p></div>
+        <div class="metric"><h2>${summary.internalLinks || 0}</h2><p>Internal Links</p></div>
+        <div class="metric"><h2>${summary.externalLinks || 0}</h2><p>External Links</p></div>
+        <div class="metric"><h2>${summary.formsFound || 0}</h2><p>Forms Found</p></div>
+        <div class="metric"><h2>${summary.apiEndpoints || 0}</h2><p>API Endpoints</p></div>
+      </div>
+    </div>
+
+    <div class="glass-card">
+      <h2 style="color:#93c5fd;">Discovered Internal Routes</h2>
+      <table>
+        <thead>
+          <tr><th>#</th><th>URL</th></tr>
+        </thead>
+        <tbody>
+          ${
+            discovery.internalLinks?.length
+              ? discovery.internalLinks.map((link, index) => `
+                <tr><td>${index + 1}</td><td>${link}</td></tr>
+              `).join("")
+              : `<tr><td colspan="2">No internal routes discovered.</td></tr>`
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="glass-card">
+      <h2 style="color:#93c5fd;">Discovered Forms</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Page</th>
+            <th>Method</th>
+            <th>Action</th>
+            <th>Inputs</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${
+            discovery.forms?.length
+              ? discovery.forms.map((form, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${form.page}</td>
+                  <td>${form.method}</td>
+                  <td>${form.action}</td>
+                  <td>${form.inputs?.map(i => `${i.name} (${i.type})`).join("<br>") || "N/A"}</td>
+                </tr>
+              `).join("")
+              : `<tr><td colspan="5">No forms discovered.</td></tr>`
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="glass-card">
+      <h2 style="color:#93c5fd;">Potential API Endpoints</h2>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Endpoint</th></tr>
+        </thead>
+        <tbody>
+          ${
+            discovery.apiEndpoints?.length
+              ? discovery.apiEndpoints.map((api, index) => `
+                <tr><td>${index + 1}</td><td>${api}</td></tr>
+              `).join("")
+              : `<tr><td colspan="2">No API endpoints discovered.</td></tr>`
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function showDynamicSection(sectionId, button) {
+  document.querySelectorAll(".dynamic-section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  document.querySelectorAll(".dynamic-tab").forEach(tab => {
+    tab.classList.remove("active");
+  });
+
+  document.getElementById(sectionId).classList.add("active");
+  button.classList.add("active");
+
+  localStorage.setItem("activeDynamicScannerModule", sectionId);
+}
+
+function restoreDynamicScannerModule() {
+  const savedModule =
+    localStorage.getItem("activeDynamicScannerModule") || "discoveryModule";
+
+  const savedButton = Array.from(document.querySelectorAll(".dynamic-tab"))
+    .find(btn => btn.getAttribute("onclick")?.includes(savedModule));
+
+  if (savedButton) {
+    showDynamicSection(savedModule, savedButton);
+  }
+}
+restoreDynamicScannerModule();
+</script>
+
+</body>
+</html>

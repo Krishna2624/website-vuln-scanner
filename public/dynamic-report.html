@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic Assessment Report</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.30), transparent 30%),
+        linear-gradient(135deg, #020617, #0f172a, #111827);
+      color: white;
+      padding: 30px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      margin-bottom: 30px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+    }
+
+    .navbar h1 {
+      font-size: 28px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 12px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.08);
+      color: #93c5fd;
+    }
+
+    .report-header,
+    .section,
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 22px;
+      backdrop-filter: blur(18px);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: 0.3s;
+    }
+
+    .report-header {
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .report-header h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+      color: #93c5fd;
+    }
+
+    .report-header p {
+      color: #cbd5e1;
+      margin-top: 6px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      padding: 25px;
+    }
+
+    .card h3 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: #93c5fd;
+    }
+
+    .card p {
+      color: #cbd5e1;
+    }
+
+    .section {
+      padding: 28px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+    }
+
+    .section h2 {
+      margin-bottom: 18px;
+      color: #93c5fd;
+    }
+
+    .section p {
+      color: #cbd5e1;
+      line-height: 1.8;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e2e8f0;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #93c5fd;
+      background: rgba(255,255,255,0.08);
+    }
+
+    td {
+      background: rgba(255,255,255,0.03);
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .critical { background: rgba(127,29,29,0.8); }
+    .high { background: rgba(239,68,68,0.35); }
+    .medium { background: rgba(234,179,8,0.35); }
+    .low { background: rgba(34,197,94,0.30); }
+    .info { background: rgba(59,130,246,0.30); }
+
+    button {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-weight: 600;
+      padding: 12px 22px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(59,130,246,0.25);
+      transition: 0.3s;
+      margin-top: 12px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(59,130,246,0.35);
+    }
+    .pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .pagination button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    margin-top: 0;
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #cbd5e1;
+    font-size: 13px;
+    box-shadow: none;
+    }
+
+    .pagination button.active {
+    background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+    color: white;
+    border-color: rgba(147,197,253,0.45);
+    }
+    /* =========================
+   PREMIUM DYNAMIC REPORT GLASS MODEL
+========================= */
+
+.dynamic-report-wrapper {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 28px;
+  border-radius: 34px;
+
+  background:
+    linear-gradient(135deg,
+      rgba(15,23,42,0.65),
+      rgba(30,41,59,0.38)
+    );
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.report-header,
+.section,
+.card {
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.09),
+      rgba(255,255,255,0.035)
+    );
+
+  border: 1px solid rgba(255,255,255,0.16);
+
+  box-shadow:
+    0 22px 50px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.report-header::before,
+.section::before,
+.card::before {
+  content: "";
+  position: absolute;
+  top: -45%;
+  left: -70%;
+  width: 180%;
+  height: 180%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.16),
+    transparent
+  );
+  transform: rotate(25deg);
+  opacity: 0;
+  transition: 0.6s;
+  pointer-events: none;
+}
+
+.report-header:hover::before,
+.section:hover::before,
+.card:hover::before {
+  opacity: 1;
+  left: 100%;
+}
+
+.report-header:hover,
+.section:hover,
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(168,85,247,0.38);
+}
+
+.report-header h2 {
+  color: #c084fc;
+}
+
+.section h2 {
+  color: #93c5fd;
+}
+
+.card h3 {
+  color: #c084fc;
+}
+
+table {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+th {
+  background: rgba(124,58,237,0.20);
+  color: #bfdbfe;
+}
+
+td {
+  background: rgba(255,255,255,0.035);
+}
+
+tr:hover td {
+  background: rgba(168,85,247,0.12);
+}
+
+.dynamic-report-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+.report-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 26px;
+}
+
+.report-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.info-box {
+  background: rgba(255,255,255,0.055);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.info-box span {
+  display: block;
+  color: #94a3b8;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.info-box strong {
+  color: #e2e8f0;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.section-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.clean-table th,
+.clean-table td {
+  border-left: none;
+  border-right: none;
+}
+
+@media (max-width: 900px) {
+  .section-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+.mini-view-btn {
+  padding: 8px 14px !important;
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  margin-top: 0 !important;
+  background: linear-gradient(135deg, #2563eb, #7c3aed) !important;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <h1>Dynamic Assessment Report</h1>
+
+    <div class="nav-links">
+      <a href="deep-scan.html">Dynamic Assessment</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="index.html?direct=surface">Surface Scanner</a>
+    </div>
+  </div>
+
+ <div class="dynamic-report-wrapper">
+  <div class="dynamic-report-actions">
+    <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+    <button onclick="window.print()">Export / Print Report</button>
+  </div>
+
+  <div id="reportContent"></div>
+</div>
+
+  <script>
+    const pageState = {};
+    const ROWS_PER_PAGE = 10;
+    let currentDiscoveryReport = null;
+    let currentInputReport = null;
+
+    function paginateData(data, key) {
+    const currentPage = pageState[key] || 1;
+    const start = (currentPage - 1) * ROWS_PER_PAGE;
+    return data.slice(start, start + ROWS_PER_PAGE);
+    }
+
+    function paginationControls(data, key, renderFunctionName) {
+  const totalPages = Math.ceil(data.length / ROWS_PER_PAGE);
+
+  if (totalPages <= 1) return "";
+
+  let buttons = "";
+
+  for (let i = 1; i <= totalPages; i++) {
+    buttons += `
+      <button class="${(pageState[key] || 1) === i ? "active" : ""}"
+        onclick="pageState['${key}']=${i}; ${renderFunctionName}();">
+        ${i}
+      </button>
+    `;
+  }
+
+  return `<div class="pagination">${buttons}</div>`;
+}
+    function safeParse(key) {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : null;
+      } catch (error) {
+        console.error("Broken localStorage:", key, error);
+        localStorage.removeItem(key);
+        return null;
+      }
+    }
+
+    function severityBadge(level) {
+      if (!level) return `<span class="badge info">Info</span>`;
+
+      const value = String(level).toLowerCase();
+
+      if (value.includes("critical")) return `<span class="badge critical">Critical</span>`;
+      if (value.includes("high")) return `<span class="badge high">High</span>`;
+      if (value.includes("medium")) return `<span class="badge medium">Medium</span>`;
+      if (value.includes("low")) return `<span class="badge low">Low</span>`;
+
+      return `<span class="badge info">${level}</span>`;
+    }
+
+    function protectPage() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "auth.html";
+      }
+    }
+
+    protectPage();
+
+    let storedReport = safeParse("latestDynamicReport");
+
+    if (!storedReport) {
+    const oldDiscovery = safeParse("latestDynamicDiscoveryReport");
+
+    if (oldDiscovery) {
+        storedReport = {
+        reportType: "Discovery",
+        data: oldDiscovery
+        };
+    }
+    }
+    const reportContent = document.getElementById("reportContent");
+
+    if (!storedReport || !storedReport.data) {
+      reportContent.innerHTML = `
+        <div class="section">
+          <h2>No Dynamic Report Data Found</h2>
+          <p>Please run a Dynamic Assessment scan first.</p>
+          <button onclick="window.location.href='deep-scan.html'">Go to Dynamic Assessment</button>
+        </div>
+      `;
+    } else {
+      const reportType = storedReport.reportType;
+      const report = storedReport.data;
+
+      if (reportType === "Discovery") {
+        renderDiscoveryReport(report);
+      } else if (reportType === "Input Analysis") {
+        renderInputAnalysisReport(report);
+      } else if (reportType === "Authentication Assessment") {
+        renderAuthAssessmentReport(report);
+      } else if (reportType === "Security Controls") {
+        renderSecurityControlsReport(report);
+      } else if (reportType === "API Security") {
+        renderApiSecurityReport(report);
+      } else if (reportType === "Vulnerability Assessment") {
+        renderVulnerabilityAssessmentReport(report);
+      } else {
+        reportContent.innerHTML = `
+          <div class="section">
+            <h2>Unknown Dynamic Report Type</h2>
+            <p>This report type is not supported yet.</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderDiscoveryReport(report) {
+        currentDiscoveryReport = report;
+      const summary = report.summary || {};
+
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>Dynamic Application Discovery Report</h2>
+          <p><strong>Target:</strong> ${report.targetUrl || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${report.scannedAt ? new Date(report.scannedAt).toLocaleString() : "N/A"}</p>
+          <p><strong>Risk Level:</strong> ${severityBadge(report.riskLevel || "Low")}</p>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${summary.totalPages || 0}</h3><p>Pages Crawled</p></div>
+          <div class="card"><h3>${summary.totalRoutes || 0}</h3><p>Routes Discovered</p></div>
+          <div class="card"><h3>${summary.totalForms || 0}</h3><p>Forms Found</p></div>
+          <div class="card"><h3>${summary.totalJsFiles || 0}</h3><p>JavaScript Files</p></div>
+          <div class="card"><h3>${summary.totalTechnologies || 0}</h3><p>Technologies</p></div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            This discovery report maps the target application structure by identifying internal routes,
+            forms, JavaScript resources, and visible technologies. This data becomes the foundation for
+            input analysis, authentication testing, API review, and vulnerability assessment.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Discovered Routes</h2>
+          <table>
+            <thead>
+              <tr><th>#</th><th>Route</th></tr>
+            </thead>
+            <tbody>
+              ${
+                report.routesDiscovered?.length
+                  ? paginateData(report.routesDiscovered || [], "discoveryRoutes").map((route, index) => `
+                    <tr>
+                      <td>${((pageState["discoveryRoutes"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${route}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No routes discovered.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.routesDiscovered || [], "discoveryRoutes", "renderDiscoveryAgain")}
+        </div>
+
+        <div class="section">
+          <h2>Discovered Forms</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Page</th>
+                <th>Method</th>
+                <th>Action</th>
+                <th>Inputs</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.formsDiscovered?.length
+                  ? paginateData(report.formsDiscovered || [], "discoveryForms").map((form, index) => `
+                    <tr>
+                      <td>${((pageState["discoveryForms"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${form.pageUrl || "N/A"}</td>
+                      <td>${form.method || "N/A"}</td>
+                      <td>${form.action || "N/A"}</td>
+                      <td>
+                        ${
+                          form.inputs?.length
+                            ? form.inputs.map(input => `${input.name || "Unknown"} (${input.inputType || "text"})`).join("<br>")
+                            : "No inputs"
+                        }
+                      </td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No forms discovered.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.formsDiscovered || [], "discoveryForms", "renderDiscoveryAgain")}
+        </div>
+
+        <div class="section">
+          <h2>Detected Technologies</h2>
+          <table>
+            <thead>
+              <tr><th>#</th><th>Technology</th></tr>
+            </thead>
+            <tbody>
+              ${
+                report.technologies?.length
+                  ? paginateData(report.technologies || [], "discoveryTechnologies").map((tech, index) => `
+                    <tr>
+                      <td>${((pageState["discoveryTechnologies"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${tech}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No technologies detected.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.technologies || [], "discoveryTechnologies", "renderDiscoveryAgain")}
+        </div>
+
+        <div class="section">
+          <h2>JavaScript Files</h2>
+          <table>
+            <thead>
+              <tr><th>#</th><th>JavaScript File</th></tr>
+            </thead>
+            <tbody>
+              ${
+                report.jsFiles?.length
+                  ? paginateData(report.jsFiles || [], "discoveryJsFiles").map((js, index) => `
+                    <tr>
+                      <td>${((pageState["discoveryJsFiles"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${js}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No JavaScript files collected.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.jsFiles || [], "discoveryJsFiles", "renderDiscoveryAgain")}
+        </div>
+
+        <div class="section">
+          <h2>Final Recommendation</h2>
+          <p>
+            Review discovered routes and forms for sensitive exposure. JavaScript files should be analyzed
+            for hidden endpoints, tokens, API references, and client-side security weaknesses.
+          </p>
+        </div>
+      `;
+    }
+    function renderDiscoveryAgain() {
+        renderDiscoveryReport(currentDiscoveryReport);
+        }
+   
+    function showControlFindingsSection() {
+  const section = document.getElementById("controlFindingsSection");
+
+  if (!section) return;
+
+  section.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  section.style.borderColor = "rgba(168,85,247,0.75)";
+  section.style.boxShadow =
+    "0 0 35px rgba(168,85,247,0.35), 0 20px 45px rgba(0,0,0,0.25)";
+
+  setTimeout(() => {
+    section.style.borderColor = "rgba(255,255,255,0.16)";
+    section.style.boxShadow =
+      "0 22px 50px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.10)";
+  }, 1800);
+}
+
+    function renderInputAnalysisReport(report) {
+        currentInputReport = report;
+      const summary = report.summary || {};
+
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>Dynamic Input Analysis Report</h2>
+          <p><strong>Target:</strong> ${report.targetUrl || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${report.scannedAt ? new Date(report.scannedAt).toLocaleString() : "N/A"}</p>
+          <p><strong>Risk Level:</strong> ${severityBadge(report.riskLevel || "Low")}</p>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${summary.totalParameters || 0}</h3><p>Total Parameters</p></div>
+          <div class="card"><h3>${summary.totalForms || 0}</h3><p>Forms Analyzed</p></div>
+          <div class="card"><h3>${summary.totalInputs || 0}</h3><p>Total Inputs</p></div>
+          <div class="card"><h3>${summary.hiddenInputs || 0}</h3><p>Hidden Inputs</p></div>
+          <div class="card"><h3>${summary.passwordInputs || 0}</h3><p>Password Inputs</p></div>
+          <div class="card"><h3>${summary.fileInputs || 0}</h3><p>File Inputs</p></div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            This report analyzes application input surfaces including form parameters,
+            hidden fields, password fields, file upload fields, and JavaScript resources.
+            These inputs help identify areas that may require deeper validation during vulnerability testing.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Parameters Identified</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Page URL</th>
+                <th>Parameter</th>
+                <th>Location</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.parameters?.length
+                  ? paginateData(report.parameters || [], "inputParameters").map((param, index) => `
+                    <tr>
+                      <td>${((pageState["inputParameters"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${param.pageUrl || "N/A"}</td>
+                      <td>${param.parameter || "N/A"}</td>
+                      <td>${param.location || "N/A"}</td>
+                      <td>${severityBadge(param.risk || "Info")}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No parameters identified.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.parameters || [], "inputParameters", "renderInputAgain")}
+        </div>
+
+        <div class="section">
+          <h2>Analyzed Forms</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Page</th>
+                <th>Method</th>
+                <th>Action</th>
+                <th>Inputs</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.forms?.length
+                  ? paginateData(report.forms || [], "inputForms").map((form, index) => `
+                    <tr>
+                      <td>${((pageState["inputForms"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${form.pageUrl || "N/A"}</td>
+                      <td>${form.method || "N/A"}</td>
+                      <td>${form.action || "N/A"}</td>
+                      <td>
+                        ${
+                          form.inputs?.length
+                            ? form.inputs.map(input =>
+                                `${input.name || "Unknown"} (${input.inputType || "text"}) - ${input.risk || "Info"}`
+                              ).join("<br>")
+                            : "No inputs"
+                        }
+                      </td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No forms analyzed.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.forms || [], "inputForms", "renderInputAgain")}
+        </div>
+
+        <div class="section">
+          <h2>JavaScript Resources</h2>
+          <table>
+            <thead>
+              <tr><th>#</th><th>JavaScript File</th></tr>
+            </thead>
+            <tbody>
+              ${
+                report.jsFiles?.length
+                  ? paginateData(report.jsFiles || [], "inputJsFiles").map((js, index) => `
+                    <tr>
+                      <td>${((pageState["inputJsFiles"] || 1) - 1) * ROWS_PER_PAGE + index + 1}</td>
+                      <td>${js}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="2">No JavaScript files collected.</td></tr>`
+              }
+            </tbody>
+          </table>
+          ${paginationControls(report.jsFiles || [], "inputJsFiles", "renderInputAgain")}
+        </div>
+
+        <div class="section">
+          <h2>Final Recommendation</h2>
+          <p>
+            Prioritize review of hidden fields, password fields, file upload inputs, and high-risk parameters.
+            These areas should be validated later during XSS, SQL injection, file upload, and access-control testing.
+          </p>
+        </div>
+      `;
+    }
+    function renderInputAgain() {
+      renderInputAnalysisReport(currentInputReport);
+    }
+    
+    function renderAuthAssessmentReport(report) {
+      const summary = report.summary || {};
+
+      reportContent.innerHTML = `
+        <div class="report-header">
+          <h2>Authentication Assessment Report</h2>
+          <p><strong>Target:</strong> ${report.targetUrl || "Not Available"}</p>
+          <p><strong>Scanned At:</strong> ${report.scannedAt ? new Date(report.scannedAt).toLocaleString() : "N/A"}</p>
+          <p><strong>Risk Level:</strong> ${severityBadge(report.riskLevel || "Low")}</p>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${summary.loginForms || 0}</h3><p>Login Forms</p></div>
+          <div class="card"><h3>${summary.passwordFields || 0}</h3><p>Password Fields</p></div>
+          <div class="card"><h3>${summary.hiddenFields || 0}</h3><p>Hidden Fields</p></div>
+          <div class="card"><h3>${summary.cookieIssues || 0}</h3><p>Cookie Issues</p></div>
+          <div class="card"><h3>${summary.totalFindings || 0}</h3><p>Total Findings</p></div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            This report reviews authentication-related exposure including login forms,
+            password inputs, hidden fields, cookie security flags, and session handling indicators.
+          </p>
+        </div>
+
+        <div class="section">
+          <h2>Login Forms</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Method</th>
+                <th>Action</th>
+                <th>Inputs</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.loginForms?.length
+                  ? report.loginForms.map((form, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${form.method || "N/A"}</td>
+                      <td>${form.action || "N/A"}</td>
+                      <td>
+                        ${
+                          form.inputs?.length
+                            ? form.inputs.map(input =>
+                                `${input.name || "Unknown"} (${input.inputType || "text"})`
+                              ).join("<br>")
+                            : "No inputs"
+                        }
+                      </td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="4">No login forms detected.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Cookie Security Review</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>HttpOnly</th>
+                <th>Secure</th>
+                <th>SameSite</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.cookieSecurity?.length
+                  ? report.cookieSecurity.map((cookie, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${cookie.httpOnly ? "Yes" : "No"}</td>
+                      <td>${cookie.secure ? "Yes" : "No"}</td>
+                      <td>${cookie.sameSite ? "Yes" : "No"}</td>
+                      <td>${severityBadge(cookie.risk || "Info")}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No cookies detected from this page.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Authentication Findings</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Finding</th>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.authFindings?.length
+                  ? report.authFindings.map((finding, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${finding.title || "N/A"}</td>
+                      <td>${severityBadge(finding.severity || "Info")}</td>
+                      <td>${finding.description || "N/A"}</td>
+                      <td>${finding.recommendation || "N/A"}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No authentication findings detected.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Final Recommendation</h2>
+          <p>
+            Review authentication forms manually, enforce HTTPS, use POST for login forms,
+            and configure Secure, HttpOnly, and SameSite cookie attributes for session protection.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderSecurityControlsReport(report) {
+    const summary = report.summary || {};
+
+    reportContent.innerHTML = `
+      <div class="report-layout">
+
+        <div class="report-header">
+          <h2>Security Controls Assessment Report</h2>
+          <p>
+            Browser-side security controls, HTTPS enforcement, CORS posture,
+            cookie protection, and header hardening review.
+          </p>
+
+          <div class="report-info-grid">
+            <div class="info-box">
+              <span>Target</span>
+              <strong>${report.targetUrl || "Not Available"}</strong>
+            </div>
+
+            <div class="info-box">
+              <span>Status Code</span>
+              <strong>${report.statusCode || "N/A"}</strong>
+            </div>
+
+            <div class="info-box">
+              <span>HTTPS Enabled</span>
+              <strong>${report.httpsEnabled ? "Yes" : "No"}</strong>
+            </div>
+
+            <div class="info-box">
+              <span>Risk Level</span>
+              <strong>${severityBadge(report.riskLevel || "Low")}</strong>
+            </div>
+
+            <div class="info-box">
+              <span>Scanned At</span>
+              <strong>${report.scannedAt ? new Date(report.scannedAt).toLocaleString() : "N/A"}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card"><h3>${summary.totalControls || 0}</h3><p>Total Controls</p></div>
+          <div class="card"><h3>${summary.passedControls || 0}</h3><p>Passed Controls</p></div>
+          <div class="card"><h3>${summary.failedControls || 0}</h3><p>Failed Controls</p></div>
+          <div class="card"><h3>${summary.cookieIssues || 0}</h3><p>Cookie Issues</p></div>
+          <div class="card"><h3>${summary.totalFindings || 0}</h3><p>Total Findings</p></div>
+        </div>
+
+        <div class="section">
+          <h2>Executive Summary</h2>
+          <p>
+            This assessment reviews core security controls that protect users and browsers from
+            common client-side and transport-layer risks. Missing headers, weak cookies,
+            unsafe CORS behavior, and HTTP usage should be prioritized for remediation.
+          </p>
+        </div>
+
+        <div class="section-grid-2">
+
+          <div class="section">
+            <h2>CORS Review</h2>
+            <table class="clean-table">
+              <tr>
+                <th>Allow Origin</th>
+                <td>${report.corsReview?.accessControlAllowOrigin || "Not Configured"}</td>
+              </tr>
+              <tr>
+                <th>Allow Credentials</th>
+                <td>${report.corsReview?.accessControlAllowCredentials || "Not Configured"}</td>
+              </tr>
+              <tr>
+                <th>Risk</th>
+                <td>${severityBadge(report.corsReview?.risk || "Low")}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="section">
+            <h2>Control Summary</h2>
+            <table class="clean-table">
+              <tr><th>Total Controls</th><td>${summary.totalControls || 0}</td></tr>
+              <tr><th>Passed</th><td>${summary.passedControls || 0}</td></tr>
+              <tr><th>Failed</th><td>${summary.failedControls || 0}</td></tr>
+              <tr><th>Cookie Issues</th><td>${summary.cookieIssues || 0}</td></tr>
+              <tr><th>Total Findings</th><td><button class="mini-view-btn" onclick="showControlFindingsSection()">${summary.totalFindings || 0} View Findings</button></td></tr>
+            </table>
+          </div>
+
+        </div>
+
+        <div class="section">
+          <h2>Security Header Checks</h2>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Header</th>
+                <th>Status</th>
+                <th>Severity</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.headerChecks?.length
+                  ? report.headerChecks.map((item, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${item.name || "N/A"}</td>
+                      <td>${item.status || "N/A"}</td>
+                      <td>${severityBadge(item.severity || "Info")}</td>
+                      <td>${item.value || "Not configured"}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No header checks available.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Cookie Security Review</h2>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>HttpOnly</th>
+                <th>Secure</th>
+                <th>SameSite</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.cookieSecurity?.length
+                  ? report.cookieSecurity.map((cookie, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${cookie.httpOnly ? "Yes" : "No"}</td>
+                      <td>${cookie.secure ? "Yes" : "No"}</td>
+                      <td>${cookie.sameSite ? "Yes" : "No"}</td>
+                      <td>${severityBadge(cookie.risk || "Info")}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No cookies detected from this page.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+       <div class="section" id="controlFindingsSection">
+        <h2>Security Control Findings</h2>
+          <table class="clean-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Finding</th>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${
+                report.controlFindings?.length
+                  ? report.controlFindings.map((finding, index) => `
+                    <tr>
+                      <td>${index + 1}</td>
+                      <td>${finding.title || "N/A"}</td>
+                      <td>${severityBadge(finding.severity || "Info")}</td>
+                      <td>${finding.description || "N/A"}</td>
+                      <td>${finding.recommendation || "N/A"}</td>
+                    </tr>
+                  `).join("")
+                  : `<tr><td colspan="5">No security control findings detected.</td></tr>`
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Final Recommendation</h2>
+          <p>
+            Configure missing security headers, enforce HTTPS, restrict CORS to trusted origins,
+            and harden cookies using Secure, HttpOnly, and SameSite attributes.
+          </p>
+        </div>
+
+      </div>
+    `;
+  }
+
+    function renderApiSecurityReport(report) {
+  const summary = report.summary || {};
+
+  reportContent.innerHTML = `
+    <div class="report-layout">
+
+      <div class="report-header">
+        <h2>API Security Assessment Report</h2>
+        <p>
+          API endpoint discovery, Swagger/OpenAPI exposure,
+          JSON endpoint review, CORS posture, and API risk mapping.
+        </p>
+
+        <div class="report-info-grid">
+          <div class="info-box">
+            <span>Target</span>
+            <strong>${report.targetUrl || "Not Available"}</strong>
+          </div>
+
+          <div class="info-box">
+            <span>Risk Level</span>
+            <strong>${severityBadge(report.riskLevel || "Low")}</strong>
+          </div>
+
+          <div class="info-box">
+            <span>Scanned At</span>
+            <strong>${report.scannedAt ? new Date(report.scannedAt).toLocaleString() : "N/A"}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card"><h3>${summary.totalApis || 0}</h3><p>APIs Found</p></div>
+        <div class="card"><h3>${summary.swaggerFound || 0}</h3><p>Swagger/OpenAPI</p></div>
+        <div class="card"><h3>${summary.jsonEndpoints || 0}</h3><p>JSON Endpoints</p></div>
+        <div class="card"><h3>${summary.riskyCors || 0}</h3><p>CORS Issues</p></div>
+        <div class="card"><h3>${summary.totalFindings || 0}</h3><p>Total Findings</p></div>
+      </div>
+
+      <div class="section">
+        <h2>Executive Summary</h2>
+        <p>
+          This assessment identifies exposed API surfaces, public API documentation,
+          JSON endpoints, CORS behavior, and API-related security findings.
+        </p>
+      </div>
+
+      <div class="section-grid-2">
+        <div class="section">
+          <h2>CORS Review</h2>
+          <table class="clean-table">
+            <tr>
+              <th>Allow Origin</th>
+              <td>${report.corsReview?.accessControlAllowOrigin || "Not Configured"}</td>
+            </tr>
+            <tr>
+              <th>Allow Credentials</th>
+              <td>${report.corsReview?.accessControlAllowCredentials || "Not Configured"}</td>
+            </tr>
+            <tr>
+              <th>Risk</th>
+              <td>${severityBadge(report.corsReview?.risk || "Low")}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>HTTP Methods Reviewed</h2>
+          <table class="clean-table">
+            <tr>
+              <th>Methods</th>
+              <td>${report.methods?.length ? report.methods.join(", ") : "N/A"}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Discovered API Endpoints</h2>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Endpoint</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              report.discoveredApis?.length
+                ? report.discoveredApis.map((api, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${api}</td>
+                  </tr>
+                `).join("")
+                : `<tr><td colspan="2">No API endpoints detected.</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Swagger / OpenAPI Exposure</h2>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Swagger / OpenAPI Endpoint</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              report.swaggerEndpoints?.length
+                ? report.swaggerEndpoints.map((api, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${api}</td>
+                  </tr>
+                `).join("")
+                : `<tr><td colspan="2">No Swagger/OpenAPI endpoints detected.</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>JSON Endpoints</h2>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>JSON Endpoint</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              report.jsonEndpoints?.length
+                ? report.jsonEndpoints.map((api, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${api}</td>
+                  </tr>
+                `).join("")
+                : `<tr><td colspan="2">No public JSON endpoints detected.</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>API Security Findings</h2>
+        <table class="clean-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Finding</th>
+              <th>Severity</th>
+              <th>Description</th>
+              <th>Recommendation</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              report.apiFindings?.length
+                ? report.apiFindings.map((finding, index) => `
+                  <tr>
+                    <td>${index + 1}</td>
+                    <td>${finding.title || "N/A"}</td>
+                    <td>${severityBadge(finding.severity || "Info")}</td>
+                    <td>${finding.description || "N/A"}</td>
+                    <td>${finding.recommendation || "N/A"}</td>
+                  </tr>
+                `).join("")
+                : `<tr><td colspan="5">No API findings detected.</td></tr>`
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Final Recommendation</h2>
+        <p>
+          Restrict public API documentation, validate exposed JSON endpoints,
+          harden CORS configuration, and ensure sensitive APIs require authentication.
+        </p>
+      </div>
+
+    </div>
+  `;
+}
+
+    function renderVulnerabilityAssessmentReport(report) {
+      const summary = report.summary || {};
+
+      reportContent.innerHTML = `
+        <div class="report-layout">
+
+          <div class="report-header">
+            <h2>Dynamic Vulnerability Assessment Report</h2>
+            <p>
+              Advanced dynamic vulnerability analysis covering risky inputs,
+              SQL error exposure, open redirect indicators, sensitive files,
+              upload risks, JavaScript secrets, and dangerous HTTP methods.
+            </p>
+
+            <div class="report-info-grid">
+              <div class="info-box"><span>Target</span><strong>${report.targetUrl || "N/A"}</strong></div>
+              <div class="info-box"><span>Mode</span><strong>${report.mode || "standard"}</strong></div>
+              <div class="info-box"><span>Status Code</span><strong>${report.statusCode || "N/A"}</strong></div>
+              <div class="info-box"><span>Risk Level</span><strong>${severityBadge(report.riskLevel || "Low")}</strong></div>
+              <div class="info-box"><span>Scanned At</span><strong>${report.scannedAt ? new Date(report.scannedAt).toLocaleString() : "N/A"}</strong></div>
+            </div>
+          </div>
+
+          <div class="cards">
+            <div class="card"><h3>${summary.totalFindings || 0}</h3><p>Total Findings</p></div>
+            <div class="card"><h3>${summary.sensitiveFiles || 0}</h3><p>Sensitive Files</p></div>
+            <div class="card"><h3>${summary.jsSecrets || 0}</h3><p>JS Secret Indicators</p></div>
+            <div class="card"><h3>${summary.uploadRisks || 0}</h3><p>Upload Risks</p></div>
+            <div class="card"><h3>${summary.dangerousMethods || 0}</h3><p>Dangerous Methods</p></div>
+          </div>
+
+          <div class="section">
+            <h2>Executive Summary</h2>
+            <p>
+              This scan performs strong but non-destructive checks to identify high-risk
+              application weaknesses. Critical and high findings should be validated and
+              remediated immediately.
+            </p>
+          </div>
+
+          <div class="section">
+            <h2>Vulnerability Findings</h2>
+            <table class="clean-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Finding</th>
+                  <th>Severity</th>
+                  <th>OWASP Mapping</th>
+                  <th>Evidence</th>
+                  <th>Recommendation</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${
+                  report.vulnerabilityFindings?.length
+                    ? report.vulnerabilityFindings.map((finding, index) => `
+                      <tr>
+                        <td>${index + 1}</td>
+                        <td>${finding.title || "N/A"}</td>
+                        <td>${severityBadge(finding.severity || "Info")}</td>
+                        <td>${finding.owasp || "N/A"}</td>
+                        <td>${finding.evidence || "N/A"}</td>
+                        <td>${finding.recommendation || "N/A"}</td>
+                      </tr>
+                    `).join("")
+                    : `<tr><td colspan="6">No vulnerability findings detected.</td></tr>`
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-grid-2">
+            <div class="section">
+              <h2>Risk Indicators</h2>
+              <table class="clean-table">
+                <tr><th>Reflected Parameters</th><td>${summary.reflectedParameters || 0}</td></tr>
+                <tr><th>SQL Error Indicators</th><td>${summary.sqlErrors || 0}</td></tr>
+                <tr><th>Open Redirect Indicators</th><td>${summary.openRedirects || 0}</td></tr>
+                <tr><th>Sensitive Files</th><td>${summary.sensitiveFiles || 0}</td></tr>
+                <tr><th>Upload Risks</th><td>${summary.uploadRisks || 0}</td></tr>
+                <tr><th>JS Secrets</th><td>${summary.jsSecrets || 0}</td></tr>
+                <tr><th>Dangerous Methods</th><td>${summary.dangerousMethods || 0}</td></tr>
+              </table>
+            </div>
+
+            <div class="section">
+              <h2>Dangerous HTTP Methods</h2>
+              <table class="clean-table">
+                <thead>
+                  <tr><th>#</th><th>Method</th></tr>
+                </thead>
+                <tbody>
+                  ${
+                    report.dangerousMethods?.length
+                      ? report.dangerousMethods.map((method, index) => `
+                        <tr><td>${index + 1}</td><td>${method}</td></tr>
+                      `).join("")
+                      : `<tr><td colspan="2">No dangerous methods detected.</td></tr>`
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>Sensitive File Exposure</h2>
+            <table class="clean-table">
+              <thead>
+                <tr><th>#</th><th>URL</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                ${
+                  report.sensitiveFiles?.length
+                    ? report.sensitiveFiles.map((file, index) => `
+                      <tr>
+                        <td>${index + 1}</td>
+                        <td>${file.url || "N/A"}</td>
+                        <td>${file.status || "N/A"}</td>
+                      </tr>
+                    `).join("")
+                    : `<tr><td colspan="3">No sensitive files detected.</td></tr>`
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section">
+            <h2>JavaScript Secret Indicators</h2>
+            <table class="clean-table">
+              <thead>
+                <tr><th>#</th><th>Script</th><th>Indicator</th></tr>
+              </thead>
+              <tbody>
+                ${
+                  report.jsSecretIndicators?.length
+                    ? report.jsSecretIndicators.map((item, index) => `
+                      <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.script || "N/A"}</td>
+                        <td>${item.indicator || "N/A"}</td>
+                      </tr>
+                    `).join("")
+                    : `<tr><td colspan="3">No JavaScript secret indicators detected.</td></tr>`
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section">
+            <h2>Open Redirect Indicators</h2>
+            <table class="clean-table">
+              <thead>
+                <tr><th>#</th><th>URL / Parameter</th></tr>
+              </thead>
+              <tbody>
+                ${
+                  report.openRedirectIndicators?.length
+                    ? report.openRedirectIndicators.map((item, index) => `
+                      <tr><td>${index + 1}</td><td>${item}</td></tr>
+                    `).join("")
+                    : `<tr><td colspan="2">No open redirect indicators detected.</td></tr>`
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section">
+            <h2>Final Recommendation</h2>
+            <p>
+              Validate all high-risk findings manually, remove exposed sensitive files,
+              eliminate client-side secrets, restrict dangerous HTTP methods,
+              harden file upload handling, and apply OWASP-based remediation.
+            </p>
+          </div>
+
+        </div>
+      `;
+    }
+
+</script>
+
+</body>
+</html>

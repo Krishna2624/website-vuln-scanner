@@ -239,10 +239,10 @@
     <h1>Asset Inventory</h1>
     <div class="nav-links">
       <a href="index.html">Scanner</a>
-      <a href="asset-inventory.html">Asset Inventory</a>
       <a href="dashboard.html">Dashboard</a>
-      <a href="report.html">Reports</a>
+      <a href="asset-inventory.html">Asset Inventory</a>      
       <a href="risk-intelligence.html">Risk Intelligence</a>
+      <a href="report.html">Reports</a>
       <a href="#" onclick="logout()">Logout</a>
     </div>
   </div>
@@ -768,19 +768,7 @@ function closeAssetModal() {
 
 async function loadAssetInventory() {
   try {
-    let scan = JSON.parse(localStorage.getItem("latestFullReport"));
-
-    if (!scan) {
-      const res = await fetch("/full-scan-history", {
-        headers: {
-          Authorization: localStorage.getItem("token")
-        }
-      });
-
-      const data = await res.json();
-      scan = data[0];
-    }
-
+    let scan = JSON.parse(localStorage.getItem("selectedAssetInventory"));
     if (!scan) {
       assetContent.innerHTML = `
         <div class="glass-card">
