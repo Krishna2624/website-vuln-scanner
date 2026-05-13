@@ -120,6 +120,10 @@ let isRegister = false;
 function toggleMode() {
   isRegister = !isRegister;
 
+  if (!isRegister) {
+    isAdminRegister = false;
+  }
+
   document.getElementById("formTitle").innerText = isRegister ? "Register" : "Login";
   document.getElementById("name").style.display = isRegister ? "block" : "none";
   document.querySelector("button").innerText = isRegister ? "Register" : "Login";
@@ -178,9 +182,18 @@ async function submitAuth() {
 
     if (isRegister) {
       message.style.color = "#86efac";
-      message.innerText = "Registered successfully. Please login.";
-      toggleMode();
-    } else {
+      message.innerText = isAdminRegister
+        ? "Admin created successfully. Please login."
+        : "Registered successfully. Please login.";
+
+      isAdminRegister = false;
+      isRegister = false;
+
+      document.getElementById("formTitle").innerText = "Login";
+      document.getElementById("name").style.display = "none";
+      document.querySelector("button").innerText = "Login";
+      document.querySelector(".switch").innerText = "Don't have an account? Register";
+    }else {
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
       localStorage.setItem("userId", data.userId);

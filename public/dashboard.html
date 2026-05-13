@@ -98,7 +98,7 @@ body::after {
 
   background:
     linear-gradient(
-      135deg,
+      185deg,
       rgba(255,255,255,0.09),
       rgba(255,255,255,0.035)
     );
@@ -1101,7 +1101,7 @@ body::after {
 
 .soc-metric-grid {
 
-  max-width: 1600px;
+  max-width: 1500px;
 
   margin: 0 auto 40px;
 
@@ -1114,7 +1114,7 @@ body::after {
 
 .soc-metric-card {
 
-  min-height: 210px;
+  min-height: 190px;
 
   padding: 26px;
 
@@ -1209,7 +1209,7 @@ body::after {
 .soc-metric-card h2 {
   font-size: 54px;
   line-height: 1;
-  margin-bottom: 18px;
+  margin-bottom: 20ppx;
   font-weight: 800;
   color: #ffffff;
 }
@@ -1481,18 +1481,33 @@ body::after {
   }
 }
 .custom-modal{
-  position:fixed;
-  inset:0;
+  position: fixed;
+  inset: 0;
 
-  background:rgba(0,0,0,0.65);
+  background: rgba(0,0,0,0.55);
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
 
-  display:none;
-  align-items:center;
-  justify-content:center;
 
-  z-index:99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 99999;
+
+  animation: modalFade 0.25s ease;
 }
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
 
+  to {
+    opacity: 1;
+    backdrop-filter: blur(18px);
+  }
+}
 .custom-modal-content{
   width:90%;
   max-width:850px;
@@ -1959,8 +1974,556 @@ body::after {
     88px -5px 0 #22c55e !important;
 }
 
+/* REAL TIME SCANNER - TARGET RISK TIMELINE STYLE */
+
+.realtime-timeline-style {
+
+  max-width: 980px !important;
+
+  padding: 34px 38px !important;
+
+  border-radius: 26px !important;
+
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.03)
+    ) !important;
+
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+
+  border: 1px solid rgba(255,255,255,0.14) !important;
+
+  box-shadow:
+    0 25px 70px rgba(0,0,0,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+.realtime-timeline-style h2 {
+  color: #ffffff !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  margin-bottom: 18px !important;
+}
+
+.realtime-timeline-style p {
+  color: #d1d5db !important;
+  font-size: 17px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 26px !important;
+}
+
+.realtime-inline-form {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr auto auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.realtime-inline-form input,
+.realtime-inline-form select {
+  height: 58px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: white;
+  font-size: 15px;
+  outline: none;
+}
+
+.realtime-inline-form select {
+  background: #1f2937;
+}
+
+.realtime-inline-form input:focus,
+.realtime-inline-form select:focus {
+  border-color: rgba(96,165,250,0.55);
+}
+
+.realtime-inline-form button {
+  height: 58px;
+  padding: 0 24px !important;
+  border-radius: 13px !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
+.realtime-inline-form button:first-of-type {
+  background: #111827 !important;
+  border: 1px solid rgba(96,165,250,0.35) !important;
+}
+
+.timeline-close-btn {
+  background: #ef4444 !important;
+  border: none !important;
+}
+
+.timeline-list-title {
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+.timeline-list-title h3 {
+  color: #ffffff !important;
+  font-size: 20px !important;
+}
+
+.timeline-list-title span {
+  color: #9ca3af !important;
+}
+
+.realtime-schedule-card {
+  display: grid;
+  grid-template-columns: 1.4fr 0.7fr 1fr auto;
+  gap: 14px;
+  align-items: center;
+
+  padding: 18px 20px;
+  margin-bottom: 14px;
+
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.realtime-schedule-card:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(96,165,250,0.35);
+}
+
+.schedule-url {
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.schedule-meta {
+  color: #9ca3af;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.schedule-badge {
+  display: inline-flex;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: rgba(34,197,94,0.14);
+  color: #86efac;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.delete-schedule-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px !important;
+  background: rgba(239,68,68,0.14) !important;
+  border: 1px solid rgba(239,68,68,0.40) !important;
+  color: #f87171 !important;
+  font-size: 17px !important;
+}
+
+@media(max-width: 1000px) {
+  .realtime-inline-form,
+  .realtime-schedule-card {
+    grid-template-columns: 1fr;
+  }
+}
+/* Enterprise glass View All buttons */
+.panel-head button {
+
+  background: rgba(255,255,255,0.06) !important;
+
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  color: #ffffff !important;
+
+  border-radius: 14px !important;
+
+  padding: 10px 18px !important;
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+
+  transition: 0.25s ease;
+}
+
+.panel-head button:hover {
+
+  background: rgba(255,255,255,0.10) !important;
+
+  border-color: rgba(96,165,250,0.30) !important;
+
+  transform: translateY(-2px);
+}
 
 
+/* Make all View All modals match Target Risk Timeline glass style */
+#topTargetsModal .custom-modal-content,
+#commonIssuesModal .custom-modal-content,
+#priorityFixesModal .custom-modal-content,
+#attackSurfaceModal .custom-modal-content,
+#liveActivityModal .custom-modal-content,
+#riskTrendSnapshotModal .custom-modal-content,
+#owaspModal .custom-modal-content,
+#coverageModal .custom-modal-content {
+  max-width: 980px !important;
+  padding: 34px 38px !important;
+  border-radius: 26px !important;
+
+  background:
+linear-gradient(
+  135deg,
+  rgba(255,255,255,0.06),
+  rgba(255,255,255,0.02)
+) !important;
+
+backdrop-filter: blur(10px) !important;
+-webkit-backdrop-filter: blur(10px) !important;
+
+border: 1px solid rgba(255,255,255,0.10) !important;
+
+box-shadow:
+0 18px 45px rgba(0,0,0,0.28),
+inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+#topTargetsModal .custom-modal-header,
+#commonIssuesModal .custom-modal-header,
+#priorityFixesModal .custom-modal-header,
+#attackSurfaceModal .custom-modal-header,
+#liveActivityModal .custom-modal-header,
+#riskTrendSnapshotModal .custom-modal-header,
+#owaspModal .custom-modal-header,
+#coverageModal .custom-modal-header {
+  margin-bottom: 24px !important;
+}
+
+#topTargetsModal .custom-modal-header h2,
+#commonIssuesModal .custom-modal-header h2,
+#priorityFixesModal .custom-modal-header h2,
+#attackSurfaceModal .custom-modal-header h2,
+#liveActivityModal .custom-modal-header h2,
+#riskTrendSnapshotModal .custom-modal-header h2,
+#owaspModal .custom-modal-header h2,
+#coverageModal .custom-modal-header h2 {
+  color: #ffffff !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+}
+
+#topTargetsModal .custom-modal-header button,
+#commonIssuesModal .custom-modal-header button,
+#priorityFixesModal .custom-modal-header button,
+#attackSurfaceModal .custom-modal-header button,
+#liveActivityModal .custom-modal-header button,
+#riskTrendSnapshotModal .custom-modal-header button,
+#owaspModal .custom-modal-header button,
+#coverageModal .custom-modal-header button {
+  background: rgba(239,68,68,0.92) !important;
+  border: none !important;
+  border-radius: 13px !important;
+  padding: 14px 24px !important;
+}
+/* FINAL: Premium glass buttons for all SOC dashboard actions */
+.panel-head button,
+.top-bar button,
+.custom-modal-header button,
+.realtime-inline-form button,
+#exportModal button {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.10),
+      rgba(255,255,255,0.04)
+    ) !important;
+
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  color: #ffffff !important;
+
+  border-radius: 14px !important;
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.10) !important;
+
+  transition: 0.25s ease !important;
+}
+
+.panel-head button:hover,
+.top-bar button:hover,
+.custom-modal-header button:hover,
+.realtime-inline-form button:hover,
+#exportModal button:hover {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(96,165,250,0.22),
+      rgba(124,58,237,0.18)
+    ) !important;
+
+  border-color: rgba(96,165,250,0.35) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Keep close buttons red */
+.timeline-close-btn,
+.realtime-close-btn,
+.custom-modal-header button[onclick*="close"],
+button[onclick*="close"] {
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    ) !important;
+
+  border: none !important;
+}
+.risk-modal-table-head {
+  display: grid;
+  grid-template-columns: 1.7fr 0.8fr 0.8fr 1fr;
+  gap: 18px;
+  padding: 0 28px 16px;
+  color: #cbd5e1;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.risk-modal-row {
+  display: grid;
+  grid-template-columns: 1.7fr 0.8fr 0.8fr 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.06),
+      rgba(255,255,255,0.02)
+    );
+
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.risk-url-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.risk-url-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.risk-url-cell strong {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.risk-url-cell small {
+  display: block;
+  margin-top: 5px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.risk-critical-pill {
+  display: inline-flex;
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  color: #ff7777;
+  border: 1px solid rgba(239,68,68,0.55);
+  background: rgba(239,68,68,0.10);
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.risk-severity-cell,
+.risk-date-cell {
+  color: #e5e7eb;
+  font-size: 14px;
+}
+
+.risk-pagination-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 24px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+.risk-pagination {
+  display: flex;
+  gap: 10px;
+}
+
+.risk-pagination button {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.03)
+    ) !important;
+
+  border: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+.risk-pagination button.active {
+  background:
+    linear-gradient(135deg, #2563eb, #7c3aed) !important;
+}
+
+.risk-pagination button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+
+
+
+body.modal-open {
+  overflow: hidden !important;
+}
+/* Better Real Time Scanner frequency dropdown */
+#realtimePeriodInput {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(30,41,59,0.95),
+      rgba(15,23,42,0.92)
+    ) !important;
+
+  border: 1px solid rgba(96,165,250,0.38) !important;
+  color: #ffffff !important;
+
+  cursor: pointer;
+
+  background-image:
+    linear-gradient(135deg, rgba(30,41,59,0.95), rgba(15,23,42,0.92)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+  background-repeat: no-repeat, no-repeat;
+  background-position: center, right 16px center;
+  background-size: cover, 14px;
+  padding-right: 46px !important;
+}
+
+#realtimePeriodInput:hover {
+  border-color: rgba(168,85,247,0.55) !important;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+}
+
+#realtimePeriodInput:focus {
+  border-color: rgba(96,165,250,0.75) !important;
+  box-shadow:
+    0 0 0 4px rgba(59,130,246,0.10),
+    0 0 24px rgba(96,165,250,0.12);
+}
+
+#realtimePeriodInput option {
+  background: #111827;
+  color: #ffffff;
+  padding: 14px;
+}
+
+.custom-frequency-dropdown {
+  position: relative;
+}
+
+.frequency-selected {
+  width: 100%;
+  height: 58px;
+  border-radius: 18px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.frequency-menu {
+  display: none;
+  position: absolute;
+  top: 66px;
+  left: 0;
+  right: 0;
+  z-index: 999999;
+
+  overflow: hidden;
+  border-radius: 18px;
+
+  background: rgba(15,23,42,0.96);
+  border: 1px solid rgba(96,165,250,0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+}
+
+.frequency-menu div {
+  padding: 15px 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.frequency-menu div:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+/* Professional center alignment for top action buttons */
+.top-bar {
+  justify-content: center !important;
+  gap: 22px !important;
+  margin: 34px auto 36px !important;
+}
+
+.top-bar .search-box {
+  display: none !important;
+}
+
+.top-bar button {
+  min-width: 210px !important;
+  height: 56px !important;
+  border-radius: 18px !important;
+  font-size: 15px !important;
+}
   </style>
 </head>
 <body>
@@ -1993,9 +2556,7 @@ body::after {
 
   
   <div class="top-bar">
-    <div class="search-box">
-      <input type="text" placeholder="Search scanned website URL..." />
-    </div>
+    
     <div id="customUserFilter" class="custom-dropdown" style="display:none;">
       <button type="button" class="dropdown-btn" onclick="toggleUserDropdown()">
         <span id="selectedUserText">All Users</span>
@@ -2004,9 +2565,10 @@ body::after {
 
       <div id="userDropdownMenu" class="dropdown-menu"></div>
     </div>
+    <button onclick="openRealtimeScannerModal()">Real Time Scanner</button>
     <button onclick="openMonitoringCenter()">Continuous Monitoring</button>
    <button onclick="openTrendModal()">Target Risk Timeline</button>
-   <button onclick="openExportModal()">Export Report</button>
+   
   </div>
   
 
@@ -2651,6 +3213,53 @@ body::after {
   </div>
 </div>
 
+<div id="realtimeScannerModal" class="custom-modal">
+  <div class="custom-modal-content realtime-timeline-style">
+
+    <h2>Real Time Scanner</h2>
+
+    <p>
+      Schedule automated surface and dynamic assessment scans for continuous security monitoring.
+    </p>
+
+    <div class="realtime-inline-form">
+      <input id="realtimeUrlInput" type="text" placeholder="https://example.com">
+
+      <div class="custom-frequency-dropdown">
+        <button type="button" class="frequency-selected" onclick="toggleFrequencyDropdown()">
+          <span id="frequencySelectedText">Daily</span>
+          <span>⌄</span>
+        </button>
+
+        <div id="frequencyDropdownMenu" class="frequency-menu">
+          <div onclick="selectFrequencyOption('daily', 'Daily')">Daily</div>
+          <div onclick="selectFrequencyOption('weekly', 'Weekly')">Weekly</div>
+          <div onclick="selectFrequencyOption('monthly', 'Monthly')">Monthly</div>
+          <div onclick="selectFrequencyOption('3months', 'Every 3 Months')">Every 3 Months</div>
+        </div>
+
+        <input type="hidden" id="realtimePeriodInput" value="daily">
+      </div>
+
+      <button type="button" onclick="addRealtimeSchedule()">
+        Add Schedule
+      </button>
+
+      <button type="button" onclick="closeRealtimeScannerModal()" class="timeline-close-btn">
+        Close
+      </button>
+    </div>
+
+    <div class="realtime-list-header timeline-list-title">
+      <h3>Scheduled Scan Targets</h3>
+      <span>Surface + Dynamic Monitoring</span>
+    </div>
+
+    <div id="realtimeScheduleList" class="realtime-schedule-list"></div>
+
+  </div>
+</div>
+
 
 
 
@@ -2790,15 +3399,24 @@ function protectPage() {
     window.location.href = "auth.html";
   }
 }
+
 function logout() {
-  localStorage.clear();
+
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("role");
+
   window.location.href = "auth.html";
 }
+
 protectPage();
 const currentUserId = localStorage.getItem("userId");
 const role = localStorage.getItem("role");
 let allScanData = [];
 let adminUsers = [];
+let topTargetsPage = 1;
+const topTargetsPerPage = 5;
+let topTargetsFullData = [];
 let selectedUserId = "all";
 let dynamicDiscoveryData = [];
 let dynamicInputData = [];
@@ -3428,9 +4046,15 @@ function getUserLabel(userId) {
   return user.email || user.name || userId;
 }
 
-function toggleUserDropdown() {
-  const menu = document.getElementById("userDropdownMenu");
+function toggleFrequencyDropdown() {
+  const menu = document.getElementById("frequencyDropdownMenu");
   menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function selectFrequencyOption(value, label) {
+  document.getElementById("realtimePeriodInput").value = value;
+  document.getElementById("frequencySelectedText").textContent = label;
+  document.getElementById("frequencyDropdownMenu").style.display = "none";
 }
 
 function populateUserFilter(data) {
@@ -3563,6 +4187,16 @@ function updateSocMetrics(data) {
   }
 }
 
+function toggleUserDropdown() {
+  const menu = document.getElementById("userDropdownMenu");
+
+  if (!menu) return;
+
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+
+
     async function loadDashboard() {
       const token = localStorage.getItem("token");
 
@@ -3570,7 +4204,7 @@ function updateSocMetrics(data) {
         window.location.href = "auth.html";
       }
 
-      const res = await fetch("/full-scans", {
+      const res = await fetch("/scans", {
         headers: {
           "Authorization": token
         }
@@ -3594,9 +4228,17 @@ function updateSocMetrics(data) {
       
     }
     function viewReport(scan) {
-      localStorage.setItem("latestReport", JSON.stringify(scan));
-      window.location.href = "report.html";
-    }
+    localStorage.removeItem("latestFullReport");
+    localStorage.removeItem("latestDnsReport");
+    localStorage.removeItem("latestPortReport");
+    localStorage.removeItem("latestWhoisReport");
+    localStorage.removeItem("latestSubdomainReport");
+    localStorage.removeItem("latestDynamicReport");
+
+    localStorage.setItem("latestReport", JSON.stringify(scan));
+
+    window.location.href = "report.html";
+  }
 
     async function loadDnsLookups() {
       const res = await fetch("/dns-history", {
@@ -3799,6 +4441,8 @@ function updateSocMetrics(data) {
       localStorage.removeItem("latestPortReport");
       localStorage.removeItem("latestWhoisReport");
       localStorage.removeItem("latestSubdomainReport");
+       localStorage.removeItem("latestDynamicReport");
+      localStorage.removeItem("latestFullReport");
 
       localStorage.setItem("latestFullReport", JSON.stringify(scan));
 
@@ -4244,10 +4888,14 @@ let dashboardScanData = [];
 
 function openTrendModal() {
   document.getElementById("trendModal").style.display = "flex";
+  document.body.classList.add("modal-open");
 }
+
 function closeTrendModal() {
   document.getElementById("trendModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
+
 function cleanUrl(url) {
   try {
     return new URL(url.startsWith("http") ? url : "https://" + url).hostname.replace(/^www\./, "");
@@ -4391,6 +5039,12 @@ function analyzeTargetTrend() {
 
 function openMonitoringCenter() {
   window.location.href = "monitoring.html";
+  document.body.classList.add("modal-open");
+}
+
+function closeMonitoringCenter() {
+  document.getElementById("monitoringCenterModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openDashboardHistory(groupId, tabId) {
@@ -4431,89 +5085,52 @@ function openDashboardHistory(groupId, tabId) {
 
 function openTopTargetsModal() {
 
-  const modal = document.getElementById("topTargetsModal");
+  const modal = document.getElementById("topTargetsModal").style.display = "flex";
   const body = document.getElementById("topTargetsModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   const uniqueRiskMap = new Map();
 
-[...fullScanHistoryData]
-  .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
-  .forEach(scan => {
+  [...fullScanHistoryData]
+    .sort((a, b) => new Date(b.scannedAt) - new Date(a.scannedAt))
+    .forEach(scan => {
 
-    const key =
-      scan.target ||
-      scan.targetUrl ||
-      scan.domain ||
-      "Unknown";
+      const key =
+        scan.target ||
+        scan.targetUrl ||
+        scan.domain ||
+        "Unknown";
 
-    if (!uniqueRiskMap.has(key)) {
-      uniqueRiskMap.set(key, scan);
-    }
-  });
+      if (!uniqueRiskMap.has(key)) {
+        uniqueRiskMap.set(key, scan);
+      }
+    });
 
-const sorted = Array.from(uniqueRiskMap.values())
-  .sort((a, b) => {
+  topTargetsFullData = Array.from(uniqueRiskMap.values())
+    .sort((a, b) => {
 
-    const aSummary =
-      a.website?.summary || a.summary || {};
+      const aSummary = a.website?.summary || a.summary || {};
+      const bSummary = b.website?.summary || b.summary || {};
 
-    const bSummary =
-      b.website?.summary || b.summary || {};
+      return (bSummary.critical || 0) - (aSummary.critical || 0);
+    });
 
-    return (
-      (bSummary.critical || 0) -
-      (aSummary.critical || 0)
-    );
-  });
-
-  body.innerHTML = "";
-
-  sorted.slice(0,8).forEach(scan => {
-
-    const summary =
-      scan.website?.summary || scan.summary || {};
-
-    body.innerHTML += `
-      <div class="target-risk-item">
-
-        <div>
-          <strong>
-            ${scan.target || "Unknown Target"}
-          </strong>
-
-          <div style="margin-top:6px;font-size:12px;color:#94a3b8;">
-            Risk Level:
-            ${scan.riskLevel || "Unknown"}
-          </div>
-        </div>
-
-        <div style="text-align:right;">
-          <div style="color:#f87171;font-weight:700;">
-            ${summary.critical || 0} Critical
-          </div>
-
-          <div style="font-size:12px;color:#94a3b8;">
-            ${summary.high || 0} High
-          </div>
-        </div>
-
-      </div>
-    `;
-  });
+  topTargetsPage = 1;
+  renderTopTargetsPage();
 
   modal.style.display = "flex";
 }
 
 function closeTopTargetsModal() {
   document.getElementById("topTargetsModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openCommonIssuesModal() {
   const modal = document.getElementById("commonIssuesModal");
   const body = document.getElementById("commonIssuesModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   let vulnMap = {};
@@ -4550,12 +5167,13 @@ function openCommonIssuesModal() {
 
 function closeCommonIssuesModal() {
   document.getElementById("commonIssuesModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openPriorityFixesModal() {
   const modal = document.getElementById("priorityFixesModal");
   const body = document.getElementById("priorityFixesModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   let fixMap = {};
@@ -4600,12 +5218,13 @@ function openPriorityFixesModal() {
 
 function closePriorityFixesModal() {
   document.getElementById("priorityFixesModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openAttackSurfaceModal() {
   const modal = document.getElementById("attackSurfaceModal");
   const body = document.getElementById("attackSurfaceModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   const uniqueSurfaceMap = new Map();
@@ -4669,12 +5288,13 @@ const topAssets = Array.from(uniqueSurfaceMap.values())
 
 function closeAttackSurfaceModal() {
   document.getElementById("attackSurfaceModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openLiveActivityModal() {
   const modal = document.getElementById("liveActivityModal");
   const body = document.getElementById("liveActivityModalBody");
-
+  document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   const uniqueActivityMap = new Map();
@@ -4745,12 +5365,13 @@ const recentActivity =
 
 function closeLiveActivityModal() {
   document.getElementById("liveActivityModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openRiskTrendSnapshotModal() {
   const modal = document.getElementById("riskTrendSnapshotModal");
   const body = document.getElementById("riskTrendSnapshotModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   const uniqueTrendMap = new Map();
@@ -4824,12 +5445,13 @@ const trendScans =
 
 function closeRiskTrendSnapshotModal() {
   document.getElementById("riskTrendSnapshotModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openOwaspModal() {
   const modal = document.getElementById("owaspModal");
   const body = document.getElementById("owaspModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   const uniqueOwaspMap = new Map();
@@ -4912,12 +5534,13 @@ if (text.includes("content-security-policy") || text.includes("x-frame") || text
 
 function closeOwaspModal() {
   document.getElementById("owaspModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function openCoverageModal() {
   const modal = document.getElementById("coverageModal");
   const body = document.getElementById("coverageModalBody");
-
+document.body.classList.add("modal-open");
   if (!modal || !body) return;
 
   const coverageMap = new Map();
@@ -5015,8 +5638,8 @@ function openCoverageModal() {
 }
 
 function closeCoverageModal() {
-  document.getElementById("coverageModal").style.display =
-    "none";
+  document.getElementById("coverageModal").style.display = "none";
+  document.body.classList.remove("modal-open");
 }
 
 function updateScanCoverage() {
@@ -5052,6 +5675,188 @@ function updateScanCoverage() {
   document.getElementById("coverageApisBar").style.width = Math.min((apis / 50) * 100, 100) + "%";
   document.getElementById("coverageSubsBar").style.width = Math.min((subdomains / 100) * 100, 100) + "%";
 }
+
+function openRealtimeScannerModal() {
+  loadRealtimeSchedules();
+  document.getElementById("realtimeScannerModal").style.display = "flex";
+  document.body.classList.add("modal-open");
+
+}
+
+function closeRealtimeScannerModal() {
+  document.getElementById("realtimeScannerModal").style.display = "none";
+  document.body.classList.remove("modal-open");
+}
+
+function addRealtimeSchedule() {
+  const url = document.getElementById("realtimeUrlInput").value.trim();
+  const period = document.getElementById("realtimePeriodInput").value;
+  document.body.classList.add("modal-open");
+  if (!url) {
+    alert("Please enter target URL");
+    return;
+  }
+
+  const schedules = JSON.parse(localStorage.getItem("realtimeSchedules") || "[]");
+
+  schedules.push({
+    id: Date.now(),
+    url,
+    period,
+    modules: "Surface + Dynamic Assessment",
+    createdAt: new Date().toISOString()
+  });
+
+  localStorage.setItem("realtimeSchedules", JSON.stringify(schedules));
+
+  document.getElementById("realtimeUrlInput").value = "";
+  document.getElementById("realtimePeriodInput").value = "daily";
+
+  loadRealtimeSchedules();
+}
+
+function loadRealtimeSchedules() {
+  const list = document.getElementById("realtimeScheduleList");
+  const schedules = JSON.parse(localStorage.getItem("realtimeSchedules") || "[]");
+
+  if (!schedules.length) {
+    list.innerHTML = `
+      <div class="realtime-schedule-card" style="grid-template-columns:1fr;">
+        <div>
+          <div class="schedule-url">No scheduled targets yet</div>
+          <div class="schedule-meta">Add a URL and scan frequency to begin monitoring.</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = schedules.map(item => `
+    <div class="realtime-schedule-card">
+      <div>
+        <div class="schedule-url">${item.url}</div>
+        <div class="schedule-meta">Added ${new Date(item.createdAt).toLocaleString()}</div>
+      </div>
+
+      <div>
+        <span class="schedule-badge">${formatRealtimePeriod(item.period)}</span>
+      </div>
+
+      <div class="schedule-meta">
+        ${item.modules}
+      </div>
+
+      <button class="delete-schedule-btn" onclick="deleteRealtimeSchedule(${item.id})" title="Delete schedule">
+        🗑
+      </button>
+    </div>
+  `).join("");
+}
+
+function formatRealtimePeriod(period) {
+  if (period === "daily") return "Daily";
+  if (period === "weekly") return "Weekly";
+  if (period === "monthly") return "Monthly";
+  if (period === "3months") return "Every 3 Months";
+  return period;
+}
+
+function deleteRealtimeSchedule(id) {
+  const schedules = JSON.parse(localStorage.getItem("realtimeSchedules") || "[]");
+  const updated = schedules.filter(item => item.id !== id);
+
+  localStorage.setItem("realtimeSchedules", JSON.stringify(updated));
+  loadRealtimeSchedules();
+}
+
+function renderTopTargetsPage() {
+  const body = document.getElementById("topTargetsModalBody");
+  if (!body) return;
+
+  const total = topTargetsFullData.length;
+  const totalPages = Math.ceil(total / topTargetsPerPage);
+
+  const start = (topTargetsPage - 1) * topTargetsPerPage;
+  const end = start + topTargetsPerPage;
+
+  const pageItems = topTargetsFullData.slice(start, end);
+
+  body.innerHTML = `
+    <div class="risk-modal-table-head">
+      <span>Target URL</span>
+      <span>Risk Level</span>
+      <span>Severity</span>
+      <span>Last Scan</span>
+    </div>
+
+    ${pageItems.map(scan => {
+      const summary = scan.website?.summary || scan.summary || {};
+
+      return `
+        <div class="risk-modal-row">
+          <div class="risk-url-cell">
+            <span class="risk-url-icon">🌐</span>
+            <div>
+              <strong>${scan.target || scan.targetUrl || scan.domain || "Unknown Target"}</strong>
+              <small>Added ${new Date(scan.scannedAt).toLocaleString()}</small>
+            </div>
+          </div>
+
+          <div>
+            <span class="risk-critical-pill">${scan.riskLevel || "Critical"}</span>
+          </div>
+
+          <div class="risk-severity-cell">
+            📊 ${summary.high || 0} High
+          </div>
+
+          <div class="risk-date-cell">
+            ${new Date(scan.scannedAt).toLocaleString()}
+          </div>
+        </div>
+      `;
+    }).join("")}
+
+    <div class="risk-pagination-footer">
+      <span>
+        Showing ${total === 0 ? 0 : start + 1} to ${Math.min(end, total)} of ${total} results
+      </span>
+
+      <div class="risk-pagination">
+        <button onclick="changeTopTargetsPage(-1)" ${topTargetsPage === 1 ? "disabled" : ""}>‹</button>
+
+        ${Array.from({ length: totalPages }, (_, i) => `
+          <button onclick="goTopTargetsPage(${i + 1})"
+            class="${topTargetsPage === i + 1 ? "active" : ""}">
+            ${i + 1}
+          </button>
+        `).join("")}
+
+        <button onclick="changeTopTargetsPage(1)" ${topTargetsPage === totalPages ? "disabled" : ""}>›</button>
+      </div>
+    </div>
+  `;
+}
+
+function changeTopTargetsPage(direction) {
+  const totalPages = Math.ceil(topTargetsFullData.length / topTargetsPerPage);
+
+  topTargetsPage += direction;
+
+  if (topTargetsPage < 1) topTargetsPage = 1;
+  if (topTargetsPage > totalPages) topTargetsPage = totalPages;
+
+  renderTopTargetsPage();
+}
+
+function goTopTargetsPage(page) {
+  topTargetsPage = page;
+  renderTopTargetsPage();
+}
+
+
+
+
 
 loadFullScanHistory();
 loadDashboard();
